@@ -1,0 +1,15 @@
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\Airline Software.exe
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\Airline Software.deps.json
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\Airline Software.runtimeconfig.json
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\Airline Software.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\ref\Airline Software.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\Airline Software.pdb
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.csproj.AssemblyReference.cache
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.AssemblyInfoInputs.cache
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.AssemblyInfo.cs
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.csproj.CoreCompileInputs.cache
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\ref\Airline Software.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.pdb
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.genruntimeconfig.cache
