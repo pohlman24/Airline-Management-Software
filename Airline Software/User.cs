@@ -8,9 +8,8 @@ namespace Airline_Software
 {
     internal class User
     {
-        public string Username { get; set; }
         public string Password { get; set; }
-        public int Id { get; }
+        public int Id { get; set; }
 
         public void ChangePassword(string newPassword)
         {
