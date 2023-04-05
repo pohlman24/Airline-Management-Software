@@ -1,1 +1,11 @@
-﻿
+﻿Id,Code,City,State,Latitude,Longitude
+1, BNA, Nashville, TN
+2, CLE, Cleveland, OH
+3, LAX, Los Angeles, CA
+4, JFK, New York, NY
+5, ORD, Chicago, IL
+6, ATL, Atlanta, GA
+7, DFW, Dallas, TX
+8, DEN, Denver, CO
+9, SFO, San Francisco, CA
+10, SEA, Seattle, WA
