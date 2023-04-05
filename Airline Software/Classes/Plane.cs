@@ -9,13 +9,13 @@ namespace Airline_Software
 {
     public class Plane
     {
-        public string model { get; set; }
-        public int capacity { get; set; }
+        public string Model { get; set; }
+        public int Capacity { get; set; }
         public int PlaneId { get; set; }
 
         public Plane(string name)
         {
-            this.model = name;
+            this.Model = name;
             setCapacity(name);
         }
 
@@ -25,13 +25,13 @@ namespace Airline_Software
             switch (name)
             {
                 case "Boeing 737":
-                    capacity = 100;
+                    Capacity = 100;
                     break;
                 case "Boeing 767":
-                    capacity = 150;
+                    Capacity = 150;
                     break;
                 case "Boeing 777":
-                    capacity = 200;
+                    Capacity = 200;
                     break;
                 default:
                     break;
