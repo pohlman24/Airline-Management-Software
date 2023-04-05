@@ -9,13 +9,13 @@ namespace Airline_Software
 {
     public class Plane
     {
-        public string model { get; set; };
-        public int capacity { get; set; };
+        public string model { get; set; }
+        public int capacity { get; set; }
         public int PlaneId { get; set; }
 
         public Plane(string name)
         {
-            this.name = name;
+            this.model = name;
             setCapacity(name);
         }
 

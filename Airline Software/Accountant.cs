@@ -19,6 +19,6 @@ namespace Airline_Software
             //need to know how flight data is being stored first
         }
 
-        private void calculateFlightIncome() //same with above how is data being stored
+        //private void calculateFlightIncome(); //same with above how is data being stored
     }
 }

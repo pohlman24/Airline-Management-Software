@@ -14,7 +14,7 @@ namespace Airline_Software
             setID(3);
         }
 
-        //print list of all passengers on a specific flight
+   /*     //print list of all passengers on a specific flight
         public void printFlightManifest(Flight flight)
         {
             //create .csv file to store list of all passengers that can be displayed
@@ -26,6 +26,6 @@ namespace Airline_Software
                     writer.WriteLine(string.Join(",", passenger));
                 }
             }
-        }
+        }*/
     }
 }
