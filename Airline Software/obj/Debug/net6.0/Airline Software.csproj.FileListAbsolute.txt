@@ -13,3 +13,11 @@ C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.
 C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\ref\Airline Software.dll
 C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.pdb
 C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.genruntimeconfig.cache
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\obj\Debug\net6.0\Airline Software.csproj.CopyComplete
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\System.Data.SqlClient.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\runtimes\win-arm64\native\sni.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\runtimes\win-x64\native\sni.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\Reece\Code\Airline-Management-Software\Airline Software\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
