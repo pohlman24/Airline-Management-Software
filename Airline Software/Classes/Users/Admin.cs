@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace Airline_Software
 {
-    internal class Admin : User
+    public class Admin : User
     {
+        public Admin(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType) 
+            : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
+        {
+
+        }
+
+
+
+
+
+
         //Each user will have a unique 6-digit (can’t start with zero), randomly-assigned customer number
         //(which will act as their user ID), tied to their name and address??????????
 

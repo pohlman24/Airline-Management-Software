@@ -5,24 +5,31 @@ class Program
 {
     static void Main(string[] args)
     {
-        /*Console.WriteLine("1. View Available flights \t 2. View Your Upcoming Flights \t 3. Order History \t 4. Account Settings \t 5. Login/SignUp ");
-        string homeScreenInput = Console.ReadLine();
-        if(homeScreenInput == "1")
-        {
-            Console.WriteLine("Viewing Flights");
-        }
-        else if (homeScreenInput == "2")
-        {
-        }
-        else if (homeScreenInput == "3")
-        {
-        }
-        else if (homeScreenInput == "4")
-        {
-        }
-        else if (homeScreenInput == "5")
-        {
-            
-        }*/
+       
+        // Testing creating a new customer -- should create the record in the customer table and the user table
+        Console.WriteLine("Enter First Name");
+        string firstName = Console.ReadLine();
+        Console.WriteLine("Enter Last Name");
+        string lastName = Console.ReadLine();
+        Console.WriteLine("Enter Email");
+        string email = Console.ReadLine();
+        Console.WriteLine("Enter Phone Number");
+        string phoneNumber = Console.ReadLine();
+        Console.WriteLine("Enter Age");
+        string age = Console.ReadLine();
+        Console.WriteLine("Enter Address");
+        string address = Console.ReadLine();
+        Console.WriteLine("Enter City");
+        string city = Console.ReadLine();
+        Console.WriteLine("Enter State");
+        string state = Console.ReadLine();
+        Console.WriteLine("Enter Zip");
+        string zip = Console.ReadLine();
+        Console.WriteLine("Enter Password");
+        string password = Console.ReadLine();
+        Console.WriteLine("Enter Credit Card Number");
+        string creditCardNum = Console.ReadLine();
+
+        User newUser = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, int.Parse(age), address, city, state, zip, password, "Customer", creditCardNum);
     }
 }

@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Airline_Software
 {
-    internal class Accountant : Admin
+    public class Accountant : Admin
     {
-        public Accountant()
+        public Accountant(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType) 
+            : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
-            //position for accountant is 4
-            setID(4);
         }
 
         public void generateSummary()

@@ -8,7 +8,7 @@ namespace Airline_Software
 {
     public class BoardingPass
     {
-        // AKA Boarding pass
+        // was called ticket previsouly 
         public int BoardingPassId { get; set; }
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
@@ -20,5 +20,34 @@ namespace Airline_Software
         public int DepartureAirportId { get; set; }
         public int ArrivalAirportId { get; set; }
 
+        public BoardingPass(int boardingPassId, int orderId, int customerId, int flightId,
+                            string firstName, string lastName, DateTime departureTime, DateTime arrivalTime,
+                            int departureAirportId, int arrivalAirportId)
+        {
+            BoardingPassId = boardingPassId;
+            OrderId = orderId;
+            CustomerId = customerId;
+            FlightId = flightId;
+            FirstName = firstName;
+            LastName = lastName;
+            DepartureTime = departureTime;
+            ArrivalTime = arrivalTime;
+            DepartureAirportId = departureAirportId;
+            ArrivalAirportId = arrivalAirportId;
+        }
+
+        public static BoardingPass CreateBoardingPass(int boardingPassId, int orderId, int customerId, int flightId,
+                                                      string firstName, string lastName, DateTime departureTime, DateTime arrivalTime,
+                                                      int departureAirportId, int arrivalAirportId)
+        {
+            BoardingPass newBoardingPass = new BoardingPass(boardingPassId, orderId, customerId, flightId, firstName, lastName, departureTime, arrivalTime, departureAirportId, arrivalAirportId);
+
+            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/BoardingPassDb.csv";
+            List<BoardingPass> boardingPasses = CsvDatabase.ReadCsvFile<BoardingPass>(filePath);
+            boardingPasses.Add(newBoardingPass);
+            CsvDatabase.WriteCsvFile<BoardingPass>(filePath, boardingPasses);
+
+            return newBoardingPass;
+        }
     }
 }

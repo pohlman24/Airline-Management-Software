@@ -8,11 +8,18 @@ namespace Airline_Software
 {
     internal class MarketingManager : Admin
     {
-        public MarketingManager()
+        public MarketingManager(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType) : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
-            //position for marketing manager is 1
-            setID(1);
         }
+
+
+
+
+        /* public MarketingManager()
+{
+    //position for marketing manager is 1
+    setID(1);
+}*/
 
         //determine plane model based on total flight distance
         public Plane determinePlaneModel(double distance)

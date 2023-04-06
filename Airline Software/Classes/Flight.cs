@@ -18,6 +18,45 @@ namespace Airline_Software
         public int PointsEarned { get; set; }
         public int Price { get; set; }
 
-        // we may want to include the non-id forms of these too for easier access when needed -- but for right now this is good
+        // add list of Customers on a flight? 
+
+
+        public Flight(int flightID, string flightNumber, int departureAirportID, int arrivalAirportID,
+                      DateTime departureTime, DateTime arrivalTime, int planeModelId, int pointsEarned, int price)
+        {
+            FlightID = flightID;
+            FlightNumber = flightNumber;
+            DepartureAirportID = departureAirportID;
+            ArrivalAirportID = arrivalAirportID;
+            DepartureTime = departureTime;
+            ArrivalTime = arrivalTime;
+            PlaneModelId = planeModelId;
+            PointsEarned = pointsEarned;
+            Price = price;
+        }
+
+        public static Flight CreateFlight(string flightNumber, int departureAirportID, int arrivalAirportID,
+                                         DateTime departureTime, DateTime arrivalTime, int planeModelId, int pointsEarned, int price)
+        {
+            int flightID = GenerateFlightID();
+            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/FlightDb.csv";
+
+            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, planeModelId, pointsEarned, price);
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            flights.Add(newFlight);
+            CsvDatabase.WriteCsvFile<Flight>(filePath, flights);
+            return newFlight;
+        }
+
+
+        // function for auto generating the ID's 
+        private static int GenerateFlightID()
+        {
+            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            int maxID = flights.Count > 0 ? flights.Max(f => f.FlightID) : 0;
+            return maxID + 1;
+        }
+
     }
 }

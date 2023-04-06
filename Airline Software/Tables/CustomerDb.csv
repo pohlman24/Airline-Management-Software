@@ -1,1 +1,1 @@
-﻿UserId,MillagePoint,CreditCardNumber
+CustomerId,FirstName,LastName,Email,PhoneNumber,Age,Password,Address,City,State,ZipCode,UserType,MilagePoints,CreditCardNumber
