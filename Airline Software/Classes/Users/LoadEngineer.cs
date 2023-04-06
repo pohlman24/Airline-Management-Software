@@ -6,21 +6,11 @@ using System.Threading.Tasks;
 
 namespace Airline_Software
 {
-    internal class LoadEngineer : Admin
+    internal class LoadEngineer : User
     {
         public LoadEngineer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType) : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
         }
-
-
-
-
-
-        /* public LoadEngineer()
-{
-    //position for load engineer is 2
-    setID(2);
-}*/
 
         public void scheduleFlight()
         {

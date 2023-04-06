@@ -25,7 +25,6 @@ namespace Airline_Software
             this.OrderHistory = new List<Order>();
             this.ActiveOrders = new List<Order>();
             this.UserType = "Customer";
-            
         }
 
         public static Customer CreateCustomer(string firstName, string lastName, string email, string phoneNumber, int age, string address, string city, string state, string zipCode, string password, string userType, string creditCardNum)

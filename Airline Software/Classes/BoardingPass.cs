@@ -10,7 +10,7 @@ namespace Airline_Software
     {
         // was called ticket previsouly 
         public int BoardingPassId { get; set; }
-        public int OrderId { get; set; }
+        public int OrderId { get; set; } // remove?? 
         public int CustomerId { get; set; }
         public int FlightId { get; set; }
         public string FirstName { get; set; }

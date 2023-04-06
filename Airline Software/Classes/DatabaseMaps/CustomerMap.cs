@@ -5,7 +5,7 @@ public class CustomerMap : ClassMap<Customer>
 {
     public CustomerMap()
     {
-        Map(m => m.Id).Index(0).Name("CustomerId");
+        Map(m => m.Id).Index(0).Name("Id");
         Map(m => m.FirstName).Index(1).Name("FirstName");
         Map(m => m.LastName).Index(2).Name("LastName");
         Map(m => m.Email).Index(3).Name("Email");

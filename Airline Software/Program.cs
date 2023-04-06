@@ -32,4 +32,5 @@ class Program
 
         User newUser = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, int.Parse(age), address, city, state, zip, password, "Customer", creditCardNum);
     }
+
 }

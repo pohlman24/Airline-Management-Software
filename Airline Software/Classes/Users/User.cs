@@ -54,7 +54,12 @@ namespace Airline_Software
             return newUser;
         }
 
-        // TODO -- this has the chance to make a number that begins with 0, which is a no go for Thomas
+        public static User UpdateUser()
+        {
+            return null;
+        }
+
+        
         public static int GenerateId()
         {
             // read into userDatabase
