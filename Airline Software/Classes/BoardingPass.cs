@@ -42,12 +42,20 @@ namespace Airline_Software
         {
             BoardingPass newBoardingPass = new BoardingPass(boardingPassId, orderId, customerId, flightId, firstName, lastName, departureTime, arrivalTime, departureAirportId, arrivalAirportId);
 
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/BoardingPassDb.csv";
+            string filePath = @"..\..\..\Tables\BoardingPassDb.csv";
             List<BoardingPass> boardingPasses = CsvDatabase.ReadCsvFile<BoardingPass>(filePath);
             boardingPasses.Add(newBoardingPass);
             CsvDatabase.WriteCsvFile<BoardingPass>(filePath, boardingPasses);
 
             return newBoardingPass;
+        }
+
+        private static int GenerateBoardingPassID()
+        {
+            string filePath = @"..\..\..\Tables\BoardingPassDb.csv"; ;
+            List<BoardingPass> planes = CsvDatabase.ReadCsvFile<BoardingPass>(filePath);
+            int maxID = planes.Count > 0 ? planes.Max(p => p.BoardingPassId) : 0;
+            return maxID + 1;
         }
     }
 }

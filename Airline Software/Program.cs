@@ -7,7 +7,7 @@ class Program
     {
        
         // Testing creating a new customer -- should create the record in the customer table and the user table
-        Console.WriteLine("Enter First Name");
+        /*Console.WriteLine("Enter First Name");
         string firstName = Console.ReadLine();
         Console.WriteLine("Enter Last Name");
         string lastName = Console.ReadLine();
@@ -30,7 +30,13 @@ class Program
         Console.WriteLine("Enter Credit Card Number");
         string creditCardNum = Console.ReadLine();
 
-        User newUser = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, int.Parse(age), address, city, state, zip, password, "Customer", creditCardNum);
+        User newUser = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, int.Parse(age), address, city, state, zip, password, "Customer", creditCardNum);*/
+
+        //Testing FindRecord
+        string filePath = @"..\..\..\Tables\CustomerDb.csv";
+        List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+        Customer me = CsvDatabase.FindRecord(customers, p => p.Id, 364608);
+        Console.WriteLine(me.FirstName);
     }
 
 }

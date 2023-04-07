@@ -31,7 +31,7 @@ namespace Airline_Software
         {
             int id = User.GenerateId();
             Customer newCustomer = new Customer (id,firstName, lastName, email,phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNum);
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/CustomerDb.csv";
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
             List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
             customers.Add(newCustomer);
             CsvDatabase.WriteCsvFile(filePath, customers);

@@ -25,7 +25,7 @@
 
         public static Order CreateOrder(int customerId, int flightId, string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip)
         {
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/OrderDb.csv";
+            string filePath = @"..\..\..\Tables\OrderDb.csv";
             int orderId = GenerateOrderID();
             Order newOrder = new Order(orderId, customerId, flightId, orderStatus, orderDate, cancellationDate, isRoundTrip);
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
@@ -36,7 +36,7 @@
 
         private static int GenerateOrderID()
         {
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/OrderDb.csv";
+            string filePath = @"..\..\..\Tables\OrderDb.csv";
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
             int maxID = orders.Count > 0 ? orders.Max(o => o.OrderId) : 0;
             return maxID + 1;

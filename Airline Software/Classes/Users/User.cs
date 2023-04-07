@@ -47,7 +47,7 @@ namespace Airline_Software
             /*id = GenerateId();*/
             User newUser = new User(id, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType);
 
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/UserDb.csv";
+            string filePath = @"..\..\..\Tables\UserDb.csv";
             List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
             users.Add(newUser);
             CsvDatabase.WriteCsvFile(filePath, users);
@@ -56,14 +56,14 @@ namespace Airline_Software
 
         public static User UpdateUser()
         {
-            return null;
+            return null;  
         }
 
         
         public static int GenerateId()
         {
             // read into userDatabase
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/UserDb.csv"; // file path to 'table' (csv file) -- need to make it the relative path but i couldnt figure out how
+            string filePath = @"C:..\..\..\Tables\UserDb.csv"; // file path to 'table' (csv file) -- need to make it the relative path but i couldnt figure out how
             List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
             if (users.Count != 0)
             {

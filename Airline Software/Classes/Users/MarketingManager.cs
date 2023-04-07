@@ -16,7 +16,7 @@ namespace Airline_Software
 
 
         //determine plane model based on total flight distance
-        public Plane determinePlaneModel(double distance)
+        /*public Plane determinePlaneModel(double distance)
         {
             string planeName;
 
@@ -36,6 +36,6 @@ namespace Airline_Software
             //TODO do i use dispose here idk what it is but maybe
             Plane plane = new(planeName);
             return plane;
-        }
+        }*/
     }
 }

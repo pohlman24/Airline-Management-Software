@@ -13,33 +13,9 @@ namespace Airline_Software
         public int Capacity { get; set; }
         public int PlaneId { get; set; }
 
-        public Plane(string name)
-        {
-            this.Model = name;
-            setCapacity(name);
-        }
-
-        //determine capacity based on plane model
-        private void setCapacity(string name)
-        {
-            switch (name)
-            {
-                case "Boeing 737":
-                    Capacity = 100;
-                    break;
-                case "Boeing 767":
-                    Capacity = 150;
-                    break;
-                case "Boeing 777":
-                    Capacity = 200;
-                    break;
-                default:
-                    break;
-            }
-        }
 
         // if we need a database for this than heres the code for it 
-        /*public Plane(string model, int capacity, int planeId)
+        public Plane(string model, int capacity, int planeId)
         {
             Model = model;
             Capacity = capacity;
@@ -47,7 +23,7 @@ namespace Airline_Software
         }
         public static Plane CreatePlane(string model, int capacity)
         {
-            string filePath;
+            string filePath = @"..\..\..\Tables\PlaneDb.csv"; ;
             int planeId = GeneratePlaneID();
             Plane newPlane = new Plane(model, capacity, planeId);
             List<Plane> planes = CsvDatabase.ReadCsvFile<Plane>(filePath);
@@ -58,11 +34,11 @@ namespace Airline_Software
 
         private static int GeneratePlaneID()
         {
-            string filePath;
+            string filePath = @"..\..\..\Tables\PlaneDb.csv"; ;
             List<Plane> planes = CsvDatabase.ReadCsvFile<Plane>(filePath);
             int maxID = planes.Count > 0 ? planes.Max(p => p.PlaneId) : 0;
-            /return maxID + 1;
+            return maxID + 1;
         }
-        */
+
     }
 }

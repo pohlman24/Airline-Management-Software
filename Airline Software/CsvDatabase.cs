@@ -91,7 +91,16 @@ namespace Airline_Software
             }
         }
 
-        // TODO public static void FindRecord<T>(id){}
+        public static T? FindRecord<T>(List<T> records, Func<T, int> idSelector, int id)
+        {
+            T? foundRecord = default;
+            int indexToFind = records.FindIndex(record => idSelector(record) == id);
+            if (indexToFind != -1)
+            {
+                foundRecord = records[indexToFind];
+            }
+            return foundRecord;
+        }
 
 
         // EXAMPLE OF USE 
@@ -121,6 +130,9 @@ namespace Airline_Software
 
         // DELETEING RECORD FROM DATABASE
         RemoveRecord(people, p => p.Id, 3);
+
+        // FINDING FROM DATABASE
+        FindRecord(people, p => p.Id, 3);
         */
 
     }

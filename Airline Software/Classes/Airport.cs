@@ -28,13 +28,21 @@ namespace Airline_Software
         public static Airport CreateAirport(int airportID, string city, string state, string code, double latitude, double longitude)
         {
             Airport newAirport = new Airport(airportID, city, state, code, latitude, longitude);
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/AirportDb.csv";
+            string filePath = @"..\..\..\Tables\AirportDb.csv";
             List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(filePath);
             airports.Add(newAirport);
             CsvDatabase.WriteCsvFile<Airport>(filePath, airports);
 
             return newAirport;
         }
-        
+
+        private static int GenerateAirportID()
+        {
+            string filePath = @"..\..\..\Tables\AirportDb.csv"; ;
+            List<Airport> planes = CsvDatabase.ReadCsvFile<Airport>(filePath);
+            int maxID = planes.Count > 0 ? planes.Max(p => p.AirportID) : 0;
+            return maxID + 1;
+        }
+
     }
 }

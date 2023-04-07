@@ -39,7 +39,7 @@ namespace Airline_Software
                                          DateTime departureTime, DateTime arrivalTime, int planeModelId, int pointsEarned, int price)
         {
             int flightID = GenerateFlightID();
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/FlightDb.csv";
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
 
             Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, planeModelId, pointsEarned, price);
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
@@ -52,7 +52,7 @@ namespace Airline_Software
         // function for auto generating the ID's 
         private static int GenerateFlightID()
         {
-            string filePath = "C:/Users/Reece/Code/Airline-Management-Software/Airline Software/Tables/FlightDb.csv";
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             int maxID = flights.Count > 0 ? flights.Max(f => f.FlightID) : 0;
             return maxID + 1;
