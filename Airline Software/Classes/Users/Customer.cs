@@ -27,17 +27,61 @@ namespace Airline_Software
             this.UserType = "Customer";
         }
 
-        public static Customer CreateCustomer(string firstName, string lastName, string email, string phoneNumber, int age, string address, string city, string state, string zipCode, string password, string userType, string creditCardNum)
+        public static Customer CreateCustomer(string firstName, string lastName, string email, string phoneNumber, int age, string address, string city, string state, string zipCode, string password, string userType, string creditCardNumber)
         {
             int id = User.GenerateId();
-            Customer newCustomer = new Customer (id,firstName, lastName, email,phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNum);
+            Customer newCustomer = new Customer (id,firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber);
             string filePath = @"..\..\..\Tables\CustomerDb.csv";
             List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
             customers.Add(newCustomer);
             CsvDatabase.WriteCsvFile(filePath, customers);
-
+            
             User.CreateUser(id, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType);
             return newCustomer;
+        }
+
+        //TODO should u be able to change age, also should we have birthday or just age or do we have birthday i didnt look
+        public static void UpdateCustomer(Customer customer, string firstName = "", string lastName = "", string email = "", string phoneNumber = "", int age = -1, string address = "", string city = "", string state = "", string zipCode = "", string password = "", string userType = "", string creditCardNumber = "")
+        {
+            //update customer info if changed
+            customer.FirstName = string.IsNullOrEmpty(firstName) ? customer.FirstName : firstName;
+            customer.LastName = string.IsNullOrEmpty(lastName) ? customer.LastName : lastName;
+            customer.Email = string.IsNullOrEmpty(email) ? customer.Email : email;
+            customer.PhoneNumber = string.IsNullOrEmpty(phoneNumber) ? customer.PhoneNumber : phoneNumber;
+            customer.Age = age == -1 ? customer.Age : age;
+            customer.Address = string.IsNullOrEmpty(address) ? customer.Address : address;
+            customer.City = string.IsNullOrEmpty(city) ? customer.City : city;
+            customer.State = string.IsNullOrEmpty(state) ? customer.State : state;
+            customer.ZipCode = string.IsNullOrEmpty(zipCode) ? customer.ZipCode : zipCode;
+            customer.Password = string.IsNullOrEmpty(password) ? customer.Password : password;
+            customer.UserType = string.IsNullOrEmpty(userType) ? customer.UserType : userType;
+            customer.CreditCardNumber = string.IsNullOrEmpty(creditCardNumber) ? customer.CreditCardNumber : creditCardNumber;
+
+            //get csv file to update
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
+            List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+
+            //update customer info in csv file
+            CsvDatabase.UpdateRecord(customers, p => p.Id, customer.Id, (current, updated) =>
+            {
+                current.FirstName = updated.FirstName;
+                current.LastName = updated.LastName;
+                current.Email = updated.Email;
+                current.PhoneNumber = updated.PhoneNumber;
+                current.Age = updated.Age;
+                current.Address = updated.Address;
+                current.City = updated.City;
+                current.State = updated.State;
+                current.ZipCode = updated.ZipCode;
+                current.Password = updated.Password;
+                current.UserType = updated.UserType;
+                current.CreditCardNumber = updated.CreditCardNumber;
+            }, customer);
+
+            CsvDatabase.WriteCsvFile(filePath, customers);
+
+            //update the user csv as well since customer is in both
+            UpdateUser(customer, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType);
         }
 
         /// <summary>

@@ -37,6 +37,11 @@ class Program
         List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
         Customer me = CsvDatabase.FindRecord(customers, p => p.Id, 364608);
         Console.WriteLine(me.FirstName);
+
+        //testing updating the name
+        Customer.UpdateCustomer(me, firstName: "Bob", lastName: "Johnson");
+        Console.WriteLine(me.FirstName);
+        Console.WriteLine(me.LastName);
     }
 
 }
