@@ -13,25 +13,30 @@ namespace Airline_Software
         {
 
         }
-        /*public FlightManager()
+
+        // make csv file with list of every customer on flight
+        public static void PrintFlightManifest(Flight flight)
         {
-            //position for flight manager is 3
-            setID(3);
-        }
-*/
-        //print list of all passengers on a specific flight
-        /*public void printFlightManifest(Flight flight)
-        {
+            // read over every Order and check if flightId is same as given flight
+            string filePath = @"..\..\..\Tables\OrderDb.csv";
+            List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
             //create .csv file to store list of all passengers that can be displayed
-            using (StreamWriter writer = new("flight-manifest.csv"))
+            string outputFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "flight-manifest.csv");
+            using (StreamWriter writer = new(outputFilePath))
             {
-                foreach (string[] passenger in flight.passengers)
+                // write header row with column names
+                writer.WriteLine("First Name,Last Name");
+                foreach (Order order in orders)
                 {
-                    //join passenger last and first name with comma for .csv compatability
-                    writer.WriteLine(string.Join(",", passenger));
+                    if (order.FlightId == flight.FlightId)
+                    {
+                        Customer customer = Customer.FindCustomerById(order.CustomerId);
+                        string customerName = string.Join(",", customer.FirstName, customer.LastName);
+                        writer.WriteLine(customerName);
+                    }
                 }
             }
-        }*/
-        
+            Console.WriteLine("flight-manifest.csv File saved in your documents folder");
+        }
     }
 }

@@ -56,7 +56,7 @@ namespace Airline_Software
             // day, month, year, --- a specific range? 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
-            int count= 0;
+            int count = 0;
             foreach (Flight flight in flights)
             {
                 if (flight.DepartureTime.Day == DateTime.Today.Day && range == "day")

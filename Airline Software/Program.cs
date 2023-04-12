@@ -59,7 +59,7 @@ class Program
         // Order.DeleteOrder(newOrder);
 
         // Testing accountant Functions
-        Flight flight = Flight.FindFlightById(1);
+        Flight flight = Flight.FindFlightById(2);
         // CalcNumFlights()
         // int flightNums = Accountant.CalcNumFlights("week");
         // Console.WriteLine(flightNums);
@@ -70,6 +70,8 @@ class Program
         // Console.WriteLine(Accountant.CalcIncomeFlight(flight));
         // CalcIncomeWhole()
         // Console.WriteLine(Accountant.CalcIncomeWhole());
+
+        FlightManager.PrintFlightManifest(flight);
     }
 
 }
