@@ -58,9 +58,18 @@ class Program
         // DELETE
         // Order.DeleteOrder(newOrder);
 
-
-        /*int flightNums = Accountant.CalcNumFlights("week");
-        Console.WriteLine(flightNums);*/
+        // Testing accountant Functions
+        Flight flight = Flight.FindFlightById(1);
+        // CalcNumFlights()
+        // int flightNums = Accountant.CalcNumFlights("week");
+        // Console.WriteLine(flightNums);
+        // CalcPercentCapacity()
+        // double percent = Accountant.CalcPercentCapacity(flight);
+        // Console.WriteLine(percent);
+        // CalcIncomeFlight()
+        // Console.WriteLine(Accountant.CalcIncomeFlight(flight));
+        // CalcIncomeWhole()
+        // Console.WriteLine(Accountant.CalcIncomeWhole());
     }
 
 }

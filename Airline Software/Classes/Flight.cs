@@ -18,14 +18,14 @@ namespace Airline_Software
         public int PointsEarned { get; set; }
         public int Price { get; set; }
         public int Capacity { get; set; }
-        public int PercentCapacity { get; set; }
+        public int SeatsSold { get; set; }
 
 
         // add list of Customers on a flight? 
 
 
         public Flight(int FlightId, string FlightNumber, int DepartureAirportID, int ArrivalAirportID,
-                      DateTime DepartureTime, DateTime ArrivalTime, int PlaneModelId, int PointsEarned, int Price, int Capacity, int PercentCapacity)
+                      DateTime DepartureTime, DateTime ArrivalTime, int PlaneModelId, int PointsEarned, int Price, int Capacity, int SeatsSold)
         {
             this.FlightId = FlightId;
             this.FlightNumber = FlightNumber;
@@ -37,7 +37,7 @@ namespace Airline_Software
             this.PointsEarned = PointsEarned;
             this.Price = Price;
             this.Capacity = Capacity;
-            this.PercentCapacity = PercentCapacity;
+            this.SeatsSold = SeatsSold;
         }
 
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
@@ -58,7 +58,7 @@ namespace Airline_Software
 
         public static void UpdateFlight(Flight flight, string flightNumber = "", int departureAirportID = -1, int arrivalAirportID = -1,
                                 DateTime? departureTime = null, DateTime? arrivalTime = null, int planeModelId = -1,
-                                int pointsEarned = -1, int price = -1, int capacity = -1, int percentCapacity = -1)
+                                int pointsEarned = -1, int price = -1, int capacity = -1, int seatsSold = -1)
         {
             flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? flight.FlightNumber : flightNumber;
             flight.DepartureAirportID = departureAirportID == -1 ? flight.DepartureAirportID : departureAirportID;
@@ -69,7 +69,7 @@ namespace Airline_Software
             flight.PointsEarned = pointsEarned == -1 ? flight.PointsEarned : pointsEarned;
             flight.Price = price == -1 ? flight.Price : price;
             flight.Capacity = capacity == -1 ? (int)capacity : capacity;
-            flight.PercentCapacity = percentCapacity == -1 ? flight.PercentCapacity : percentCapacity;
+            flight.SeatsSold = seatsSold == -1 ? flight.SeatsSold : seatsSold;
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
@@ -85,7 +85,7 @@ namespace Airline_Software
                 current.PointsEarned = updated.PointsEarned;
                 current.Price = updated.Price;
                 current.Capacity = updated.Capacity;
-                current.PercentCapacity = updated.PercentCapacity;
+                current.SeatsSold = updated.SeatsSold;
             }, flight);
 
             CsvDatabase.WriteCsvFile(filePath, flights);

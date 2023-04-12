@@ -14,10 +14,40 @@ namespace Airline_Software
         {
         }
 
-        public static int CalcPercentCapacity(Flight flight)
+        public static double CalcPercentCapacity(Flight flight)
         {
+            int cap = flight.Capacity;
+            if(cap == 0)
+            {
+                return 0;
+            }
+            int sold = flight.SeatsSold;
 
-            return 1;
+            double percentCap = (double) sold / cap;
+            return percentCap;
+        }
+
+        public static double CalcIncomeFlight(Flight flight)
+        {
+            int seats = flight.SeatsSold;
+            double cost = flight.Price;
+            double income = (double) seats * cost;
+            return income;
+        }
+
+        public static double CalcIncomeWhole()
+        {
+            double totalIncome = 0;
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            foreach (Flight flight in flights)
+            {
+                int seats = flight.SeatsSold;
+                double cost = flight.Price;
+                double income = (double) seats * cost;
+                totalIncome += income;
+            }
+             return totalIncome;
         }
 
         public static int CalcNumFlights(string range)
