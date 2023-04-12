@@ -38,7 +38,8 @@ class Program
 
         // Testing Flight CRUD functions
         // CREATE
-        // Flight newFlight = Flight.CreateFlight(1, 2, new DateTime(), new DateTime(), 2, 100, 200);
+        // DateTime dt1 = DateTime.Now;
+        // Flight newFlight = Flight.CreateFlight(1, 2, dt1, dt1, 1, 100, 200);
         // READ 
         //Flight newFlight = Flight.FindFlightById(1);
         // Console.WriteLine(newFlight.ArrivalAirportID);
@@ -58,7 +59,8 @@ class Program
         // Order.DeleteOrder(newOrder);
 
 
-
+        /*int flightNums = Accountant.CalcNumFlights("week");
+        Console.WriteLine(flightNums);*/
     }
 
 }

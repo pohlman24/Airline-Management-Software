@@ -10,7 +10,7 @@ namespace Airline_Software
     {
         public int AirportId { get; set; }
         public string City { get; set; }
-        public String State { get; set; }
+        public string State { get; set; }
         public string Code { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

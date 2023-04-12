@@ -17,12 +17,15 @@ namespace Airline_Software
         public int PlaneModelId { get; set; }
         public int PointsEarned { get; set; }
         public int Price { get; set; }
+        public int Capacity { get; set; }
+        public int PercentCapacity { get; set; }
+
 
         // add list of Customers on a flight? 
 
 
         public Flight(int FlightId, string FlightNumber, int DepartureAirportID, int ArrivalAirportID,
-                      DateTime DepartureTime, DateTime ArrivalTime, int PlaneModelId, int PointsEarned, int Price)
+                      DateTime DepartureTime, DateTime ArrivalTime, int PlaneModelId, int PointsEarned, int Price, int Capacity, int PercentCapacity)
         {
             this.FlightId = FlightId;
             this.FlightNumber = FlightNumber;
@@ -33,6 +36,8 @@ namespace Airline_Software
             this.PlaneModelId = PlaneModelId;
             this.PointsEarned = PointsEarned;
             this.Price = Price;
+            this.Capacity = Capacity;
+            this.PercentCapacity = PercentCapacity;
         }
 
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
@@ -40,10 +45,11 @@ namespace Airline_Software
         {
             int flightID = GenerateFlightID();
             string flightNumber = GenerateFlightNumber(flightID, departureAirportID, arrivalAirportID);
+            int capacity = Plane.FindPlaneById(planeModelId).Capacity;
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
 
-            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, planeModelId, pointsEarned, price);
+            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, planeModelId, pointsEarned, price, capacity, 0);
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             flights.Add(newFlight);
             CsvDatabase.WriteCsvFile<Flight>(filePath, flights);
@@ -52,7 +58,7 @@ namespace Airline_Software
 
         public static void UpdateFlight(Flight flight, string flightNumber = "", int departureAirportID = -1, int arrivalAirportID = -1,
                                 DateTime? departureTime = null, DateTime? arrivalTime = null, int planeModelId = -1,
-                                int pointsEarned = -1, int price = -1)
+                                int pointsEarned = -1, int price = -1, int capacity = -1, int percentCapacity = -1)
         {
             flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? flight.FlightNumber : flightNumber;
             flight.DepartureAirportID = departureAirportID == -1 ? flight.DepartureAirportID : departureAirportID;
@@ -62,6 +68,8 @@ namespace Airline_Software
             flight.PlaneModelId = planeModelId == -1 ? flight.PlaneModelId : planeModelId;
             flight.PointsEarned = pointsEarned == -1 ? flight.PointsEarned : pointsEarned;
             flight.Price = price == -1 ? flight.Price : price;
+            flight.Capacity = capacity == -1 ? (int)capacity : capacity;
+            flight.PercentCapacity = percentCapacity == -1 ? flight.PercentCapacity : percentCapacity;
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
@@ -76,6 +84,8 @@ namespace Airline_Software
                 current.PlaneModelId = updated.PlaneModelId;
                 current.PointsEarned = updated.PointsEarned;
                 current.Price = updated.Price;
+                current.Capacity = updated.Capacity;
+                current.PercentCapacity = updated.PercentCapacity;
             }, flight);
 
             CsvDatabase.WriteCsvFile(filePath, flights);

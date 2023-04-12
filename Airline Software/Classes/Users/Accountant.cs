@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,11 +14,61 @@ namespace Airline_Software
         {
         }
 
-        public void generateSummary()
+        public static int CalcPercentCapacity(Flight flight)
         {
-            //need to know how flight data is being stored first
+
+            return 1;
         }
 
-        //private void calculateFlightIncome(); //same with above how is data being stored
+        public static int CalcNumFlights(string range)
+        {
+            // duration options?
+            // day, month, year, --- a specific range? 
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            int count= 0;
+            foreach (Flight flight in flights)
+            {
+                if (flight.DepartureTime.Day == DateTime.Today.Day && range == "day")
+                {
+                    Console.WriteLine(flight.DepartureTime);
+                    count++;
+                }
+                else if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today) 
+                        && flight.DepartureTime.Year == DateTime.Today.Year
+                        && range == "week")
+                {
+                    Console.WriteLine(flight.DepartureTime);
+                    count++;
+                }
+                else if(flight.DepartureTime.Month == DateTime.Today.Month && range == "month")
+                {
+                    Console.WriteLine(flight.DepartureTime);
+                    count++;
+                }
+                else if (flight.DepartureTime.Year == DateTime.Today.Year&& range == "year")
+                {
+                    Console.WriteLine(flight.DepartureTime);
+                    count++;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Range");
+                }
+            }
+            return count;
+        }
+
+        // helper function for CalcNumFlights
+        public static int GetWeekOfYear(DateTime time)
+        {
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                time = time.AddDays(3);
+            }
+
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
     }
 }
