@@ -1,11 +1,3 @@
-﻿Id,Code,City,State,Latitude,Longitude
-1, BNA, Nashville, TN
-2, CLE, Cleveland, OH
-3, LAX, Los Angeles, CA
-4, JFK, New York, NY
-5, ORD, Chicago, IL
-6, ATL, Atlanta, GA
-7, DFW, Dallas, TX
-8, DEN, Denver, CO
-9, SFO, San Francisco, CA
-10, SEA, Seattle, WA
+AirportId,City,State,Code,Latitude,Longitude
+2,Detroit,Michigan,DET,543216789,123443321
+1,Toledo,Ohio,TOL,12345677,09987855768

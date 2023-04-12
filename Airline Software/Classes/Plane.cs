@@ -15,11 +15,11 @@ namespace Airline_Software
 
 
         // if we need a database for this than heres the code for it 
-        public Plane(string model, int capacity, int planeId)
+        public Plane(string Model, int Capacity, int PlaneId)
         {
-            Model = model;
-            Capacity = capacity;
-            PlaneId = planeId;
+            this.Model = Model;
+            this.Capacity = Capacity;
+            this.PlaneId = PlaneId;
         }
         public static Plane CreatePlane(string model, int capacity)
         {
@@ -31,6 +31,45 @@ namespace Airline_Software
             CsvDatabase.WriteCsvFile<Plane>(filePath, planes);
             return newPlane;
         }
+
+        public static void UpdatePlane(Plane plane, string model = "", int capacity = -1)
+        {
+            plane.Model = string.IsNullOrEmpty(model) ? plane.Model : model;
+            plane.Capacity = capacity == -1 ? plane.Capacity : capacity;
+
+            string filePath = @"..\..\..\Tables\PlaneDb.csv";
+            List<Plane> planes = CsvDatabase.ReadCsvFile<Plane>(filePath);
+
+            CsvDatabase.UpdateRecord(planes, p => p.PlaneId, plane.PlaneId, (current, updated) =>
+            {
+                current.Model = updated.Model;
+                current.Capacity = updated.Capacity;
+            }, plane);
+
+            CsvDatabase.WriteCsvFile(filePath, planes);
+        }
+
+        public static void DeletePlane(Plane plane)
+        {
+            string filePath = @"..\..\..\Tables\PlaneDb.csv";
+            List<Plane> planes = CsvDatabase.ReadCsvFile<Plane>(filePath);
+            CsvDatabase.RemoveRecord(planes, p => p.PlaneId, plane.PlaneId);
+            CsvDatabase.WriteCsvFile(filePath, planes);
+        }
+
+        public static Plane FindPlaneById(int id)
+        {
+            string filePath = @"..\..\..\Tables\PlaneDb.csv";
+            List<Plane> planes = CsvDatabase.ReadCsvFile<Plane>(filePath);
+            if (CsvDatabase.FindRecord(planes, p => p.PlaneId, id) == null)
+            {
+                throw (new Exception("Id Not Found"));
+                return null;
+            }
+            Plane plane = CsvDatabase.FindRecord(planes, p => p.PlaneId, id);
+            return plane;
+        }
+
 
         private static int GeneratePlaneID()
         {

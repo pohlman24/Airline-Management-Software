@@ -5,7 +5,7 @@ public class FlightMap : ClassMap<Flight>
 {
     public FlightMap()
     {
-        Map(m => m.FlightID).Index(0).Name("FlightID");
+        Map(m => m.FlightId).Index(0).Name("FlightId");
         Map(m => m.FlightNumber).Index(1).Name("FlightNumber");
         Map(m => m.DepartureAirportID).Index(2).Name("DepartureAirportID");
         Map(m => m.ArrivalAirportID).Index(3).Name("ArrivalAirportID");

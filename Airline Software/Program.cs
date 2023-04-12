@@ -5,43 +5,60 @@ class Program
 {
     static void Main(string[] args)
     {
-       
-        // Testing creating a new customer -- should create the record in the customer table and the user table
-        /*Console.WriteLine("Enter First Name");
-        string firstName = Console.ReadLine();
-        Console.WriteLine("Enter Last Name");
-        string lastName = Console.ReadLine();
-        Console.WriteLine("Enter Email");
-        string email = Console.ReadLine();
-        Console.WriteLine("Enter Phone Number");
-        string phoneNumber = Console.ReadLine();
-        Console.WriteLine("Enter Age");
-        string age = Console.ReadLine();
-        Console.WriteLine("Enter Address");
-        string address = Console.ReadLine();
-        Console.WriteLine("Enter City");
-        string city = Console.ReadLine();
-        Console.WriteLine("Enter State");
-        string state = Console.ReadLine();
-        Console.WriteLine("Enter Zip");
-        string zip = Console.ReadLine();
-        Console.WriteLine("Enter Password");
-        string password = Console.ReadLine();
-        Console.WriteLine("Enter Credit Card Number");
-        string creditCardNum = Console.ReadLine();
+        // Testing Customer CRUD functions
+        // CREATE
+        // User newUser = Customer.CreateCustomer("Reece", "Pohlman", "Reecepohlman@gmail.com", "4197054849", int.Parse("23"), "1234 Home Address", "Sylvania", "Ohio", "43560", "Password", "Customer", "123456789");
+        // READ
+        // Customer me = Customer.FindCustomerById(364608);
+        // UPDATE
+        // Customer.UpdateCustomer(me, firstName: "bobby", lastName: "Johnson");
+        // DELETE
+        // Customer.DeleteCustomer(me);
 
-        User newUser = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, int.Parse(age), address, city, state, zip, password, "Customer", creditCardNum);*/
+        // Testing Airport CRUD functions
+        // CREATE
+        // Airport newAirport = Airport.CreateAirport("Toledo", "Ohio", "TOL", int.Parse("12345"), int.Parse("098765"));
+        // READ
+        // Airport DETairport = Airport.FindAirportbyId(2);
+        // UPDATE
+        // Airport.UpdateAirport(DETairport, city: "Sylvania");
+        // DELETE
+        // Airport.DeleteAirport(DETairport);
 
-        //Testing FindRecord
-        string filePath = @"..\..\..\Tables\CustomerDb.csv";
-        List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
-        Customer me = CsvDatabase.FindRecord(customers, p => p.Id, 364608);
-        Console.WriteLine(me.FirstName);
+        // Testing BoardingPass CRUD functions
+        // CREATE
+        // BoardingPass newPass = BoardingPass.CreateBoardingPass(1, 364608, 1, "bobby", "Johnson", new DateTime(), new DateTime(), 1, 2);
+        // READ 
+        // BoardingPass newPass = BoardingPass.FindBoardingPassById(1);
+        // Console.WriteLine(newPass.FirstName);   
+        // UPDATE
+        // BoardingPass.UpdateBoardingPass(newPass, firstName: "Reece", lastName: "Pohlman");
+        // DELETE
+        // BoardingPass.DeleteBoardingPass(newPass);
 
-        //testing updating the name
-        Customer.UpdateCustomer(me, firstName: "Bob", lastName: "Johnson");
-        Console.WriteLine(me.FirstName);
-        Console.WriteLine(me.LastName);
+        // Testing Flight CRUD functions
+        // CREATE
+        // Flight newFlight = Flight.CreateFlight(1, 2, new DateTime(), new DateTime(), 2, 100, 200);
+        // READ 
+        //Flight newFlight = Flight.FindFlightById(1);
+        // Console.WriteLine(newFlight.ArrivalAirportID);
+        // UPDATE
+        // Flight.UpdateFlight(newFlight, flightNumber:"TOLDET100");
+        // DELETE
+        //Flight.DeleteFlight(newFlight);
+
+        // Testing Order CRUD functions
+        // CREATE
+        // Order newOrder = Order.CreateOrder(364608, 2, "Active", new DateOnly(), new DateOnly(), true);
+        // READ
+        // Order newOrder = Order.FindOrderById(2);
+        // UPDATE
+        // Order.UpdateOrder(newOrder, orderStatus: "Canceled");
+        // DELETE
+        // Order.DeleteOrder(newOrder);
+
+
+
     }
 
 }

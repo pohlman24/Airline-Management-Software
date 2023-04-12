@@ -84,6 +84,30 @@ namespace Airline_Software
             UpdateUser(customer, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType);
         }
 
+        public static void DeleteCustomer(Customer customer)
+        {
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
+            List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+            CsvDatabase.RemoveRecord(customers, c => c.Id, customer.Id);
+            CsvDatabase.WriteCsvFile(filePath, customers);
+
+            List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
+            CsvDatabase.RemoveRecord(users, u => u.Id, customer.Id);
+        }
+
+        public static Customer FindCustomerById(int id)
+        {
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
+            List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+            if (CsvDatabase.FindRecord(customers, c => c.Id, id) == null)
+            {
+                throw (new Exception("Id Not Found"));
+                return null;
+            }
+            Customer customer = CsvDatabase.FindRecord(customers, p => p.Id, id);
+            return customer;
+        }
+
         /// <summary>
         /// User checks out with all items in cart and adds order 
         /// </summary>
@@ -92,7 +116,7 @@ namespace Airline_Software
             OrderHistory = new List<Order>();
         }
         
-        public void CancelOrder()
+        public void CancelOrder() 
         {
     
         }

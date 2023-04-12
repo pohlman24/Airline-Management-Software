@@ -1,1 +1,1 @@
-﻿Id,OrderId,CustomerId,FlightId,FirstName,LastName,DepartureTime,ArrivalTime,DepartureAirportId,ArrivalAirportId
+BoardingPassId,OrderId,CustomerId,FlightId,FirstName,LastName,DepartureTime,ArrivalTime,DepartureAirportId,ArrivalAirportId

@@ -120,8 +120,8 @@ namespace Airline_Software
         Person updatedPerson = new Person { Name = "Reece 2.0", Age = 24 };
         CsvDatabase.UpdateRecord(people, p => p.Id, 1, (current, updated) =>
         {
-            current.Name = updatedPerson.Name;
-            current.Age = updatedPerson.Age;
+            current.Name = updated.Name;
+            current.Age = updated.Age;
 
         }, updatedPerson); /// dont forget to added the updatedPerson here !
 

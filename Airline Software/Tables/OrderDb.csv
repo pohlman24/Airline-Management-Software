@@ -1,1 +1,2 @@
-﻿Id,CustomerId,FlightId,OrderStatus,OrderDate,CancellationDate,IsRoundTrip
+OrderId,CustomerId,FlightId,OrderStatus,OrderDate,CancellationDate,IsRoundTrip
+1,364608,2,Active,0001-01-01,0001-01-01,True
