@@ -15,14 +15,14 @@ namespace Airline_Software
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
         public int? PlaneModelId { get; set; } = null;
+        public double Price { get; set; }
         public int PointsEarned { get; set; }
-        public int Price { get; set; }
         public int Capacity { get; set; } = 0;
         public int SeatsSold { get; set; }
 
 
         public Flight(int FlightId, string FlightNumber, int DepartureAirportID, int ArrivalAirportID,
-                      DateTime DepartureTime, DateTime ArrivalTime, int PointsEarned, int Price, int SeatsSold)
+                      DateTime DepartureTime, DateTime ArrivalTime, double Price, int PointsEarned, int SeatsSold)
         {
             this.FlightId = FlightId;
             this.FlightNumber = FlightNumber;
@@ -31,21 +31,23 @@ namespace Airline_Software
             this.DepartureTime = DepartureTime;
             this.ArrivalTime = ArrivalTime;
             this.PlaneModelId = null;
-            this.PointsEarned = PointsEarned;
             this.Price = Price;
+            this.PointsEarned = PointsEarned;
             this.SeatsSold = SeatsSold;
         }
 
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
-                                         DateTime departureTime, DateTime arrivalTime, int pointsEarned, int price)
+                                         DateTime departureTime)
         {
             // TODO PointsEarned, Price and ArrivalTime should all be auto calculated based on distance
             int flightID = GenerateFlightID();
             string flightNumber = GenerateFlightNumber(flightID, departureAirportID, arrivalAirportID);
-
+            DateTime arrivalTime = CalculateArrivalTime(departureTime, departureAirportID, arrivalAirportID);
+            double price = CalculateFlightPrice(departureTime, arrivalTime, departureAirportID, arrivalAirportID);
+            int pointsEarned = CalculateFlightPoints(price);
             string filePath = @"..\..\..\Tables\FlightDb.csv";
 
-            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, pointsEarned, price, 0);
+            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, price, pointsEarned, 0);
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             flights.Add(newFlight);
             CsvDatabase.WriteCsvFile<Flight>(filePath, flights);
@@ -53,17 +55,16 @@ namespace Airline_Software
         }
 
         public static void UpdateFlight(Flight flight, string flightNumber = "", int departureAirportID = -1, int arrivalAirportID = -1,
-                                DateTime? departureTime = null, DateTime? arrivalTime = null, int planeModelId = -1,
-                                int pointsEarned = -1, int price = -1, int capacity = -1, int seatsSold = -1)
+                                DateTime? departureTime = null, int planeModelId = -1, int capacity = -1, int seatsSold = -1)
         {
             flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? flight.FlightNumber : flightNumber;
             flight.DepartureAirportID = departureAirportID == -1 ? flight.DepartureAirportID : departureAirportID;
             flight.ArrivalAirportID = arrivalAirportID == -1 ? flight.ArrivalAirportID : arrivalAirportID;
             flight.DepartureTime = departureTime == null ? flight.DepartureTime : departureTime.Value;
-            flight.ArrivalTime = arrivalTime == null ? flight.ArrivalTime : arrivalTime.Value;
+            flight.ArrivalTime = departureTime == null ? flight.ArrivalTime : CalculateArrivalTime(departureTime.Value, flight.DepartureAirportID, flight.ArrivalAirportID); //if changing depart time, must change arrival time
             flight.PlaneModelId = planeModelId == -1 ? flight.PlaneModelId : planeModelId;
-            flight.PointsEarned = pointsEarned == -1 ? flight.PointsEarned : pointsEarned;
-            flight.Price = price == -1 ? flight.Price : price;
+            flight.Price = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.Price : CalculateFlightPrice(flight.DepartureTime, flight.ArrivalTime, flight.DepartureAirportID, flight.ArrivalAirportID);
+            flight.PointsEarned = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.PointsEarned : CalculateFlightPoints(flight.Price);
             flight.Capacity = capacity == -1 ? (int)capacity : capacity;
             flight.SeatsSold = seatsSold == -1 ? flight.SeatsSold : seatsSold;
 
@@ -78,8 +79,8 @@ namespace Airline_Software
                 current.DepartureTime = updated.DepartureTime;
                 current.ArrivalTime = updated.ArrivalTime;
                 current.PlaneModelId = updated.PlaneModelId;
-                current.PointsEarned = updated.PointsEarned;
                 current.Price = updated.Price;
+                current.PointsEarned = updated.PointsEarned;
                 current.Capacity = updated.Capacity;
                 current.SeatsSold = updated.SeatsSold;
             }, flight);
@@ -108,8 +109,6 @@ namespace Airline_Software
             return flight;
         }
 
-
-
         // function for auto generating the ID's 
         private static int GenerateFlightID()
         {
@@ -119,7 +118,7 @@ namespace Airline_Software
             return maxID + 1;
         }
 
-        // this will be the number visable to the customer
+        // this will be the number visible to the customer
         private static string GenerateFlightNumber(int flightId, int departId, int arrId)
         {
             Airport departLocation = Airport.FindAirportbyId(departId);
@@ -130,14 +129,14 @@ namespace Airline_Software
             return flightNum;
         }
 
-        public double CalcFlightDistance()
+        public static double CalcFlightDistance(int departureAirportID, int arrivalAirportID)
         {
-            Airport departLocation = Airport.FindAirportbyId(this.DepartureAirportID);
-            Airport arrivialLocation = Airport.FindAirportbyId(this.ArrivalAirportID);
+            Airport departLocation = Airport.FindAirportbyId(departureAirportID);
+            Airport arrivalLocation = Airport.FindAirportbyId(arrivalAirportID);
             double departLat = departLocation.Latitude;
             double departLong = departLocation.Longitude;
-            double attLat = arrivialLocation.Latitude;
-            double attLong = arrivialLocation.Longitude;
+            double attLat = arrivalLocation.Latitude;
+            double attLong = arrivalLocation.Longitude;
             return CalculateDistance(departLat, departLong, attLat, attLong);
         }
 
@@ -169,6 +168,49 @@ namespace Airline_Software
         private static double DegreesToRadians(double degrees)
         {
             return degrees * (Math.PI / 180);
+        }
+
+        public static TimeSpan CalculateFlightTime(int departureAirportID, int arrivalAirportID)
+        {
+            const double milesPerMinute = 500.0 / 60.0; //flight speed
+            double distance = CalcFlightDistance(departureAirportID, arrivalAirportID);
+            int minutes = 30; //gate to runway and vice versa
+            minutes += (int)(distance / (milesPerMinute));
+            return new TimeSpan(0, minutes, 0);
+        }
+
+        public static DateTime CalculateArrivalTime(DateTime departureTime, int departureAirportID, int arrivalAirportID)
+        {
+            return departureTime.Add(CalculateFlightTime(departureAirportID, arrivalAirportID));
+        }
+
+        public static double CalculateFlightPrice(DateTime departureTime, DateTime arrivalTime, int departureAirportID, int arrivalAirportID)
+        {
+            TimeSpan start10Discount = new(19, 0, 0);
+            TimeSpan end10Discount = new(8, 0, 0);
+            TimeSpan end20Discount = new(5, 0, 0);
+            TimeSpan dayEnd = TimeSpan.FromHours(24);
+            TimeSpan dayStart = TimeSpan.Zero;
+            double price = 50.0; //fixed costs plus takeoff
+            price += 0.12 * CalcFlightDistance(departureAirportID, arrivalAirportID); //12 cents per mile
+            //TODO 8 dollars per leg
+
+            if ((departureTime.TimeOfDay >= dayStart && departureTime.TimeOfDay <= end20Discount) || (arrivalTime.TimeOfDay >= dayStart && arrivalTime.TimeOfDay <= end20Discount))
+            {
+                price *= 0.8; //20 percent discount
+            }
+            else if (((departureTime.TimeOfDay >= start10Discount && departureTime.TimeOfDay <= dayEnd) || (arrivalTime.TimeOfDay >= start10Discount && arrivalTime.TimeOfDay <= dayEnd)) || 
+                ((departureTime.TimeOfDay >= dayStart && departureTime.TimeOfDay <= end10Discount) || (arrivalTime.TimeOfDay >= dayStart && arrivalTime.TimeOfDay <= end10Discount)))
+            {
+                price *= 0.9; //10 percent discount
+            }
+
+            return price;
+        }
+
+        public static int CalculateFlightPoints(double price)
+        {
+            return (int)(10 * price);
         }
     }
 }

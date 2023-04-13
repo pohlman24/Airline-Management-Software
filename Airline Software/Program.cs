@@ -41,14 +41,18 @@ class Program
         // Testing Flight CRUD functions
         // CREATE
         // DateTime dt1 = DateTime.Now;
-        // Flight newFlight = Flight.CreateFlight(1, 2, dt1, dt1, 100, 200);
+        // Flight newFlight = Flight.CreateFlight(1, 2, dt1);
         // READ 
-        // Flight newFlight = Flight.FindFlightById(1);
+        // Flight newFlight = Flight.FindFlightById(5);
         // Console.WriteLine(newFlight.ArrivalAirportID);
         // UPDATE
-        // Flight.UpdateFlight(newFlight, flightNumber:"TOLDET100");
+        // DateTime departTime = new DateTime(2023, 4, 13, 9, 30, 0);
+        // Flight.UpdateFlight(newFlight, departureTime : departTime);
         // DELETE
-        //Flight.DeleteFlight(newFlight);
+        // Flight.DeleteFlight(newFlight);
+        // SET PRICE AND POINTS
+        // Console.WriteLine(newFlight.Price);
+        // Console.WriteLine(newFlight.PointsEarned);
 
         // Testing Order CRUD functions
         // CREATE
@@ -79,7 +83,7 @@ class Program
         // Test Marketing manager assign Plane function 
         // MarketingManager.AssignPlaneForAllFlights();
 
-        LoadEngineer.scheduleFlight();
+        // LoadEngineer.scheduleFlight();
     }
 
 }

@@ -14,7 +14,7 @@ namespace Airline_Software
 
         public static void scheduleFlight()
         {
-            // (int departureAirportID, int arrivalAirportID, DateTime departureTime, DateTime arrivalTime, int pointsEarned, int price)
+            // (int departureAirportID, int arrivalAirportID, DateTime departureTime, DateTime arrivalTime, double price, int pointsEarned)
             // could have all the console output here
             Console.WriteLine("***Enter Flight Info***");
 

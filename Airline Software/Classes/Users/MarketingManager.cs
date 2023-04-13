@@ -17,7 +17,7 @@ namespace Airline_Software
         // should this be an automatic thing or a one by one
         public static void AssignPlaneForFlight(Flight flight)
         {
-            double distance = flight.CalcFlightDistance();
+            double distance = Flight.CalcFlightDistance(flight.DepartureAirportID, flight.ArrivalAirportID);
             int id;
             int cap;
 
@@ -50,13 +50,14 @@ namespace Airline_Software
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             foreach (Flight flight in flights)
             {
-                double distance = flight.CalcFlightDistance();
+                double distance = Flight.CalcFlightDistance(flight.DepartureAirportID, flight.ArrivalAirportID);
                 int id;
                 int cap;
 
                 if (distance < 500)
                 {
                     // boeing 737
+                    Console.WriteLine(distance);
                     id = 1;
                     cap = Plane.FindPlaneById(id).Capacity;
                 }
