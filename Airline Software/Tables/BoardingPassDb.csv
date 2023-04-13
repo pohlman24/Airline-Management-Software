@@ -1,1 +1,2 @@
 BoardingPassId,OrderId,CustomerId,FlightId,FirstName,LastName,DepartureTime,ArrivalTime,DepartureAirportId,ArrivalAirportId
+1,2,123456,2,Reece,Pohlman,2023-04-12 16:04:21,2023-04-12 16:04:21,1,2

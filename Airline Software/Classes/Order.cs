@@ -32,6 +32,10 @@
             orders.Add(newOrder);
             CsvDatabase.WriteCsvFile<Order>(filePath, orders);
 
+            // need to also create the boarding pass to db
+            BoardingPass.CreateBoardingPass(orderId, customerId, flightId, Customer.FindCustomerById(customerId).FirstName, Customer.FindCustomerById(customerId).LastName,
+                                            Flight.FindFlightById(flightId).DepartureTime, Flight.FindFlightById(flightId).ArrivalTime,
+                                            Flight.FindFlightById(flightId).DepartureAirportID, Flight.FindFlightById(flightId).ArrivalAirportID);
             return newOrder;
         }
 

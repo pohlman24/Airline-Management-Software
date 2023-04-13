@@ -9,7 +9,7 @@ class Program
         // CREATE
         // User newUser = Customer.CreateCustomer("Reece", "Pohlman", "Reecepohlman@gmail.com", "4197054849", int.Parse("23"), "1234 Home Address", "Sylvania", "Ohio", "43560", "Password", "Customer", "123456789");
         // READ
-        // Customer me = Customer.FindCustomerById(364608);
+        Customer me = Customer.FindCustomerById(123456);
         // UPDATE
         // Customer.UpdateCustomer(me, firstName: "bobby", lastName: "Johnson");
         // DELETE
@@ -59,7 +59,7 @@ class Program
         // Order.DeleteOrder(newOrder);
 
         // Testing accountant Functions
-        Flight flight = Flight.FindFlightById(2);
+        //Flight flight = Flight.FindFlightById(2);
         // CalcNumFlights()
         // int flightNums = Accountant.CalcNumFlights("week");
         // Console.WriteLine(flightNums);
@@ -71,7 +71,8 @@ class Program
         // CalcIncomeWhole()
         // Console.WriteLine(Accountant.CalcIncomeWhole());
 
-        FlightManager.PrintFlightManifest(flight);
+        //FlightManager.PrintFlightManifest(flight);
+        BoardingPass.PrintBoardingPass(me);
     }
 
 }

@@ -20,6 +20,7 @@ namespace Airline_Software
         public int DepartureAirportId { get; set; }
         public int ArrivalAirportId { get; set; }
 
+        // can definitely go and remove some of these properties. Think we need to pick if we need ids at all or only pass in direct values 
         public BoardingPass(int BoardingPassId, int OrderId, int CustomerId, int FlightId,
                             string FirstName, string LastName, DateTime DepartureTime, DateTime ArrivalTime,
                             int DepartureAirportId, int ArrivalAirportId)
@@ -105,6 +106,19 @@ namespace Airline_Software
             return boardingPass;
         }
 
+        public static BoardingPass FindBoardingPassByCustomerId(int id)
+        {
+            string filePath = @"..\..\..\Tables\BoardingPassDb.csv";
+            List<BoardingPass> boardingPasses = CsvDatabase.ReadCsvFile<BoardingPass>(filePath);
+            if (CsvDatabase.FindRecord(boardingPasses, c => c.CustomerId, id) == null)
+            {
+                throw (new Exception("Id Not Found"));
+                return null;
+            }
+            BoardingPass boardingPass = CsvDatabase.FindRecord(boardingPasses, c => c.CustomerId, id);
+            return boardingPass;
+        }
+
 
         private static int GenerateBoardingPassID()
         {
@@ -112,6 +126,28 @@ namespace Airline_Software
             List<BoardingPass> planes = CsvDatabase.ReadCsvFile<BoardingPass>(filePath);
             int maxID = planes.Count > 0 ? planes.Max(p => p.BoardingPassId) : 0;
             return maxID + 1;
+        }
+
+        // how will this be used? a customer will call this function, 
+        public static void PrintBoardingPass(Customer customer)
+        {
+            BoardingPass pass = BoardingPass.FindBoardingPassByCustomerId(customer.Id);
+            Flight flight = Flight.FindFlightById(pass.FlightId);
+            if(flight.DepartureTime <= DateTime.Now.AddHours(24))
+            {
+                Airport departCity = Airport.FindAirportbyId(pass.DepartureAirportId);
+                Airport arrivalCity = Airport.FindAirportbyId(pass.ArrivalAirportId);
+
+                Console.WriteLine("***BOARDING PASS***");
+                Console.WriteLine("Passenger Name: ".PadRight(17) + customer.FirstName + " " + customer.LastName);
+                Console.WriteLine("Flight Number: ".PadRight(17) + flight.FlightNumber);
+                Console.WriteLine("From: ".PadRight(17) + departCity.City);
+                Console.WriteLine("To: ".PadRight(17) + arrivalCity.City);
+            }
+            else
+            {
+                Console.WriteLine("Too Early To Print Pass!");
+            }
         }
     }
 }
