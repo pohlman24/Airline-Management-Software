@@ -43,7 +43,7 @@ class Program
         // DateTime dt1 = DateTime.Now;
         // Flight newFlight = Flight.CreateFlight(1, 2, dt1, dt1, 100, 200);
         // READ 
-         Flight newFlight = Flight.FindFlightById(1);
+        // Flight newFlight = Flight.FindFlightById(1);
         // Console.WriteLine(newFlight.ArrivalAirportID);
         // UPDATE
         // Flight.UpdateFlight(newFlight, flightNumber:"TOLDET100");
@@ -77,7 +77,9 @@ class Program
         // BoardingPass.PrintBoardingPass(me);
 
         // Test Marketing manager assign Plane function 
-        MarketingManager.AssignPlaneForAllFlights();
+        // MarketingManager.AssignPlaneForAllFlights();
+
+        LoadEngineer.scheduleFlight();
     }
 
 }

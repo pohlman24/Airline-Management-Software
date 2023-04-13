@@ -101,6 +101,17 @@ namespace Airline_Software
             }
             return foundRecord;
         }
+        public static T? FindRecordByString<T>(List<T> records, Func<T, string> codeSelector, string code)
+        {
+            T? foundRecord = default;
+            int indexToFind = records.FindIndex(record => codeSelector(record) == code);
+            if (indexToFind != -1)
+            {
+                foundRecord = records[indexToFind];
+            }
+            return foundRecord;
+        }
+
 
 
         // EXAMPLE OF USE 

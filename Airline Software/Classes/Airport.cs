@@ -83,6 +83,18 @@ namespace Airline_Software
             Airport airport = CsvDatabase.FindRecord(airports, a => a.AirportId, id);
             return airport;
         }
+        public static Airport FindAirportbyCode(string code)
+        {
+            string filePath = @"..\..\..\Tables\AirportDb.csv";
+            List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(filePath);
+            if (CsvDatabase.FindRecordByString(airports, a => a.Code, code) == null)
+            {
+                throw (new Exception("Record Not Found"));
+                return null;
+            }
+            Airport airport = CsvDatabase.FindRecordByString(airports, a => a.Code, code);
+            return airport;
+        }
 
         private static int GenerateAirportID()
         {

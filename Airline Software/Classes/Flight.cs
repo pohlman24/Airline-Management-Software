@@ -39,6 +39,7 @@ namespace Airline_Software
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
                                          DateTime departureTime, DateTime arrivalTime, int pointsEarned, int price)
         {
+            // TODO PointsEarned, Price and ArrivalTime should all be auto calculated based on distance
             int flightID = GenerateFlightID();
             string flightNumber = GenerateFlightNumber(flightID, departureAirportID, arrivalAirportID);
 

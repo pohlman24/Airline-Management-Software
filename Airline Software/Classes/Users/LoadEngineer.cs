@@ -12,9 +12,28 @@ namespace Airline_Software
         {
         }
 
-        public void scheduleFlight()
+        public static void scheduleFlight()
         {
-            //need to flesh out flight class before this can be done
+            // (int departureAirportID, int arrivalAirportID, DateTime departureTime, DateTime arrivalTime, int pointsEarned, int price)
+            // could have all the console output here
+            Console.WriteLine("***Enter Flight Info***");
+
+            Console.WriteLine("Departure Airport Code: ");
+            string departCityCode = Console.ReadLine();
+            Airport departAirport = Airport.FindAirportbyCode(departCityCode);
+
+            Console.WriteLine("Arrival Airport Code: ");
+            string arrCityCode = Console.ReadLine();
+            Airport arrAirport = Airport.FindAirportbyCode(arrCityCode);
+
+            Console.WriteLine("Departure Time: ");
+            string departTime = Console.ReadLine();
+
+            Console.WriteLine("Arrival Time: ");
+            string arrTime = Console.ReadLine();
+
+            
+            // need to auto calc price and points earned and arrivalTime 
         }
 
         public void editFlight(Flight flight) //maybe use int flightID here instead, depends on how it's stored
