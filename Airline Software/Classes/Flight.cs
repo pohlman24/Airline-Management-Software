@@ -14,18 +14,15 @@ namespace Airline_Software
         public int ArrivalAirportID { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public int PlaneModelId { get; set; }
+        public int? PlaneModelId { get; set; } = null;
         public int PointsEarned { get; set; }
         public int Price { get; set; }
-        public int Capacity { get; set; }
+        public int Capacity { get; set; } = 0;
         public int SeatsSold { get; set; }
 
 
-        // add list of Customers on a flight? 
-
-
         public Flight(int FlightId, string FlightNumber, int DepartureAirportID, int ArrivalAirportID,
-                      DateTime DepartureTime, DateTime ArrivalTime, int PlaneModelId, int PointsEarned, int Price, int Capacity, int SeatsSold)
+                      DateTime DepartureTime, DateTime ArrivalTime, int PointsEarned, int Price, int SeatsSold)
         {
             this.FlightId = FlightId;
             this.FlightNumber = FlightNumber;
@@ -33,23 +30,21 @@ namespace Airline_Software
             this.ArrivalAirportID = ArrivalAirportID;
             this.DepartureTime = DepartureTime;
             this.ArrivalTime = ArrivalTime;
-            this.PlaneModelId = PlaneModelId;
+            this.PlaneModelId = null;
             this.PointsEarned = PointsEarned;
             this.Price = Price;
-            this.Capacity = Capacity;
             this.SeatsSold = SeatsSold;
         }
 
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
-                                         DateTime departureTime, DateTime arrivalTime, int planeModelId, int pointsEarned, int price)
+                                         DateTime departureTime, DateTime arrivalTime, int pointsEarned, int price)
         {
             int flightID = GenerateFlightID();
             string flightNumber = GenerateFlightNumber(flightID, departureAirportID, arrivalAirportID);
-            int capacity = Plane.FindPlaneById(planeModelId).Capacity;
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
 
-            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, planeModelId, pointsEarned, price, capacity, 0);
+            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, pointsEarned, price, 0);
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             flights.Add(newFlight);
             CsvDatabase.WriteCsvFile<Flight>(filePath, flights);
@@ -132,8 +127,47 @@ namespace Airline_Software
             string arrCode = arrivialLocation.Code;
             string flightNum = departCode + arrCode + flightId;
             return flightNum;
-
         }
 
+        public double CalcFlightDistance()
+        {
+            Airport departLocation = Airport.FindAirportbyId(this.DepartureAirportID);
+            Airport arrivialLocation = Airport.FindAirportbyId(this.ArrivalAirportID);
+            double departLat = departLocation.Latitude;
+            double departLong = departLocation.Longitude;
+            double attLat = arrivialLocation.Latitude;
+            double attLong = arrivialLocation.Longitude;
+            return CalculateDistance(departLat, departLong, attLat, attLong);
+        }
+
+        // helper function to calcualte flight distance
+        private static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double EarthRadiusMiles = 3958.8; // Earth's radius in miles
+
+            // Convert latitude and longitude from degrees to radians
+            double lat1Rad = DegreesToRadians(lat1);
+            double lon1Rad = DegreesToRadians(lon1);
+            double lat2Rad = DegreesToRadians(lat2);
+            double lon2Rad = DegreesToRadians(lon2);
+
+            // Apply the Haversine formula
+            double latDiff = lat2Rad - lat1Rad;
+            double lonDiff = lon2Rad - lon1Rad;
+
+            double a = Math.Pow(Math.Sin(latDiff / 2), 2) +
+                       Math.Cos(lat1Rad) * Math.Cos(lat2Rad) *
+                       Math.Pow(Math.Sin(lonDiff / 2), 2);
+
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            // Calculate the distance in miles
+            return EarthRadiusMiles * c;
+        }
+
+        private static double DegreesToRadians(double degrees)
+        {
+            return degrees * (Math.PI / 180);
+        }
     }
 }

@@ -9,7 +9,7 @@ class Program
         // CREATE
         // User newUser = Customer.CreateCustomer("Reece", "Pohlman", "Reecepohlman@gmail.com", "4197054849", int.Parse("23"), "1234 Home Address", "Sylvania", "Ohio", "43560", "Password", "Customer", "123456789");
         // READ
-        Customer me = Customer.FindCustomerById(123456);
+        // Customer me = Customer.FindCustomerById(123456);
         // UPDATE
         // Customer.UpdateCustomer(me, firstName: "bobby", lastName: "Johnson");
         // DELETE
@@ -39,9 +39,9 @@ class Program
         // Testing Flight CRUD functions
         // CREATE
         // DateTime dt1 = DateTime.Now;
-        // Flight newFlight = Flight.CreateFlight(1, 2, dt1, dt1, 1, 100, 200);
+        // Flight newFlight = Flight.CreateFlight(1, 2, dt1, dt1, 100, 200);
         // READ 
-        //Flight newFlight = Flight.FindFlightById(1);
+         Flight newFlight = Flight.FindFlightById(1);
         // Console.WriteLine(newFlight.ArrivalAirportID);
         // UPDATE
         // Flight.UpdateFlight(newFlight, flightNumber:"TOLDET100");
@@ -71,8 +71,11 @@ class Program
         // CalcIncomeWhole()
         // Console.WriteLine(Accountant.CalcIncomeWhole());
 
-        //FlightManager.PrintFlightManifest(flight);
-        BoardingPass.PrintBoardingPass(me);
+        // FlightManager.PrintFlightManifest(flight);
+        // BoardingPass.PrintBoardingPass(me);
+
+        // Test Marketing manager assign Plane function 
+        MarketingManager.AssignPlaneForAllFlights();
     }
 
 }

@@ -14,6 +14,71 @@ namespace Airline_Software
 
         }
 
+        // should this be an automatic thing or a one by one
+        public static void AssignPlaneForFlight(Flight flight)
+        {
+            double distance = flight.CalcFlightDistance();
+            int id;
+            int cap;
+
+            if (distance < 500)
+            {
+                // boeing 737
+                id = 1;
+                cap = Plane.FindPlaneById(id).Capacity;
+            }
+            else if (distance < 1200)
+            {
+                // boeing 767
+                id = 2;
+                cap = Plane.FindPlaneById(id).Capacity;
+            }
+            else
+            {
+                // boeing 777
+                id = 3;
+                cap = Plane.FindPlaneById(id).Capacity;
+
+            }
+
+                Flight.UpdateFlight(flight, planeModelId:id, capacity:cap);
+        }
+
+        public static void AssignPlaneForAllFlights()
+        {
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            foreach (Flight flight in flights)
+            {
+                double distance = flight.CalcFlightDistance();
+                int id;
+                int cap;
+
+                if (distance < 500)
+                {
+                    // boeing 737
+                    id = 1;
+                    cap = Plane.FindPlaneById(id).Capacity;
+                }
+                else if (distance < 1200)
+                {
+                    // boeing 767
+                    id = 2;
+                    cap = Plane.FindPlaneById(id).Capacity;
+                }
+                else
+                {
+                    // boeing 777
+                    id = 3;
+                    cap = Plane.FindPlaneById(id).Capacity;
+
+                }
+
+                Flight.UpdateFlight(flight, planeModelId: id, capacity: cap);
+            }
+            CsvDatabase.WriteCsvFile(filePath, flights);
+        }
+
 
         //determine plane model based on total flight distance
         /*public Plane determinePlaneModel(double distance)
