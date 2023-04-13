@@ -91,6 +91,28 @@ namespace Airline_Software
             CsvDatabase.WriteCsvFile(filePath, users);
         }
 
+        
+        public static void DeleteUser(User user)
+        {
+            string filePath = @"..\..\..\Tables\UserDb.csv";
+            List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
+            CsvDatabase.RemoveRecord(users, c => c.Id, user.Id);
+            CsvDatabase.WriteCsvFile(filePath, users);
+        }
+        
+        public static User FindUserById(int id)
+        {
+            string filePath = @"..\..\..\Tables\UserDb.csv";
+            List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
+            if (CsvDatabase.FindRecord(users, c => c.Id, id) == null)
+            {
+                throw (new Exception("Id Not Found"));
+                return null;
+            }
+            User user = CsvDatabase.FindRecord(users, p => p.Id, id);
+            return user;
+        }
+        
         public static int GenerateId()
         {
             // read into userDatabase

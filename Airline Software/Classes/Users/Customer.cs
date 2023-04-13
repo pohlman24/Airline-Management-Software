@@ -91,8 +91,7 @@ namespace Airline_Software
             CsvDatabase.RemoveRecord(customers, c => c.Id, customer.Id);
             CsvDatabase.WriteCsvFile(filePath, customers);
 
-            List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
-            CsvDatabase.RemoveRecord(users, u => u.Id, customer.Id);
+            DeleteUser(customer);
         }
 
         public static Customer FindCustomerById(int id)
