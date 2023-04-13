@@ -9,7 +9,7 @@ namespace Airline_Software
 {
     public class Customer : User
     {
-        public int MilagePoints { get; set; }
+        public int MileagePoints { get; set; }
         public string? CreditCardNumber { get; set; }
 
         public List<Order> OrderHistory;
@@ -20,7 +20,7 @@ namespace Airline_Software
         public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber) 
             : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
-            this.MilagePoints = MilagePoints;
+            this.MileagePoints = MileagePoints;
             this.CreditCardNumber = CreditCardNumber;
             this.OrderHistory = new List<Order>();
             this.ActiveOrders = new List<Order>();
@@ -125,20 +125,55 @@ namespace Airline_Software
         /// <summary>
         /// User checks out with all items in cart and adds order 
         /// </summary>
-        public void AddOrder()
-        {
-            OrderHistory = new List<Order>();
-        }
         
-        public void CancelOrder() 
+        public static void UpdatePoints(Customer customer, int points)
         {
-    
+            customer.MileagePoints += points;
+
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
+            List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+
+            //update customer info in csv file
+            CsvDatabase.UpdateRecord(customers, p => p.Id, customer.Id, (current, updated) =>
+            {
+                current.MileagePoints = updated.MileagePoints;
+            }, customer);
+
+            CsvDatabase.WriteCsvFile(filePath, customers);
         }
 
         public void PrintBoardingPass(int OrderId)
         {
             // print to console all the flight details
             // flight number, first and last name, depature location & time, arrival location & time,
+        }
+
+        public static void BookTrip(Customer customer, bool withPoints, int flightId1, int flightId2 = -1)
+        {
+            if (flightId2 != -1)
+            {
+                Flight flight1 = Flight.FindFlightById(flightId1);
+                Flight flight2 = Flight.FindFlightById(flightId2);
+
+                if (withPoints == true)
+                {
+                    int pointsCost = (int)(100.0 * (flight1.Price + flight2.Price));
+
+                    if (customer.MileagePoints < pointsCost) //price of flight in points
+                    {
+                        Console.WriteLine(customer.MileagePoints);
+                        throw new Exception("Not Enough Points!");
+                    }
+
+                    UpdatePoints(customer, -pointsCost);
+                }
+
+                Order.CreateOrder(customer.Id, flightId1, "Active", new DateOnly(), new DateOnly(), true, flightId2); //TODO change these DateOnly things
+            }
+            else
+            {
+                Order.CreateOrder(customer.Id, flightId1, "Active", new DateOnly(), new DateOnly(), false); //TODO change these DateOnly things
+            }
         }
     }
 }

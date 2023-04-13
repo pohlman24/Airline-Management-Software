@@ -1,3 +1,4 @@
-OrderId,CustomerId,FlightId,OrderStatus,OrderDate,CancellationDate,IsRoundTrip
-1,364608,2,Active,0001-01-01,0001-01-01,True
-2,123456,2,Active,0001-01-01,0001-01-01,True
+OrderId,CustomerId,FlightId1,FlightId2,OrderStatus,OrderDate,CancellationDate,IsRoundTrip
+1,364608,2,1,Active,0001-01-01,0001-01-01,True
+2,123456,2,1,Active,0001-01-01,0001-01-01,True
+3,149340,16,17,Active,0001-01-01,0001-01-01,True

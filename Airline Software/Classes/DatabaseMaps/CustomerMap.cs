@@ -17,7 +17,7 @@ public class CustomerMap : ClassMap<Customer>
         Map(m => m.State).Index(9).Name("State");
         Map(m => m.ZipCode).Index(10).Name("ZipCode");
         Map(m => m.UserType).Index(11).Name("UserType");
-        Map(m => m.MilagePoints).Index(12).Name("MilagePoints");
+        Map(m => m.MileagePoints).Index(12).Name("MileagePoints");
         Map(m => m.CreditCardNumber).Index(13).Name("CreditCardNumber");
     }
 }
