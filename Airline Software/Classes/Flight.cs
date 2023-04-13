@@ -61,7 +61,7 @@ namespace Airline_Software
             flight.DepartureAirportID = departureAirportID == -1 ? flight.DepartureAirportID : departureAirportID;
             flight.ArrivalAirportID = arrivalAirportID == -1 ? flight.ArrivalAirportID : arrivalAirportID;
             flight.DepartureTime = departureTime == null ? flight.DepartureTime : departureTime.Value;
-            flight.ArrivalTime = departureTime == null ? flight.ArrivalTime : CalculateArrivalTime(departureTime.Value, flight.DepartureAirportID, flight.ArrivalAirportID); //if changing depart time, must change arrival time
+            flight.ArrivalTime = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.ArrivalTime : CalculateArrivalTime(flight.DepartureTime, flight.DepartureAirportID, flight.ArrivalAirportID); //if changing depart time or either airport, must change arrival time
             flight.PlaneModelId = planeModelId == -1 ? flight.PlaneModelId : planeModelId;
             flight.Price = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.Price : CalculateFlightPrice(flight.DepartureTime, flight.ArrivalTime, flight.DepartureAirportID, flight.ArrivalAirportID);
             flight.PointsEarned = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.PointsEarned : CalculateFlightPoints(flight.Price);
