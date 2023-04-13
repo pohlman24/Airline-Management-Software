@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Airline_Software;
 using CsvHelper.Configuration.Attributes;
+using System.Security.Cryptography;
 
 namespace Airline_Software
 {
@@ -53,7 +54,7 @@ namespace Airline_Software
             return newUser;
         }
 
-        public static void UpdateUser(User user, string firstName = "", string lastName = "", string email = "", string phoneNumber = "", int age = -1, string address = "", string city = "", string state = "", string zipCode = "", string password = "", string userType = "")
+        public static void UpdateUser(User user, string firstName = "", string lastName = "", string email = "", string phoneNumber = "", int age = -1, string address = "", string city = "", string state = "", string zipCode = "", string userType = "")
         {
             //update user info if changed
             user.FirstName = string.IsNullOrEmpty(firstName) ? user.FirstName : firstName;
@@ -65,14 +66,13 @@ namespace Airline_Software
             user.City = string.IsNullOrEmpty(city) ? user.City : city;
             user.State = string.IsNullOrEmpty(state) ? user.State : state;
             user.ZipCode = string.IsNullOrEmpty(zipCode) ? user.ZipCode : zipCode;
-            user.Password = string.IsNullOrEmpty(password) ? user.Password : password;
             user.UserType = string.IsNullOrEmpty(userType) ? user.UserType : userType;
 
             //get csv file to update
             string filePath = @"..\..\..\Tables\UserDb.csv";
             List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
 
-            //update customer info in csv file
+            //update user info in csv file
             CsvDatabase.UpdateRecord(users, p => p.Id, user.Id, (current, updated) =>
             {
                 current.FirstName = updated.FirstName;
@@ -84,14 +84,12 @@ namespace Airline_Software
                 current.City = updated.City;
                 current.State = updated.State;
                 current.ZipCode = updated.ZipCode;
-                current.Password = updated.Password;
                 current.UserType = updated.UserType;
             }, user);
 
             CsvDatabase.WriteCsvFile(filePath, users);
         }
 
-        
         public static void DeleteUser(User user)
         {
             string filePath = @"..\..\..\Tables\UserDb.csv";
@@ -138,10 +136,32 @@ namespace Airline_Software
                 return randomNumber;
             }
         }
-        public void ChangePassword(string newPassword)
+        public static string ChangeUserPassword(User user, string newPassword)
         {
-            this.Password = newPassword;
+            //set new password for user object
+            user.Password = HashPassword(newPassword);
+
+            string filePath = @"..\..\..\Tables\UserDb.csv";
+            List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
+
+            //update customer info in csv file
+            CsvDatabase.UpdateRecord(users, p => p.Id, user.Id, (current, updated) =>
+            {
+                current.Password = updated.Password;
+            }, user);
+
+            CsvDatabase.WriteCsvFile(filePath, users);
+            return user.Password;
         }
 
+        public static string HashPassword(string password)
+        {
+            byte[] inputBytes = Encoding.UTF8.GetBytes(password); //convert password string to bytes
+            SHA512 sha512 = SHA512.Create();
+            byte[] outputBytes = sha512.ComputeHash(inputBytes); //compute hash bytes
+            string hashedPassword = BitConverter.ToString(outputBytes).Replace("-", "").ToLower(); //get string of hash
+
+            return hashedPassword;
+        }
     }
 }
