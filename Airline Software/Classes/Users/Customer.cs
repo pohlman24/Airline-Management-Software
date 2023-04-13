@@ -41,7 +41,7 @@ namespace Airline_Software
         }
 
         //TODO should u be able to change age, also should we have birthday or just age or do we have birthday i didnt look
-        public static void UpdateCustomer(Customer customer, string firstName = "", string lastName = "", string email = "", string phoneNumber = "", int age = -1, string address = "", string city = "", string state = "", string zipCode = "", string password = "", string userType = "", string creditCardNumber = "")
+        public static void UpdateCustomer(Customer customer, string firstName = "", string lastName = "", string email = "", string phoneNumber = "", int age = -1, string address = "", string city = "", string state = "", string zipCode = "", string userType = "", string creditCardNumber = "")
         {
             //update customer info if changed
             customer.FirstName = string.IsNullOrEmpty(firstName) ? customer.FirstName : firstName;
@@ -53,7 +53,6 @@ namespace Airline_Software
             customer.City = string.IsNullOrEmpty(city) ? customer.City : city;
             customer.State = string.IsNullOrEmpty(state) ? customer.State : state;
             customer.ZipCode = string.IsNullOrEmpty(zipCode) ? customer.ZipCode : zipCode;
-            customer.Password = string.IsNullOrEmpty(password) ? customer.Password : password;
             customer.UserType = string.IsNullOrEmpty(userType) ? customer.UserType : userType;
             customer.CreditCardNumber = string.IsNullOrEmpty(creditCardNumber) ? customer.CreditCardNumber : creditCardNumber;
 
@@ -73,7 +72,6 @@ namespace Airline_Software
                 current.City = updated.City;
                 current.State = updated.State;
                 current.ZipCode = updated.ZipCode;
-                current.Password = updated.Password;
                 current.UserType = updated.UserType;
                 current.CreditCardNumber = updated.CreditCardNumber;
             }, customer);
@@ -81,7 +79,7 @@ namespace Airline_Software
             CsvDatabase.WriteCsvFile(filePath, customers);
 
             //update the user csv as well since customer is in both
-            UpdateUser(customer, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType);
+            UpdateUser(customer, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, userType);
         }
 
         public static void DeleteCustomer(Customer customer)
@@ -91,8 +89,7 @@ namespace Airline_Software
             CsvDatabase.RemoveRecord(customers, c => c.Id, customer.Id);
             CsvDatabase.WriteCsvFile(filePath, customers);
 
-            List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
-            CsvDatabase.RemoveRecord(users, u => u.Id, customer.Id);
+            DeleteUser(customer);
         }
 
         public static Customer FindCustomerById(int id)
@@ -106,6 +103,23 @@ namespace Airline_Software
             }
             Customer customer = CsvDatabase.FindRecord(customers, p => p.Id, id);
             return customer;
+        }
+
+        public static void ChangeCustomerPassword(Customer customer, string newPassword)
+        {
+            //set new password for user object
+            customer.Password = ChangeUserPassword(customer, newPassword);
+
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
+            List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+
+            //update customer info in csv file
+            CsvDatabase.UpdateRecord(customers, p => p.Id, customer.Id, (current, updated) =>
+            {
+                current.Password = updated.Password;
+            }, customer);
+
+            CsvDatabase.WriteCsvFile(filePath, customers);
         }
 
         /// <summary>
