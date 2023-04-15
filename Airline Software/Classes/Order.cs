@@ -75,6 +75,8 @@
             }, order);
 
             CsvDatabase.WriteCsvFile(filePath, orders);
+
+            //TODO update boarding passes
         }
 
         public static void DeleteOrder(Order order)
@@ -108,18 +110,19 @@
 
         public static void CancelOrder(Order order)
         {
+            //TODO if not less than an hour before takeoff
             Customer customer = Customer.FindCustomerById(order.CustomerId);
             Flight flight1 = Flight.FindFlightById(order.FlightId1);
-            Customer.UpdatePoints(customer, flight1.PointsEarned);
-            //TODO what about order history?
+            Customer.UpdatePoints(customer, 10 * flight1.PointsEarned);
 
             if (order.FlightId2 != -1)
             {
                 Flight flight2 = Flight.FindFlightById(order.FlightId2); //for trip back
-                Customer.UpdatePoints(customer, flight2.PointsEarned);
+                Customer.UpdatePoints(customer, 10 * flight2.PointsEarned);
             }
 
-            DeleteOrder(order);
+            UpdateOrder(order, orderStatus : "Canceled"); //want to update order to be cancelled
+            //TODO delete boarding pass(es)
         }
     }
 }

@@ -55,20 +55,25 @@ class Program
         // Console.WriteLine(newFlight.PointsEarned);
 
 
+        /*
         //testing
-        DateTime dt1 = DateTime.Now;
-        DateTime dt2 = new(2023, 4, 15, 10, 0, 0);
-        Flight newFlight = Flight.CreateFlight(1, 2, dt1);
-        Flight newFlight2 = Flight.CreateFlight(2, 1, dt2);
+        //DateTime dt1 = DateTime.Now;
+        //DateTime dt2 = new(2023, 4, 18, 10, 0, 0);
+        //Flight newFlight = Flight.CreateFlight(1, 2, dt1);
+        //Flight newFlight2 = Flight.CreateFlight(2, 1, dt2);
         //Customer customer = Customer.CreateCustomer("bob", "bobby", "Reecepohlman@gmail.com", "4197054849", int.Parse("23"), "1234 Home Address", "Sylvania", "Ohio", "43560", "Password", "Customer", "123456789");
         Customer customer = Customer.FindCustomerById(149340);
-        Customer.UpdatePoints(customer, 100000);
-        Customer.BookTrip(customer, true, newFlight.FlightId, newFlight2.FlightId);
+        //Customer.UpdatePoints(customer, 100000);
+        //Customer.BookTrip(customer, true, newFlight.FlightId, newFlight2.FlightId);
         Order order = Order.FindOrderById(4);
-        Order.CancelOrder(order);
-
-
-
+        //Console.WriteLine(customer.ActiveOrders.Count);
+        //Order.CancelOrder(order);
+        //TODO Mileage doesnt update unless calling find customer
+        Console.WriteLine(customer.MileagePoints);
+        customer = Customer.FindCustomerById(149340);
+        Customer.ViewAccountHistory(customer);
+        */
+        
 
         // Testing Order CRUD functions
         // CREATE
@@ -101,5 +106,4 @@ class Program
 
         // LoadEngineer.scheduleFlight();
     }
-
 }
