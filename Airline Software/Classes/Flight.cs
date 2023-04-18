@@ -46,7 +46,6 @@ namespace Airline_Software
             double price = CalculateFlightPrice(departureTime, arrivalTime, departureAirportID, arrivalAirportID);
             int pointsEarned = CalculateFlightPoints(price);
             string filePath = @"..\..\..\Tables\FlightDb.csv";
-
             Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, price, pointsEarned, 0);
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             flights.Add(newFlight);

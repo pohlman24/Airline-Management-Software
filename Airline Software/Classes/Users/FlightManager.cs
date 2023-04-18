@@ -15,7 +15,6 @@ namespace Airline_Software
         }
 
         // make csv file with list of every customer on flight
-        /*
         public static void PrintFlightManifest(Flight flight)
         {
             // read over every Order and check if flightId is same as given flight
@@ -27,9 +26,10 @@ namespace Airline_Software
             {
                 // write header row with column names
                 writer.WriteLine("First Name,Last Name");
+                // find everyone on a given flight by searching the orders table and matching flight ID
                 foreach (Order order in orders)
                 {
-                    if (order.FlightId == flight.FlightId)
+                    if (order.FlightId1 == flight.FlightId || order.FlightId2 == flight.FlightId)
                     {
                         Customer customer = Customer.FindCustomerById(order.CustomerId);
                         string customerName = string.Join(",", customer.FirstName, customer.LastName);
@@ -39,6 +39,5 @@ namespace Airline_Software
             }
             Console.WriteLine("flight-manifest.csv File saved in your documents folder");
         }
-        */
     }
 }

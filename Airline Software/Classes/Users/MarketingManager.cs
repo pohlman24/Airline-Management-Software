@@ -79,29 +79,5 @@ namespace Airline_Software
             }
             CsvDatabase.WriteCsvFile(filePath, flights);
         }
-
-
-        //determine plane model based on total flight distance
-        /*public Plane determinePlaneModel(double distance)
-        {
-            string planeName;
-
-            if (distance < 500)
-            {
-                planeName = "Boeing 737";
-            }
-            else if (distance < 1200)
-            {
-                planeName = "Boeing 767";
-            }
-            else
-            {
-                planeName = "Boeing 777";
-            }
-
-            //TODO do i use dispose here idk what it is but maybe
-            Plane plane = new(planeName);
-            return plane;
-        }*/
     }
 }
