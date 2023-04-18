@@ -12,25 +12,31 @@ namespace Airline_Software
         public int MileagePoints { get; set; }
         public string? CreditCardNumber { get; set; }
 
-        public List<Order> OrderHistory;
+        public List<Order> AllOrders;
 
         public List<Order> ActiveOrders;
 
+        public List<Order> OldOrders;
+
+        public List<Order> CanceledOrders;
+
         // Costructor
-        public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber) 
+        public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber, int MileagePoints) 
             : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
             this.MileagePoints = MileagePoints;
             this.CreditCardNumber = CreditCardNumber;
-            this.OrderHistory = new List<Order>();
+            this.AllOrders = new List<Order>();
             this.ActiveOrders = new List<Order>();
+            this.OldOrders = new List<Order>();
+            this.CanceledOrders = new List<Order>();
             this.UserType = "Customer";
         }
 
         public static Customer CreateCustomer(string firstName, string lastName, string email, string phoneNumber, int age, string address, string city, string state, string zipCode, string password, string userType, string creditCardNumber)
         {
             int id = User.GenerateId();
-            Customer newCustomer = new Customer (id,firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber);
+            Customer newCustomer = new Customer (id,firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber, 0);
             string filePath = @"..\..\..\Tables\CustomerDb.csv";
             List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
             customers.Add(newCustomer);
@@ -105,6 +111,86 @@ namespace Airline_Software
             return customer;
         }
 
+        public static void GetOrders(Customer customer)
+        {
+            int id = customer.Id;
+            string filePath = @"..\..\..\Tables\OrderDb.csv";
+            List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
+            // create lists to store various order types
+            List<Order> allOrders = new();
+            List<Order> activeOrders = new();
+            List<Order> oldOrders = new();
+            List<Order> canceledOrders = new();
+
+            while (true) //while order csv file has orders for a specific customer id, create separate order lists
+            {
+                if (CsvDatabase.FindRecord(orders, c => c.CustomerId, id) == null)
+                {
+                    break;
+                }
+                Order order = CsvDatabase.FindRecord(orders, p => p.CustomerId, id);
+                allOrders.Add(order);
+
+                if (order.OrderStatus == "Active")
+                {
+                    activeOrders.Add(order);
+                }
+                else if (order.OrderStatus == "Inactive")
+                {
+                    oldOrders.Add(order);
+                }
+                else if (order.OrderStatus == "Canceled")
+                {
+                    canceledOrders.Add(order);
+                }
+                else
+                {
+                    throw new Exception("Invalid Order Status!");
+                }
+
+                orders.Remove(order);
+            }
+
+            //update customer lists with created lists
+            customer.AllOrders = allOrders;
+            customer.ActiveOrders = activeOrders;
+            customer.OldOrders = oldOrders;
+            customer.CanceledOrders = canceledOrders;
+        }
+
+        public static void ViewAccountHistory(Customer customer)
+        {
+            GetOrders(customer); //get all order history
+
+            //display relevant information
+            //TODO WE NEED POINTS USED TOO????????
+            Console.WriteLine("Points Available:      " + customer.MileagePoints + "\n");
+
+            Console.WriteLine("All Flights History:   ");
+            for (int i = 0; i < customer.AllOrders.Count; i++)
+            {
+                Console.WriteLine("                     Order ID: " + customer.AllOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.AllOrders[i].OrderDate + "\n");
+            }
+
+            Console.WriteLine("Booked Flights:        ");
+            for (int i = 0; i < customer.ActiveOrders.Count; i++)
+            {
+                Console.WriteLine("                     Order ID: " + customer.ActiveOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.ActiveOrders[i].OrderDate + "\n");
+            }
+
+            Console.WriteLine("Previous Flights:      ");
+            for (int i = 0; i < customer.OldOrders.Count; i++)
+            {
+                Console.WriteLine("                     Order ID: " + customer.OldOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.OldOrders[i].OrderDate + "\n");
+            }
+
+            Console.WriteLine("Canceled Flights:      ");
+            for (int i = 0; i < customer.CanceledOrders.Count; i++)
+            {
+                Console.WriteLine("                     Order ID: " + customer.CanceledOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.CanceledOrders[i].OrderDate + "\n");
+            }
+        }
+
         public static void ChangeCustomerPassword(Customer customer, string newPassword)
         {
             //set new password for user object
@@ -157,7 +243,7 @@ namespace Airline_Software
 
                 if (withPoints == true)
                 {
-                    int pointsCost = (int)(100.0 * (flight1.Price + flight2.Price));
+                    int pointsCost = 10 * (flight1.PointsEarned + flight2.PointsEarned);
 
                     if (customer.MileagePoints < pointsCost) //price of flight in points
                     {
