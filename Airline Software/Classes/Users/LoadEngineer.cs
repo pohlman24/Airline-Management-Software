@@ -40,6 +40,8 @@ namespace Airline_Software
 
         public static void CancelFlight(Flight flight) //same as edit
         {
+            //TODO refund points
+
             //remove flight from database, refund customers
             Flight.DeleteFlight(flight);
             Console.WriteLine("Flight '"+ flight.FlightNumber + "' canceled");
