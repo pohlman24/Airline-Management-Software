@@ -59,28 +59,49 @@ namespace Airline_Software
             int count = 0;
             foreach (Flight flight in flights)
             {
-                if (flight.DepartureTime.Day == DateTime.Today.Day && range == "day")
+
+                if(range == "day")
                 {
-                    Console.WriteLine(flight.DepartureTime);
-                    count++;
+                    if (flight.DepartureTime.Day == DateTime.Today.Day)
+                    {
+                        Console.WriteLine(flight.DepartureTime);
+                        count++;
+
+
+                    }
+                    
                 }
-                else if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today) 
-                        && flight.DepartureTime.Year == DateTime.Today.Year
-                        && range == "week")
+                else if(range == "week")
                 {
-                    Console.WriteLine(flight.DepartureTime);
-                    count++;
+                    if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today)
+                        && flight.DepartureTime.Year == DateTime.Today.Year)
+                    {
+                        Console.WriteLine(flight.DepartureTime);
+                        count++;
+                    }
+
                 }
-                else if(flight.DepartureTime.Month == DateTime.Today.Month && range == "month")
+                else if ( range == "month")
                 {
-                    Console.WriteLine(flight.DepartureTime);
-                    count++;
+                    if (flight.DepartureTime.Month == DateTime.Today.Month)
+                    {
+                        Console.WriteLine(flight.DepartureTime);
+                        count++;
+
+                    }
+
                 }
-                else if (flight.DepartureTime.Year == DateTime.Today.Year&& range == "year")
+
+                else if(range == "year")
                 {
-                    Console.WriteLine(flight.DepartureTime);
-                    count++;
+                    if(flight.DepartureTime.Year == DateTime.Today.Year)
+                    {
+                        Console.WriteLine(flight.DepartureTime);
+                        count++;
+
+                    }
                 }
+          
                 else
                 {
                     Console.WriteLine("Invalid Range");
