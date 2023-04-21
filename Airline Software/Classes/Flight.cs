@@ -36,6 +36,22 @@ namespace Airline_Software
             this.Capacity = Capacity;
             this.SeatsSold = SeatsSold;
         }
+        public static void FlightWithNoPlane()
+        {
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}", "Flight Number", "Departure City",
+                "Arrival City", "Departure Time", "Est Arrival Time\n");
+            foreach (Flight flight in flights)
+            {
+                if (flight.PlaneModelId == -1)
+                {
+                    Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}",
+                    flight.FlightNumber, Airport.FindAirportbyId(flight.DepartureAirportID).City,
+                    Airport.FindAirportbyId(flight.ArrivalAirportID).City, flight.DepartureTime, flight.ArrivalTime);
+                }
+            }
+        }
 
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
                                          DateTime departureTime)
