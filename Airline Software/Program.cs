@@ -267,6 +267,9 @@ class Program
 
     static void AddFlight()
     {
+        Flight.AssignPlaneForFlight();
+
+
         // Get user input for flight details
         Console.WriteLine("**** Add Flight ****");
         Console.WriteLine("Enter your flight details or type 'back' to go back to previous page\n");

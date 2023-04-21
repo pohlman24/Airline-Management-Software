@@ -14,15 +14,15 @@ namespace Airline_Software
         public int ArrivalAirportID { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public int? PlaneModelId { get; set; } = null;
+        public int? PlaneModelId { get; set; }
         public double Price { get; set; }
         public int PointsEarned { get; set; }
-        public int Capacity { get; set; } = 0;
+        public int Capacity { get; set; }
         public int SeatsSold { get; set; }
 
 
         public Flight(int FlightId, string FlightNumber, int DepartureAirportID, int ArrivalAirportID,
-                      DateTime DepartureTime, DateTime ArrivalTime, double Price, int PointsEarned, int SeatsSold)
+                      DateTime DepartureTime, DateTime ArrivalTime, double Price, int PlaneModelId, int PointsEarned, int Capacity, int SeatsSold)
         {
             this.FlightId = FlightId;
             this.FlightNumber = FlightNumber;
@@ -30,9 +30,10 @@ namespace Airline_Software
             this.ArrivalAirportID = ArrivalAirportID;
             this.DepartureTime = DepartureTime;
             this.ArrivalTime = ArrivalTime;
-            this.PlaneModelId = null;
+            this.PlaneModelId = PlaneModelId;
             this.Price = Price;
             this.PointsEarned = PointsEarned;
+            this.Capacity = Capacity;
             this.SeatsSold = SeatsSold;
         }
 
@@ -46,7 +47,7 @@ namespace Airline_Software
             double price = CalculateFlightPrice(departureTime, arrivalTime, departureAirportID, arrivalAirportID);
             int pointsEarned = CalculateFlightPoints(price);
             string filePath = @"..\..\..\Tables\FlightDb.csv";
-            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, price, pointsEarned, 0);
+            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, price,-1, pointsEarned, 0, 0);
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             flights.Add(newFlight);
             CsvDatabase.WriteCsvFile<Flight>(filePath, flights);

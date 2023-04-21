@@ -6,7 +6,7 @@
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
         public int FlightId1 { get; set; } //outbound flight
-        public int FlightId2 { get; set; } = -1; //optional return flight
+        public int FlightId2 { get; set; } //optional return flight
         public string OrderStatus { get; set; }
         public DateOnly OrderDate { get; set; }
         public DateOnly CancellationDate { get; set; } 
@@ -25,7 +25,7 @@
             this.IsRoundTrip = IsRoundTrip;
         }
 
-        public static Order CreateOrder(int customerId, int flightId1, string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, int flightId2 = -1)
+        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, int flightId2 = -1)
         {
             string filePath = @"..\..\..\Tables\OrderDb.csv";
             int orderId = GenerateOrderID();
