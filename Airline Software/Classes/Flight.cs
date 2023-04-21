@@ -107,6 +107,18 @@ namespace Airline_Software
             Flight flight = CsvDatabase.FindRecord(flights, f => f.FlightId, id);
             return flight;
         }
+        public static Flight FindFlightByFlightNumber(string num)
+        {
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            if (CsvDatabase.FindRecordByString(flights, f => f.FlightNumber, num) == null)
+            {
+                throw (new Exception("Record Not Found"));
+                return null;
+            }
+            Flight flight = CsvDatabase.FindRecordByString(flights, f => f.FlightNumber, num);
+            return flight;
+        }
 
         // function for auto generating the ID's 
         private static int GenerateFlightID()
@@ -126,6 +138,41 @@ namespace Airline_Software
             string arrCode = arrivialLocation.Code;
             string flightNum = departCode + arrCode + flightId;
             return flightNum;
+        }
+
+        // generate a list of all flights 
+        public static void ShowAllFlights()
+        {
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+
+            Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -18} {6, -18} {7}", "Flight Number","Departure City",
+                "Arrival City", "Departure Time", "Est Arrival Time", "Price", "Points Value", "Seats Sold/Capacity");
+            foreach (Flight flight in flights)
+            {
+                string flightNumber = flight.FlightNumber;
+                string departAirport = Airport.FindAirportbyId(flight.DepartureAirportID).City;
+                string arrivalAirport = Airport.FindAirportbyId(flight.ArrivalAirportID).City;
+                DateTime departTime = flight.DepartureTime;
+                DateTime arrivalTime = flight.ArrivalTime;
+                double price = flight.Price;
+                int points = flight.PointsEarned;
+                int capacity = flight.Capacity;
+                int seatsSold = flight.SeatsSold;
+                Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} ${5, -17} {6, -18} {7}/{8}",
+                    flightNumber, departAirport, arrivalAirport, departTime, arrivalTime, price, points, seatsSold, capacity);
+            }
+        }
+
+        // generate summary for a selected flight
+        public void FlightSummary()
+        {
+            Console.WriteLine("\n{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -12} {6}", 
+                "Flight Number", "Departure City", "Arrival City", "Departure Time", "Est Arrival Time", "Price", "Points Value");
+
+            Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} ${5, -11} {6}",
+                    this.FlightNumber, Airport.FindAirportbyId(this.DepartureAirportID).City, Airport.FindAirportbyId(this.ArrivalAirportID).City,
+                    this.DepartureTime, this.ArrivalTime, this.Price, this.PointsEarned);
         }
 
         public static double CalcFlightDistance(int departureAirportID, int arrivalAirportID)
@@ -204,7 +251,7 @@ namespace Airline_Software
                 price *= 0.9; //10 percent discount
             }
 
-            return price;
+            return Math.Round(price,2);
         }
 
         public static int CalculateFlightPoints(double price)

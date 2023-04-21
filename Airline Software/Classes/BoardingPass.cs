@@ -128,13 +128,34 @@ namespace Airline_Software
             return maxID + 1;
         }
 
-        // how will this be used? a customer will call this function, 
-        public static void PrintBoardingPass(Customer customer)
+        public static void PrintBoardingPass(Customer customer, Order order)
         {
-            BoardingPass pass = BoardingPass.FindBoardingPassByCustomerId(customer.Id);
-            Flight flight = Flight.FindFlightById(pass.FlightId);
-            if(flight.DepartureTime <= DateTime.Now.AddHours(24))
+            // it could be a round trip so we either print both flights out as a single pass or we need to let them decide which flight pass they are printing
+            Flight flight = Flight.FindFlightById(order.FlightId1);// by default assume its a single trip 
+
+            //check if round trip and use the current date vs depart date to auto detemine which flight they are printing pass for
+            if (order.IsRoundTrip == true)
             {
+                Flight flight1 = Flight.FindFlightById(order.FlightId1);
+                Flight flight2 = Flight.FindFlightById(order.FlightId2);
+                // determin which of the two flights departure time is closer to dateTime.Now
+                TimeSpan difference1 = flight1.DepartureTime - DateTime.Now;
+                TimeSpan difference2 = flight2.DepartureTime - DateTime.Now;
+                if (difference1.Duration() < difference2.Duration())
+                {
+                    flight = flight1;
+                }
+                else
+                {
+                    flight = flight2;
+                }
+            }
+
+            if (flight.DepartureTime <= DateTime.Now.AddHours(24))
+            {
+                BoardingPass pass = CreateBoardingPass(order.OrderId, customer.Id, order.FlightId1, customer.FirstName, customer.LastName, flight.DepartureTime, flight.ArrivalTime,
+                flight.DepartureAirportID, flight.ArrivalAirportID);
+
                 Airport departCity = Airport.FindAirportbyId(pass.DepartureAirportId);
                 Airport arrivalCity = Airport.FindAirportbyId(pass.ArrivalAirportId);
 
@@ -148,6 +169,7 @@ namespace Airline_Software
             {
                 Console.WriteLine("Too Early To Print Pass!");
             }
+            
         }
     }
 }

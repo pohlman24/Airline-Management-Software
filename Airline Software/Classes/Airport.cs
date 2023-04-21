@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -96,6 +97,42 @@ namespace Airline_Software
             return airport;
         }
 
+        // new function to return first airport found based on any stirng input -- should help reduce the number of FindAirportByXYZ functions
+        // one concern is that it might not be as fast and might be more prone to error
+        public static Airport FindAirportByProperty(string propertyValue)
+        {
+            string filePath = @"..\..\..\Tables\AirportDb.csv";
+            List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(filePath);
+
+            PropertyInfo[] properties = typeof(Airport).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (Airport airport in airports)
+            {
+                foreach (PropertyInfo property in properties)
+                {
+                    if (property.PropertyType == typeof(string) && property.GetValue(airport)?.ToString().Contains(propertyValue, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        return airport;
+                    }
+                }
+            }
+
+            throw new Exception("Record Not Found");
+        }
+
+        public static Airport FindAirportbyCity(string city)
+        {
+            string filePath = @"..\..\..\Tables\AirportDb.csv";
+            List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(filePath);
+            if (CsvDatabase.FindRecordByString(airports, a => a.City, city) == null)
+            {
+                throw (new Exception("Record Not Found"));
+                return null;
+            }
+            Airport airport = CsvDatabase.FindRecordByString(airports, a => a.City, city);
+            return airport;
+        }
+
         private static int GenerateAirportID()
         {
             string filePath = @"..\..\..\Tables\AirportDb.csv";
@@ -104,5 +141,17 @@ namespace Airline_Software
             return maxID + 1;
         }
 
+        public static void DisplayAllAiports()
+        {
+            string filePath = @"..\..\..\Tables\AirportDb.csv";
+            List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(filePath);
+
+            Console.WriteLine("{0, -15} {1, -10} {2, -10}", "City", "State", "Code");
+            foreach (Airport airport in airports)
+            {
+                Console.WriteLine("{0, -15} {1, -10} {2, -10}\n",
+                    airport.City, airport.State, airport.Code);
+            }
+        }
     }
 }
