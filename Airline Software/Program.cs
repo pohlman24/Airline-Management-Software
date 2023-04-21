@@ -15,11 +15,13 @@ class Program
             switch (choice)
             {
                 case 1:
-                    CreateAccount();
+                    //CreateAccount();
+                    MarketingManagerFunctionality();
                     break;
 
                 case 2:
-                    LogIn();
+                    //LogIn();
+                    AccountantFunctionality();
                     break;
 
                 /* case 3:
@@ -267,7 +269,7 @@ class Program
 
     static void AddFlight()
     {
-        Flight.AssignPlaneForFlight();
+        //Flight.AssignPlaneForFlight();
 
 
         // Get user input for flight details
@@ -535,7 +537,7 @@ class Program
     }
 
 
-    static void AccountantFunctionality()
+     static void AccountantFunctionality()
     {
         // Code to handle accountant functionality goes here
         while (true)
@@ -555,29 +557,43 @@ class Program
                 switch (choice)
                 {
                     case 1:
-                        Console.Write("Enter flight ID: ");
-                        int flightId = int.Parse(Console.ReadLine());
-                        Flight flight = Flight.FindFlightById(flightId);
+
+                        Flight.ShowAllFlights();
+                        Console.Write("Enter flight number: ");
+
+                        string num = Console.ReadLine();
+                        
+
+                        Flight flight = Flight.FindFlightByFlightNumber(num);
+
+                        
 
                         double percentCapacity = Accountant.CalcPercentCapacity(flight);
                         Console.WriteLine("Percent Capacity: " + percentCapacity);
                         break;
 
                     case 2:
-                        Console.Write("Enter flight ID: ");
-                        int flightId2 = int.Parse(Console.ReadLine());
-                        Flight flight2 = Flight.FindFlightById(flightId2);
+
+                        Flight.ShowAllFlights();
+
+                        Console.Write("Enter flight number: ");
+
+                        string num1 = Console.ReadLine();
+
+                        Flight flight2 = Flight.FindFlightByFlightNumber(num1);
 
                         double income = Accountant.CalcIncomeFlight(flight2);
                         Console.WriteLine("Income per Flight: " + income);
                         break;
 
                     case 3:
+
                         double totalIncome = Accountant.CalcIncomeWhole();
                         Console.WriteLine("Income all Flights: " + totalIncome);
                         break;
 
                     case 4:
+
                         Console.WriteLine("Enter time range (day, month, or year):");
                         string range = Console.ReadLine();
                         int numFlights = Accountant.CalcNumFlights(range);
@@ -585,6 +601,7 @@ class Program
                         break;
 
                     case 5:
+
                         Console.WriteLine("\nLogging out...");
                         return;
 
@@ -605,8 +622,7 @@ class Program
         }
     }
 
-
-    static void MarketingManagerFunctionality()
+     static void MarketingManagerFunctionality()
     {
         while (true)
         {
@@ -620,18 +636,28 @@ class Program
                 Console.Write("Enter your choice: ");
                 int choice = int.Parse(Console.ReadLine());
 
+
                 switch (choice)
                 {
                     case 1:
                         try
                         {
+
+                            Flight.FlightWithNoPlane();
+                            Console.WriteLine("Enter flight number: ");
+                            string flightNumber = Console.ReadLine();
+
+                            Flight flight = Flight.FindFlightByFlightNumber(flightNumber);
                             // Retrieve flight by ID
-                            Console.Write("Enter flight ID: ");
-                            int flightId = int.Parse(Console.ReadLine());
-                            Flight flight = Flight.FindFlightById(flightId);
+                            Console.WriteLine("Assigning Plane for Flight " + flightNumber);
 
                             // Assign plane for flight
                             MarketingManager.AssignPlaneForFlight(flight);
+
+                            Console.WriteLine("Planed Assigned for flight: " + flightNumber + "\n");
+
+                            break;
+
                         }
                         catch (Exception ex)
                         {
@@ -641,8 +667,15 @@ class Program
                     case 2:
                         try
                         {
-                            // Assign plane for all flights
+                           
+
+                            Console.WriteLine("Assinging Plane for all flights");
+
+
+
                             MarketingManager.AssignPlaneForAllFlights();
+
+                            Console.WriteLine("Planes assigned for all flights");
                         }
                         catch (Exception ex)
                         {
