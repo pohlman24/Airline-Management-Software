@@ -23,21 +23,22 @@ class Program
             switch (choice)
             {
                 case 1:
-                    CreateCustomerAccount();
+                    /*CreateCustomerAccount();
                     if (currentUser == null && loggedIn == true)
                     {
                         HomePage();
-                    }
-                    //MarketingManagerFunctionality();
+                    }*/
+
+                    MarketingManagerFunctionality();
                     break;
 
                 case 2:
-                    LogIn();
+                   /* LogIn();
                     if (currentUser == null && loggedIn == true)
                     {
                         HomePage();
-                    }
-                    //AccountantFunctionality();
+                    }*/
+                    AccountantFunctionality();
                     break;
 
                 case 3:
@@ -122,12 +123,14 @@ class Program
             string password = User.HashPassword(Console.ReadLine());
             try
             {
+                // find user by ID and check if user type is customer
                 currentUser = User.FindUserById(userId);
                 if (currentUser.UserType == "Customer")
                 {
                     currentCustomer = Customer.FindCustomerById(currentUser.Id);
                     currentUser = null;
                 }
+                
             }
             catch (Exception ex)
             {
@@ -155,6 +158,20 @@ class Program
                 Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
                 loggedIn = true;
                 FlightManagerFunctionality();
+                return;
+            }
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Marketing Manager")
+            {
+                Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
+                loggedIn = true;
+                MarketingManagerFunctionality();
+                return;
+            }
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Accountannt")
+            {
+                Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
+                loggedIn = true;
+                AccountantFunctionality();
                 return;
             }
             else
@@ -830,7 +847,7 @@ class Program
     }
 
 
-     static void AccountantFunctionality()
+    static void AccountantFunctionality()
     {
         // Code to handle accountant functionality goes here
         while (true)
@@ -850,47 +867,109 @@ class Program
                 switch (choice)
                 {
                     case 1:
+                        try
+                        {
+                            
+                            Flight.ShowAllFlights();
+                            Console.WriteLine("Enter flight number or type 'back'or 'b' to go back");
+                            string userInput = Console.ReadLine().ToUpper();
+                            if (userInput == "BACK" || userInput == "B") 
+                            { 
+                                AccountantFunctionality(); 
+                            }
 
-                        Flight.ShowAllFlights();
-                        Console.Write("Enter flight number: ");
+                            Console.WriteLine("Flight Number entered");
 
-                        string num = Console.ReadLine();
-                        
 
-                        Flight flight = Flight.FindFlightByFlightNumber(num);
 
-                        
+                            Flight flight = Flight.FindFlightByFlightNumber(userInput);
 
-                        double percentCapacity = Accountant.CalcPercentCapacity(flight);
-                        Console.WriteLine("Percent Capacity: " + percentCapacity);
+
+
+                            double percentCapacity = Accountant.CalcPercentCapacity(flight);
+                            Console.WriteLine("Percent Capacity: " + percentCapacity);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Invalid input format. Please enter a valid flight number.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
                         break;
 
                     case 2:
+                        try
+                        {
 
-                        Flight.ShowAllFlights();
+                            
+                            Flight.ShowAllFlights();
+                            Console.WriteLine("Enter flight number or type 'back'or 'b' to go back");
 
-                        Console.Write("Enter flight number: ");
+                            
+                            string userInput = Console.ReadLine().ToUpper();
+                            if (userInput == "BACK" || userInput == "B")
+                            {
+                                AccountantFunctionality();
+                            }
 
-                        string num1 = Console.ReadLine();
+                            Console.WriteLine("Flight Number entered");
 
-                        Flight flight2 = Flight.FindFlightByFlightNumber(num1);
 
-                        double income = Accountant.CalcIncomeFlight(flight2);
-                        Console.WriteLine("Income per Flight: " + income);
+
+                           
+
+                            Flight flight2 = Flight.FindFlightByFlightNumber(userInput);
+
+                            double income = Accountant.CalcIncomeFlight(flight2);
+                            Console.WriteLine("Income per Flight: " + income);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Invalid input format. Please enter a valid flight number.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
                         break;
 
                     case 3:
-
-                        double totalIncome = Accountant.CalcIncomeWhole();
-                        Console.WriteLine("Income all Flights: " + totalIncome);
+                        try
+                        {
+                            double totalIncome = Accountant.CalcIncomeWhole();
+                            Console.WriteLine("Income all Flights: " + totalIncome);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
                         break;
 
                     case 4:
+                        try
+                        {
+                            Console.WriteLine("Enter time range (day, month, or year)  or type 'back' or 'b' to go back");
+                            string userInput = Console.ReadLine().ToUpper();
+                            if (userInput == "BACK" || (userInput =="B")) 
+                            {
+                                AccountantFunctionality(); 
+                            }
 
-                        Console.WriteLine("Enter time range (day, month, or year):");
-                        string range = Console.ReadLine();
-                        int numFlights = Accountant.CalcNumFlights(range);
-                        Console.WriteLine("Num of flights: " + numFlights);
+                            Console.WriteLine("Range entered: " + userInput);
+
+                            int numFlights = Accountant.CalcNumFlights(userInput);
+                            Console.WriteLine("Num of flights: " + numFlights);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Invalid input format. Please enter a valid time range.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
                         break;
 
                     case 5:
@@ -916,6 +995,7 @@ class Program
             }
         }
     }
+
 
     static void MarketingManagerFunctionality()
     {
