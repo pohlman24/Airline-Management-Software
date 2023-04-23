@@ -36,6 +36,8 @@ namespace Airline_Software
             this.Capacity = Capacity;
             this.SeatsSold = SeatsSold;
         }
+
+        // outputs list of flights without assigned plane
         public static void FlightWithNoPlane()
         {
             string filePath = @"..\..\..\Tables\FlightDb.csv";
@@ -73,7 +75,7 @@ namespace Airline_Software
         public static void UpdateFlight(Flight flight, string flightNumber = "", int departureAirportID = -1, int arrivalAirportID = -1,
                                 DateTime? departureTime = null, int planeModelId = -1, int capacity = -1, int seatsSold = -1)
         {
-            flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? flight.FlightNumber : flightNumber;
+            
             flight.DepartureAirportID = departureAirportID == -1 ? flight.DepartureAirportID : departureAirportID;
             flight.ArrivalAirportID = arrivalAirportID == -1 ? flight.ArrivalAirportID : arrivalAirportID;
             flight.DepartureTime = departureTime == null ? flight.DepartureTime : departureTime.Value;
@@ -83,6 +85,8 @@ namespace Airline_Software
             flight.PointsEarned = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.PointsEarned : CalculateFlightPoints(flight.Price);
             flight.Capacity = capacity == -1 ? (int)capacity : capacity;
             flight.SeatsSold = seatsSold == -1 ? flight.SeatsSold : seatsSold;
+            // flight number is going to by default re-generate the flight number so that if the user changes the depart/arr city it will be the correct ID
+            flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? GenerateFlightNumber(flight.FlightId, flight.DepartureAirportID, flight.ArrivalAirportID) : flightNumber;
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);

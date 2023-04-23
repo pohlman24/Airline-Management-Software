@@ -15,13 +15,13 @@ class Program
             switch (choice)
             {
                 case 1:
-                    //CreateAccount();
-                    MarketingManagerFunctionality();
+                    CreateAccount();
+                    //MarketingManagerFunctionality();
                     break;
 
                 case 2:
-                    //LogIn();
-                    AccountantFunctionality();
+                    LogIn();
+                    //AccountantFunctionality();
                     break;
 
                 /* case 3:
@@ -239,45 +239,50 @@ class Program
             Console.WriteLine("4. Update a Flight");
             Console.WriteLine("5. Log Out");
             Console.Write("Enter your choice: ");
-            int choice = int.Parse(Console.ReadLine());
-            Console.WriteLine("\n");
-
-            switch (choice)
+            try
             {
-                case 1:
-                    // output list of all scheduled flights 
-                    Flight.ShowAllFlights();
-                    break;
-                case 2:
-                    AddFlight();
-                    break;
-                case 3:
-                    CancelFlightAdmin();
-                    break;
-                case 4:
-                    UpdateFlight();
-                    break;
-                case 5:
-                    Console.WriteLine("\nLogging out...");
-                    return;
-                default:
-                    Console.WriteLine("\nInvalid choice! Please try again.");
-                    break;
+                int choice = int.Parse(Console.ReadLine());
+                Console.WriteLine("\n");
+
+                switch (choice)
+                {
+                    case 1:
+                        // output list of all scheduled flights 
+                        Flight.ShowAllFlights();
+                        break;
+                    case 2:
+                        AddFlight();
+                        break;
+                    case 3:
+                        CancelFlightAdmin();
+                        break;
+                    case 4:
+                        UpdateFlight();
+                        break;
+                    case 5:
+                        Console.WriteLine("\nLogging out...");
+                        return;
+                    default:
+                        Console.WriteLine("\nInvalid choice! Please try again.");
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nInvalid choice! Please try again.");
+            }
+            
         }
     }
 
     static void AddFlight()
     {
-        //Flight.AssignPlaneForFlight();
-
-
         // Get user input for flight details
         Console.WriteLine("**** Add Flight ****");
         Console.WriteLine("Enter your flight details or type 'back' to go back to previous page\n");
         Console.WriteLine("Flight Departure City: ");
         string departCity = Console.ReadLine();
-        if (departCity == "back" || departCity == "BACK" || departCity == "Back" || departCity == "b") { LoadEngineerFunctionality(); }
+        if (departCity == "back" || departCity == "BACK" || departCity == "Back" || departCity == "b") { return; }
         Console.WriteLine("Flight Arrival City: ");
         string arrCity = Console.ReadLine();
         Console.WriteLine("Flight Departure Time: yyyy-mm-dd hh:mm (24-hour)");
@@ -315,6 +320,7 @@ class Program
                     Console.WriteLine("\nAirport(s) not an available option. List of available aiports below.");
                     Airport.DisplayAllAiports();
                     AddFlight();
+                    break;
                 }
 
             }
@@ -339,7 +345,7 @@ class Program
         Console.WriteLine("**** Cancel Flight ****");
         Console.WriteLine("Enter flight number you want to cancel or type 'back' to go back to the previous page");
         string flightNumber = Console.ReadLine();
-        if (flightNumber == "back" || flightNumber == "BACK" || flightNumber == "Back" || flightNumber == "b") { LoadEngineerFunctionality(); }
+        if (flightNumber == "back" || flightNumber == "BACK" || flightNumber == "Back" || flightNumber == "b") { return; }
 
         // use try/catch block to check for invalid flight number 
         try
@@ -357,6 +363,7 @@ class Program
                 {
                     // send user back to top of function
                     CancelFlightAdmin();
+                    break;
                 }
                 else if (isCorrect == "Y" || isCorrect == "YES")
                 {
@@ -407,7 +414,7 @@ class Program
         Console.WriteLine("**** Update Flight ****");
         Console.WriteLine("Enter flight number or type 'back' to go back to the previous page");
         string flightNumber = Console.ReadLine().ToUpper();
-        if (flightNumber == "BACK") { LoadEngineerFunctionality(); } // go back feature 
+        if (flightNumber == "BACK") { return; } // go back feature 
         Console.WriteLine("");
 
         // need in try/catch block in case user enters invalid flight number
@@ -432,7 +439,7 @@ class Program
 
                 // check user input for back option
                 string backChoice = Console.ReadLine().ToUpper(); // used for the 'back' check
-                if (backChoice == "BACK") { UpdateFlight(); }
+                if (backChoice == "BACK") { UpdateFlight(); break; }
 
                 // check user input
                 int choice = int.Parse(backChoice); // used for the field choice
@@ -441,29 +448,53 @@ class Program
                 {
                     Console.WriteLine("Enter new departure city");
                     string newCity = Console.ReadLine();
-                    Airport airport = Airport.FindAirportByProperty(newCity);
-                    Flight.UpdateFlight(flight, departureAirportID: airport.AirportId);
-                    Console.WriteLine("Flight Updated");
-                    break;
+                    try
+                    {
+                        Airport airport = Airport.FindAirportByProperty(newCity);
+                        Flight.UpdateFlight(flight, departureAirportID: airport.AirportId);
+                        Console.WriteLine("\nFlight Updated\nNotice: The flight number has been updated\nNew flight number: " + flight.FlightNumber);
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Airport not found. Available airports shown below");
+                        Airport.DisplayAllAiports();
+                    }
                 }
                 // user wants to update arrival city
                 else if (choice == 2)
                 {
                     Console.WriteLine("Enter new arrival city");
                     string newCity = Console.ReadLine();
-                    Airport airport = Airport.FindAirportbyCity(newCity);
-                    Flight.UpdateFlight(flight, arrivalAirportID: airport.AirportId);
-                    Console.WriteLine("Flight Updated");
-                    break;
+                    try
+                    {
+                        Airport airport = Airport.FindAirportbyCity(newCity);
+                        Flight.UpdateFlight(flight, arrivalAirportID: airport.AirportId);
+                        Console.WriteLine("\nFlight Updated\nNotice: The flight number has been updated\nNew flight number: " + flight.FlightNumber);
+                        break;
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine("Airport not found. Available airports shown below");
+                        Airport.DisplayAllAiports();
+                    }
+                    
                 }
                 // user wants to update departure time
                 else if (choice == 3)
                 {
-                    Console.WriteLine("Enter new departure time");
-                    DateTime newTime = DateTime.Parse(Console.ReadLine());
-                    Flight.UpdateFlight(flight, departureTime: newTime);
-                    Console.WriteLine("Flight Updated");
-                    break;
+                    try
+                    {
+                        Console.WriteLine("Enter new departure time");
+                        DateTime newTime = DateTime.Parse(Console.ReadLine());
+                        Flight.UpdateFlight(flight, departureTime: newTime);
+                        Console.WriteLine("\nFlight Updated");
+                        break;
+                    }
+                    catch 
+                    {
+                        Console.WriteLine("Date not formatted correctly");
+                    }
                 }
                 else
                 {
@@ -475,6 +506,7 @@ class Program
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);   
             Console.WriteLine("Flight not found");
             UpdateFlight();
         }
@@ -490,20 +522,28 @@ class Program
             Console.WriteLine("1. Generate Flight Manifest");
             Console.WriteLine("2. Log Out");
             Console.Write("Enter your choice: ");
-            int choice = int.Parse(Console.ReadLine());
-
-            switch (choice)
+            try
             {
-                case 1:
-                    GenerateFlightManifest();
-                    break;
-                case 2:
-                    Console.WriteLine("\nLogging out...");
-                    return;
-                default:
-                    Console.WriteLine("\nInvalid choice! Please try again.");
-                    break;
+                int choice = int.Parse(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        GenerateFlightManifest();
+                        break;
+                    case 2:
+                        Console.WriteLine("\nLogging out...");
+                        return;
+                    default:
+                        Console.WriteLine("\nInvalid choice! Please try again.");
+                        break;
+                }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine("\nInvalid choice! Please try again.");
+            }
+            
         }
     }
 
@@ -512,7 +552,7 @@ class Program
         Console.WriteLine("\n**** Print Flight Manifest ****");
         Console.WriteLine("Enter flight number or type 'back' to go back");
         string userInput = Console.ReadLine().ToUpper();
-        if (userInput == "BACK") { FlightManagerFunctionality(); }
+        if (userInput == "BACK") { return; }
         try
         {
             Flight flight = Flight.FindFlightByFlightNumber(userInput);
@@ -526,7 +566,7 @@ class Program
             }
             else
             {
-                FlightManagerFunctionality();
+                return;
             }
         }
         catch (Exception ex)
@@ -667,12 +707,7 @@ class Program
                     case 2:
                         try
                         {
-                           
-
                             Console.WriteLine("Assinging Plane for all flights");
-
-
-
                             MarketingManager.AssignPlaneForAllFlights();
 
                             Console.WriteLine("Planes assigned for all flights");

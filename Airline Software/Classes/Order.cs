@@ -33,19 +33,6 @@
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
             orders.Add(newOrder);
             CsvDatabase.WriteCsvFile<Order>(filePath, orders);
-
-            // need to also create the boarding pass to db
-            BoardingPass.CreateBoardingPass(orderId, customerId, flightId1, Customer.FindCustomerById(customerId).FirstName, Customer.FindCustomerById(customerId).LastName,
-                                            Flight.FindFlightById(flightId1).DepartureTime, Flight.FindFlightById(flightId1).ArrivalTime,
-                                            Flight.FindFlightById(flightId1).DepartureAirportID, Flight.FindFlightById(flightId1).ArrivalAirportID);
-
-            if (flightId2 != -1)
-            {
-                BoardingPass.CreateBoardingPass(orderId, customerId, flightId2, Customer.FindCustomerById(customerId).FirstName, Customer.FindCustomerById(customerId).LastName,
-                                            Flight.FindFlightById(flightId2).DepartureTime, Flight.FindFlightById(flightId2).ArrivalTime,
-                                            Flight.FindFlightById(flightId2).DepartureAirportID, Flight.FindFlightById(flightId2).ArrivalAirportID);
-            }
-
             return newOrder;
         }
 
