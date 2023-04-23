@@ -81,7 +81,7 @@ namespace Airline_Software
             flight.PlaneModelId = planeModelId == -1 ? flight.PlaneModelId : planeModelId;
             flight.Price = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.Price : CalculateFlightPrice(flight.DepartureTime, flight.ArrivalTime, flight.DepartureAirportID, flight.ArrivalAirportID);
             flight.PointsEarned = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.PointsEarned : CalculateFlightPoints(flight.Price);
-            flight.Capacity = capacity == -1 ? (int)capacity : capacity;
+            flight.Capacity = capacity == -1 ? flight.Capacity : capacity;
             flight.SeatsSold = seatsSold == -1 ? flight.SeatsSold : seatsSold;
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";

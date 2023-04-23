@@ -1,7 +1,7 @@
-Id,FirstName,LastName,Email,PhoneNumber,Age,Password,Address,City,State,ZipCode,UserType,MileagePoints,CreditCardNumber
-364608,bobby,Johnson,reecepohlman@gmail.com,4197054849,23,passwod,5934 Porhsa Dr,Sylvania,ohio,43506,Customer,0,410924845
-123456,Reece,Pohlman,Pohlmanreece@gmail.com,1241412,21,password,123123,toledo,ohio,123234,Customer,0,4124124
-491221,bob,bobby,Reecepohlman@gmail.com,4197054849,23,Password,1234 Home Address,Sylvania,Ohio,43560,Customer,0,123456789
-149340,bob,bobby,Reecepohlman@gmail.com,4197054849,23,Password,1234 Home Address,Sylvania,Ohio,43560,Customer,1060,123456789
-149340,bob,bobby,Reecepohlman@gmail.com,4197054849,23,Password,1234 Home Address,Sylvania,Ohio,43560,Customer,122320,123456789
-807130,Dominic,DiPofi,ddipofi@rockets.utoledo.edu,4193409508,22,711c22448e721e5491d8245b49425aa861f1fc4a15287f0735e203799b65cffec50b5abd0fddd91cd643aeb3b530d48f05e258e7e230a94ed5025c1387bb4e1b,8045 House,Sylvania,Ohio,43560,Customer,9949780,1111111111111111
+Id,FirstName,LastName,Email,PhoneNumber,Age,Password,Address,City,State,ZipCode,UserType,MileagePoints,CreditCardNumber,PointsSpent
+364608,bobby,Johnson,reecepohlman@gmail.com,4197054849,23,passwod,5934 Porhsa Dr,Sylvania,ohio,43506,Customer,0,410924845,0
+123456,Reece,Pohlman,Pohlmanreece@gmail.com,1241412,21,password,123123,toledo,ohio,123234,Customer,0,4124124,0
+491221,bob,bobby,Reecepohlman@gmail.com,4197054849,23,Password,1234 Home Address,Sylvania,Ohio,43560,Customer,0,123456789,0
+149340,bob,bobby,Reecepohlman@gmail.com,4197054849,23,Password,1234 Home Address,Sylvania,Ohio,43560,Customer,1060,123456789,0
+149340,bob,bobby,Reecepohlman@gmail.com,4197054849,23,Password,1234 Home Address,Sylvania,Ohio,43560,Customer,122320,123456789,0
+807130,Dominic,DiPofi,ddipofi@rockets.utoledo.edu,4193409508,22,711c22448e721e5491d8245b49425aa861f1fc4a15287f0735e203799b65cffec50b5abd0fddd91cd643aeb3b530d48f05e258e7e230a94ed5025c1387bb4e1b,8045 House,Sylvania,Ohio,43560,Customer,9944200,1111111111111111,0

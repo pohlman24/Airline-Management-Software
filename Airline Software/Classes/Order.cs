@@ -11,9 +11,10 @@
         public DateOnly OrderDate { get; set; }
         public DateOnly CancellationDate { get; set; } 
         public Boolean IsRoundTrip { get; set; }
+        public Boolean UsedPoints { get; set; } //if customer paid with points, points spent will be decreased on cancellation
 
 
-        public Order(int OrderId, int CustomerId, int FlightId1, int FlightId2, string OrderStatus, DateOnly OrderDate, DateOnly CancellationDate, bool IsRoundTrip)
+        public Order(int OrderId, int CustomerId, int FlightId1, int FlightId2, string OrderStatus, DateOnly OrderDate, DateOnly CancellationDate, bool IsRoundTrip, bool UsedPoints)
         {
             this.OrderId = OrderId;
             this.CustomerId = CustomerId;
@@ -23,13 +24,14 @@
             this.OrderDate = OrderDate;
             this.CancellationDate = CancellationDate;
             this.IsRoundTrip = IsRoundTrip;
+            this.UsedPoints = UsedPoints;
         }
 
-        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, int flightId2 = -1)
+        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, bool UsedPoints, int flightId2 = -1)
         {
             string filePath = @"..\..\..\Tables\OrderDb.csv";
             int orderId = GenerateOrderID();
-            Order newOrder = new Order(orderId, customerId, flightId1, flightId2, orderStatus, orderDate, cancellationDate, isRoundTrip);
+            Order newOrder = new Order(orderId, customerId, flightId1, flightId2, orderStatus, orderDate, cancellationDate, isRoundTrip, UsedPoints);
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
             orders.Add(newOrder);
             CsvDatabase.WriteCsvFile<Order>(filePath, orders);
@@ -37,7 +39,7 @@
         }
 
         public static void UpdateOrder(Order order, int customerId = -1, int flightId1 = -1, int flightId2 = -1, string orderStatus = "",
-                               DateOnly? orderDate = null, DateOnly? cancellationDate = null, bool? isRoundTrip = null)
+                               DateOnly? orderDate = null, DateOnly? cancellationDate = null, bool? isRoundTrip = null, bool? usedPoints = null)
         {
             order.CustomerId = customerId == -1 ? order.CustomerId : customerId;
             order.FlightId1 = flightId1 == -1 ? order.FlightId1 : flightId1;
@@ -46,6 +48,7 @@
             order.OrderDate = orderDate == null ? order.OrderDate : orderDate.Value;
             order.CancellationDate = cancellationDate == null ? order.CancellationDate : cancellationDate.Value;
             order.IsRoundTrip = isRoundTrip == null ? order.IsRoundTrip : isRoundTrip.Value;
+            order.UsedPoints = usedPoints == null ? order.UsedPoints : usedPoints.Value;
 
             string filePath = @"..\..\..\Tables\OrderDb.csv";
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
@@ -59,11 +62,10 @@
                 current.OrderDate = updated.OrderDate;
                 current.CancellationDate = updated.CancellationDate;
                 current.IsRoundTrip = updated.IsRoundTrip;
+                current.UsedPoints = updated.UsedPoints;
             }, order);
 
             CsvDatabase.WriteCsvFile(filePath, orders);
-
-            //TODO update boarding passes
         }
 
         public static void DeleteOrder(Order order)
@@ -99,11 +101,19 @@
         {
             Flight flight1 = Flight.FindFlightById(order.FlightId1);
             Customer.UpdatePoints(customer, 10 * flight1.PointsEarned);
+            if (order.UsedPoints == true) //remove points spent if customer cancels order paid using points
+            {
+                Customer.UpdatePointsSpent(customer, -10 * flight1.PointsEarned);
+            }
 
             if (order.FlightId2 != -1)
             {
                 Flight flight2 = Flight.FindFlightById(order.FlightId2); //for trip back
                 Customer.UpdatePoints(customer, 10 * flight2.PointsEarned);
+                if (order.UsedPoints == true) //remove points spent if customer cancels order paid using points
+                {
+                    Customer.UpdatePointsSpent(customer, -10 * flight1.PointsEarned);
+                }
             }
 
             UpdateOrder(order, orderStatus : "Canceled"); //want to update order to be cancelled

@@ -13,5 +13,6 @@ public class OrderMap : ClassMap<Order>
         Map(m => m.OrderDate).Name("OrderDate").TypeConverterOption.Format("yyyy-MM-dd").Index(5);
         Map(m => m.CancellationDate).Name("CancellationDate").TypeConverterOption.Format("yyyy-MM-dd").Index(6);
         Map(m => m.IsRoundTrip).Name("IsRoundTrip").Index(7);
+        Map(m => m.UsedPoints).Name("UsedPoints").Index(8);
     }
 }

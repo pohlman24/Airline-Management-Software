@@ -1,5 +1,6 @@
 using Airline_Software;
 using System;
+using System.Globalization;
 
 class Program
 {
@@ -24,11 +25,7 @@ class Program
             {
                 case 1:
                     CreateCustomerAccount();
-                    if (currentUser == null && loggedIn == true)
-                    {
-                        HomePage();
-                    }
-                    //MarketingManagerFunctionality();
+                    HomePage();
                     break;
 
                 case 2:
@@ -37,7 +34,6 @@ class Program
                     {
                         HomePage();
                     }
-                    //AccountantFunctionality();
                     break;
 
                 case 3:
@@ -52,11 +48,7 @@ class Program
                      ViewAccountHistory();
                      break;
 
-                 case 6:
-                     //ChangePassword(); DO WE NEED THIS IF THEY ARENT LOGGED IN??
-                     break;
-
-                case 7:
+                case 6:
                     Console.WriteLine("\nThank you for using our service!");
                     return;
 
@@ -92,8 +84,47 @@ class Program
                 string state = Console.ReadLine();
                 Console.Write("Enter your zip code: ");
                 string zipCode = Console.ReadLine();
-                Console.Write("Enter your credit card number: "); //TODO CVV??????
+                Console.Write("Enter your credit card number: ");
                 string creditCardNumber = Console.ReadLine();
+
+                Console.Write("Is all of the entered information correct? (Y/N): ");
+                string proceed = Console.ReadLine();
+                if (proceed == "Y")
+                {
+                    //continue
+                }
+                else if (proceed == "N") //go back or retry
+                {
+                    Console.WriteLine("\nPlease choose:\n  1. Re-enter information\n  B. Go back");
+                    Console.Write("Enter your choice: ");
+                    while (true)
+                    {
+                        string input = Console.ReadLine();
+                        if (input == "1")
+                        {
+                            break;
+                        }
+                        else if (input == "B")
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nInvalid input!\n  1. Re-enter information\n  B. Go back");
+                            Console.Write("Enter your choice: ");
+                        }
+                    }
+                    continue;
+                }
+                else
+                {
+                    if (RetryCommand("input", "account creation") == false)
+                    {
+                        return;
+                    }
+                    continue;
+                }
+
                 Console.Write("Create a password: ");
                 string password = User.HashPassword(Console.ReadLine());
                 currentCustomer = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, "Customer", creditCardNumber);
@@ -157,6 +188,20 @@ class Program
                 FlightManagerFunctionality();
                 return;
             }
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Marketing Manager")
+            {
+                Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
+                loggedIn = true;
+                MarketingManagerFunctionality();
+                return;
+            }
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Accountant")
+            {
+                Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
+                loggedIn = true;
+                AccountantFunctionality();
+                return;
+            }
             else
             {
                 if (RetryCommand("password", "login") == false)
@@ -169,161 +214,262 @@ class Program
 
     static void BookFlight()
     {
-        Console.WriteLine("\n\n**** BOOK A FLIGHT ****");
-        //display all airports
-        List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(@"..\..\..\Tables\AirportDb.csv");
-        Console.Write("\nSelect origin and destination airports from below:\n");
-        for (int i = 0; i < airports.Count; i++)
+        while (true)
         {
-            Console.WriteLine("  " + (i + 1) + ". " + airports[i].Code + " (" + airports[i].City + ", " + airports[i].State + ")");
-        }
-        Console.Write("Origin number: ");
-        //user selects airport by id
-        Airport airport = Airport.FindAirportbyId(Convert.ToInt32(Console.ReadLine()));
-        Console.Write("Destination number: ");
-        Airport airport2 = Airport.FindAirportbyId(Convert.ToInt32(Console.ReadLine()));
-
-        //determine date and roundtrip
-        Console.Write("Will the flight be roundtrip? (Y/N): ");
-        string roundtrip = Console.ReadLine();
-        Console.Write("Please select a departure date (YYYY-MM-DD): ");
-        string departDate = Console.ReadLine();
-        string returnDate = "";
-        if (roundtrip == "Y")
-        {
-            Console.Write("Please select a return date (YYYY-MM-DD): ");
-            returnDate = Console.ReadLine();
-        }
-        else if (roundtrip != "N")
-        {
-            Console.WriteLine("Invalid Input!");
-        }
-
-        //get all flights departing from selected airport
-        List<Flight> allFlights = CsvDatabase.ReadCsvFile<Flight>(@"..\..\..\Tables\FlightDb.csv");
-        Dictionary<int, Flight> curFlights = new(); //stores flights departing from current airport, int console display as key
-        bool noFlights = true;
-        int j = 0; //number the display list
-        for (int i = 0; i < allFlights.Count; i++)
-        {
-            if (allFlights[i].ArrivalAirportID == airport2.AirportId && allFlights[i].DepartureAirportID == airport.AirportId && allFlights[i].DepartureTime >= DateTime.Now && allFlights[i].DepartureTime <= DateTime.Now.AddMonths(6) && (allFlights[i].DepartureTime).ToString("yyyy-MM-dd") == departDate) //if flight is within the next 6 months and also of the selected date
+            Console.WriteLine("\n\n**** BOOK A FLIGHT ****");
+            //display all airports
+            List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(@"..\..\..\Tables\AirportDb.csv");
+            Console.Write("\nSelect origin and destination airports from below:\n");
+            for (int i = 0; i < airports.Count; i++)
             {
-                if (noFlights == true)
-                {
-                    noFlights = false;
-                    Console.WriteLine("\nDeparting flights:");
-                }
-                j++;
-                curFlights.Add(j, allFlights[i]);
-                Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")"); //TODO format spacing and add price, remove seconds
+                Console.WriteLine("  " + (i + 1) + ". " + airports[i].Code + " (" + airports[i].City + ", " + airports[i].State + ")");
             }
-        }
-        if (noFlights == true)
-        {
-            Console.WriteLine("No departing flights from " + airport.Code + " are available on " + departDate); //TODO go back if no flights
-        }
-        Console.Write("Enter your choice: ");
-        //else user selects a flight by number, which is used to get id
-        Flight chosenDepartFlight = curFlights[Convert.ToInt32(Console.ReadLine())];
-        Flight chosenReturnFlight = null;
-        //for roundtrip
-        if (roundtrip == "Y")
-        {
-            curFlights = new();
-            noFlights = true;
-            j = 0;
+            Airport airport = null;
+            Airport airport2 = null;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Origin number: ");
+                    //user selects airport by id
+                    airport = Airport.FindAirportbyId(Convert.ToInt32(Console.ReadLine()));
+                    Console.Write("Destination number: ");
+                    airport2 = Airport.FindAirportbyId(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    if (RetryCommand("input", "airport selection") == false)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            //determine date and roundtrip
+            string roundtrip = "";
+            string departDate = "";
+            string returnDate = "";
+            while (true)
+            {
+                Console.Write("Will the flight be roundtrip? (Y/N): ");
+                roundtrip = Console.ReadLine();
+                if (roundtrip != "N" && roundtrip != "Y")
+                {
+                    if (RetryCommand("input", "roundtrip selection") == false)
+                    {
+                        return;
+                    }
+                    continue;
+                }
+                Console.Write("Please select a departure date (YYYY-MM-DD): ");
+                departDate = Console.ReadLine();
+                DateTime date;
+                if (!DateTime.TryParseExact(departDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                {
+                    if (RetryCommand("input", "departure date selection") == false)
+                    {
+                        return;
+                    }
+                    continue;
+                }
+                if (roundtrip == "Y")
+                {
+                    Console.Write("Please select a return date (YYYY-MM-DD): ");
+                    returnDate = Console.ReadLine();
+                    if (!DateTime.TryParseExact(returnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                    {
+                        if (RetryCommand("input", "return date selection") == false)
+                        {
+                            return;
+                        }
+                        continue;
+                    }
+                }
+                break;
+            }
+
+            //get all flights departing from selected airport
+            List<Flight> allFlights = CsvDatabase.ReadCsvFile<Flight>(@"..\..\..\Tables\FlightDb.csv");
+            Dictionary<int, Flight> curFlights = new(); //stores flights departing from current airport, int console display as key
+            bool noFlights = true;
+            int j = 0; //number the display list
             for (int i = 0; i < allFlights.Count; i++)
             {
-                if (allFlights[i].ArrivalAirportID == airport.AirportId && allFlights[i].DepartureAirportID == airport2.AirportId && allFlights[i].DepartureTime > chosenDepartFlight.ArrivalTime && (allFlights[i].DepartureTime).ToString("yyyy-MM-dd") == returnDate) //TODO should only show flights with date after selected depart date?
+                if (allFlights[i].ArrivalAirportID == airport2.AirportId && allFlights[i].DepartureAirportID == airport.AirportId && allFlights[i].DepartureTime >= DateTime.Now && allFlights[i].DepartureTime <= DateTime.Now.AddMonths(6) && allFlights[i].DepartureTime.ToString("yyyy-MM-dd") == departDate && allFlights[i].SeatsSold < allFlights[i].Capacity) //if flight is within the next 6 months, of the selected date, and not full
                 {
                     if (noFlights == true)
                     {
                         noFlights = false;
-                        Console.WriteLine("\nReturning flights:");
+                        Console.WriteLine("\nDeparting flights:");
                     }
                     j++;
                     curFlights.Add(j, allFlights[i]);
-                    Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")"); //TODO format spacing
+                    Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")"); //TODO format spacing and add price, remove seconds
                 }
             }
             if (noFlights == true)
             {
-                Console.WriteLine("No returning flights from " + airport.Code + " are available on " + returnDate); //TODO go back if no flights
+                Console.Write("\nNo departing flights from " + airport.Code + " are available on " + departDate);
+                if (RetryCommand("date", "flight selection") == false)
+                {
+                    return;
+                }
+                continue;
             }
             Console.Write("Enter your choice: ");
             //else user selects a flight by number, which is used to get id
-            chosenReturnFlight = curFlights[Convert.ToInt32(Console.ReadLine())];
-        }
-
-        //proceed to checkout or browse more flights
-        if (roundtrip == "Y")
-        {
-            double price = chosenDepartFlight.Price + chosenReturnFlight.Price;
-            int points = 10 * (chosenDepartFlight.PointsEarned + chosenReturnFlight.PointsEarned);
-            Console.Write("\n" + airport.Code + " to " + airport2.Code + " (roundtrip) costs $" + price.ToString("F2") + " (" + points + " points). Proceed to checkout? (Y/N): ");
-        }
-        else
-        {
-            Console.Write("\n" + airport.Code + " to " + airport2.Code + " costs $" + chosenDepartFlight.Price.ToString("F2") + " (" + 10 * chosenDepartFlight.PointsEarned + " points). Proceed to checkout? (Y/N): ");
-        }
-        string proceed = Console.ReadLine();
-        if (proceed == "Y")
-        {
-            if (loggedIn == false)
+            Flight chosenDepartFlight = null;
+            Flight chosenReturnFlight = null;
+            try
             {
-                if (VerifyUser() == false)
+                chosenDepartFlight = curFlights[Convert.ToInt32(Console.ReadLine())];
+                //for roundtrip
+                if (roundtrip == "Y")
+                {
+                    curFlights = new();
+                    noFlights = true;
+                    j = 0;
+                    for (int i = 0; i < allFlights.Count; i++)
+                    {
+                        if (allFlights[i].ArrivalAirportID == airport.AirportId && allFlights[i].DepartureAirportID == airport2.AirportId && allFlights[i].DepartureTime > chosenDepartFlight.ArrivalTime && (allFlights[i].DepartureTime).ToString("yyyy-MM-dd") == returnDate && allFlights[i].SeatsSold < allFlights[i].Capacity) //TODO should only show flights with date after selected depart date?
+                        {
+                            if (noFlights == true)
+                            {
+                                noFlights = false;
+                                Console.WriteLine("\nReturning flights:");
+                            }
+                            j++;
+                            curFlights.Add(j, allFlights[i]);
+                            Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")"); //TODO format spacing
+                        }
+                    }
+                    if (noFlights == true)
+                    {
+                        Console.WriteLine("\nNo returning flights from " + airport.Code + " are available on " + returnDate);
+                        if (RetryCommand("date", "flight selection") == false)
+                        {
+                            return;
+                        }
+                        continue;
+                    }
+                    Console.Write("Enter your choice: ");
+                    //else user selects a flight by number, which is used to get id
+                    chosenReturnFlight = curFlights[Convert.ToInt32(Console.ReadLine())];
+                }
+            }
+            catch (Exception ex)
+            {
+                if (RetryCommand("input", "flight selection") == false)
+                {
+                    return;
+                }
+                continue;
+            }
+
+            //proceed to checkout or browse more flights
+            if (roundtrip == "Y")
+            {
+                double price = chosenDepartFlight.Price + chosenReturnFlight.Price;
+                int points = 10 * (chosenDepartFlight.PointsEarned + chosenReturnFlight.PointsEarned);
+                Console.Write("\n" + airport.Code + " to " + airport2.Code + " (roundtrip) costs $" + price.ToString("F2") + " (" + points + " points). Proceed to checkout? (Y/N): ");
+            }
+            else
+            {
+                Console.Write("\n" + airport.Code + " to " + airport2.Code + " costs $" + chosenDepartFlight.Price.ToString("F2") + " (" + 10 * chosenDepartFlight.PointsEarned + " points). Proceed to checkout? (Y/N): ");
+            }
+            string proceed = Console.ReadLine();
+            if (proceed == "Y")
+            {
+                if (loggedIn == false)
+                {
+                    if (VerifyUser() == false)
+                    {
+                        return;
+                    }
+                }
+
+                while (true)
+                {
+                    //after login, pay and book trip, creating a boarding pass and orders
+                    Console.WriteLine("\nHow would you like to pay?\n  1. Card\n  2. Points (You currently have " + currentCustomer.MileagePoints + " points)");
+                    Console.Write("Enter your choice: ");
+                    try
+                    {
+                        int choice = Convert.ToInt32(Console.ReadLine());
+                        if (choice == 1)
+                        {
+                            if (roundtrip == "Y")
+                            {
+                                Customer.BookTrip(currentCustomer, false, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId);
+                            }
+                            else
+                            {
+                                Customer.BookTrip(currentCustomer, false, chosenDepartFlight.FlightId);
+                            }
+                        }
+                        else if (choice == 2)
+                        {
+                            if (roundtrip == "Y")
+                            {
+                                Customer.BookTrip(currentCustomer, true, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId);
+                            }
+                            else
+                            {
+                                Customer.BookTrip(currentCustomer, true, chosenDepartFlight.FlightId);
+                            }
+                        }
+                        else
+                        {
+                            if (RetryCommand("input", "payment") == false)
+                            {
+                                return;
+                            }
+                            continue;
+                        }
+                        Console.WriteLine("\nFlight Booked Successfully!");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (RetryCommand("input", "payment") == false)
+                        {
+                            return;
+                        }
+                        continue;
+                    }
+                }
+            }
+            else if (proceed == "N")
+            {
+                Console.WriteLine("\nPlease choose:\n  1. Retry flight selection\n  B. Go back");
+                Console.Write("Enter your choice: ");
+                while (true)
+                {
+                    string input = Console.ReadLine();
+                    if (input == "1")
+                    {
+                        break;
+                    }
+                    else if (input == "B")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Console.Write("\nInvalid input!\n  1. Re-enter information\n  B. Go back");
+                        Console.Write("Enter your choice: ");
+                    }
+                }
+                continue;
+            }
+            else
+            {
+                if (RetryCommand("input", "flight selection") == false)
                 {
                     return;
                 }
             }
-
-            //after login, pay and book trip, creating a boarding pass and orders
-            Console.WriteLine("\nHow would you like to pay?\n  1. Card\n  2. Points (You currently have " + currentCustomer.MileagePoints + " points)");
-            Console.Write("Enter your choice: ");
-            int choice = Convert.ToInt32(Console.ReadLine());
-            if (choice == 1)
-            {
-                if (roundtrip == "Y")
-                {
-                    Customer.BookTrip(currentCustomer, false, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId);
-                }
-                else
-                {
-                    Customer.BookTrip(currentCustomer, false, chosenDepartFlight.FlightId);
-                }
-            }
-            else if (choice == 2)
-            {
-                try
-                {
-                    if (roundtrip == "Y")
-                    {
-                        Customer.BookTrip(currentCustomer, true, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId);
-                    }
-                    else
-                    {
-                        Customer.BookTrip(currentCustomer, true, chosenDepartFlight.FlightId);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("\n" + ex.Message); //TODO go back
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid Input!");
-            }
-            Console.WriteLine("\nFlight Booked Successfully!");
-            //TODO stuff here
-        }
-        else if (proceed == "N")
-        {
-            //TODO go back
-        }
-        else
-        {
-            Console.WriteLine("Invalid Input!"); //TODO solve invalid inputs
         }
     }
 
@@ -447,12 +593,20 @@ class Program
         {
             Console.Write("Enter your current password: ");
             string currentPassword = User.HashPassword(Console.ReadLine());
-            if (currentPassword == currentCustomer.Password)
+            if (currentUser == null && currentPassword == currentCustomer.Password)
             {
                 Console.Write("Enter your new password: ");
                 currentCustomer.Password = User.HashPassword(Console.ReadLine());
                 Console.WriteLine("Password changed successfully!");
                 Customer.ChangeCustomerPassword(currentCustomer, currentCustomer.Password);
+                break;
+            }
+            else if (currentCustomer == null && currentPassword == currentUser.Password)
+            {
+                Console.Write("Enter your new password: ");
+                currentUser.Password = User.HashPassword(Console.ReadLine());
+                Console.WriteLine("Password changed successfully!");
+                User.ChangeUserPassword(currentUser, currentUser.Password);
                 break;
             }
             else
@@ -511,8 +665,7 @@ class Program
         Console.WriteLine("3. Book a Flight");
         Console.WriteLine("4. Cancel a Flight");
         Console.WriteLine("5. View Account History");
-        Console.WriteLine("6. Change Password");
-        Console.WriteLine("7. Exit");
+        Console.WriteLine("6. Exit");
         Console.Write("Enter your choice: ");
     }
 
@@ -526,7 +679,8 @@ class Program
             Console.WriteLine("2. Add a New Flight"); // this should only include depart time and arrival location
             Console.WriteLine("3. Delete a Flight");
             Console.WriteLine("4. Update a Flight");
-            Console.WriteLine("5. Log Out");
+            Console.WriteLine("5. Change Password");
+            Console.WriteLine("6. Log Out");
             Console.Write("Enter your choice: ");
             int choice = int.Parse(Console.ReadLine());
             Console.WriteLine("\n");
@@ -547,6 +701,9 @@ class Program
                     UpdateFlight();
                     break;
                 case 5:
+                    ChangePassword();
+                    break;
+                case 6:
                     Console.WriteLine("\nLogging out...");
                     currentUser = null;
                     loggedIn = false;
@@ -779,7 +936,8 @@ class Program
         {
             Console.WriteLine("\n\n**** FLIGHT MANAGER FUNCTIONALITY ****");
             Console.WriteLine("1. Generate Flight Manifest");
-            Console.WriteLine("2. Log Out");
+            Console.WriteLine("2. Change Password");
+            Console.WriteLine("3. Log Out");
             Console.Write("Enter your choice: ");
             int choice = int.Parse(Console.ReadLine());
 
@@ -789,6 +947,9 @@ class Program
                     GenerateFlightManifest();
                     break;
                 case 2:
+                    ChangePassword();
+                    break;
+                case 3:
                     Console.WriteLine("\nLogging out...");
                     currentUser = null;
                     loggedIn = false;
@@ -842,7 +1003,8 @@ class Program
                 Console.WriteLine("2. Calculate the income generated by a flight ");
                 Console.WriteLine("3. Calculate the total income generated by all flights ");
                 Console.WriteLine("4. Calculate the number of flights scheduled within a time range ");
-                Console.WriteLine("5. Log Out");
+                Console.WriteLine("5. Change Password");
+                Console.WriteLine("6. Log Out");
                 Console.Write("Enter your choice: ");
                 string choiceString = Console.ReadLine();
                 int choice = int.Parse(choiceString);
@@ -894,6 +1056,10 @@ class Program
                         break;
 
                     case 5:
+                        ChangePassword();
+                        break;
+
+                    case 6:
 
                         Console.WriteLine("\nLogging out...");
                         currentUser = null;
@@ -927,7 +1093,8 @@ class Program
                 Console.WriteLine("\n\n**** MARKETING MANAGER FUNCTIONALITY ****");
                 Console.WriteLine("1. Assign Plane for flight");
                 Console.WriteLine("2. Assign Plane for all flights");
-                Console.WriteLine("3. Log Out");
+                Console.WriteLine("3. Change Password");
+                Console.WriteLine("4. Log Out");
                 Console.Write("Enter your choice: ");
                 int choice = int.Parse(Console.ReadLine());
 
@@ -978,6 +1145,9 @@ class Program
                         }
                         break;
                     case 3:
+                        ChangePassword();
+                        break;
+                    case 4:
                         Console.WriteLine("\nLogging out...");
                         currentUser = null;
                         loggedIn = false;

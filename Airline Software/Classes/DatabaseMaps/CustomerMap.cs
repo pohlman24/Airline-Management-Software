@@ -19,5 +19,6 @@ public class CustomerMap : ClassMap<Customer>
         Map(m => m.UserType).Index(11).Name("UserType");
         Map(m => m.MileagePoints).Index(12).Name("MileagePoints");
         Map(m => m.CreditCardNumber).Index(13).Name("CreditCardNumber");
+        Map(m => m.PointsSpent).Index(14).Name("PointsSpent");
     }
 }

@@ -10,6 +10,7 @@ namespace Airline_Software
     public class Customer : User
     {
         public int MileagePoints { get; set; }
+        public int PointsSpent { get; set; }
         public string? CreditCardNumber { get; set; }
 
         public List<Order> AllOrders;
@@ -21,10 +22,11 @@ namespace Airline_Software
         public List<Order> CanceledOrders;
 
         // Costructor
-        public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber, int MileagePoints)
+        public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber, int MileagePoints, int PointsSpent)
             : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
             this.MileagePoints = MileagePoints;
+            this.PointsSpent = PointsSpent;
             this.CreditCardNumber = CreditCardNumber;
             this.AllOrders = new List<Order>();
             this.ActiveOrders = new List<Order>();
@@ -36,7 +38,7 @@ namespace Airline_Software
         public static Customer CreateCustomer(string firstName, string lastName, string email, string phoneNumber, int age, string address, string city, string state, string zipCode, string password, string userType, string creditCardNumber)
         {
             int id = User.GenerateId();
-            Customer newCustomer = new Customer(id, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber, 0);
+            Customer newCustomer = new Customer(id, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber, 0, 0);
             string filePath = @"..\..\..\Tables\CustomerDb.csv";
             List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
             customers.Add(newCustomer);
@@ -181,6 +183,7 @@ namespace Airline_Software
             //TODO WE NEED POINTS USED TOO????????
             Console.WriteLine("\n\n**** ACCOUNT HISTORY ****");
             Console.WriteLine("\nPoints Available: " + customer.MileagePoints);
+            Console.WriteLine("Points Spent: " + customer.PointsSpent);
             Console.WriteLine("ID Number: " + customer.Id);
             Console.WriteLine("\nAll Flights History:");
             for (int i = 0; i < customer.AllOrders.Count; i++)
@@ -302,6 +305,22 @@ namespace Airline_Software
             CsvDatabase.WriteCsvFile(filePath, customers);
         }
 
+        public static void UpdatePointsSpent(Customer customer, int points)
+        {
+            customer.PointsSpent += points;
+
+            string filePath = @"..\..\..\Tables\CustomerDb.csv";
+            List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
+
+            //update customer info in csv file
+            CsvDatabase.UpdateRecord(customers, p => p.Id, customer.Id, (current, updated) =>
+            {
+                current.PointsSpent = updated.PointsSpent;
+            }, customer);
+
+            CsvDatabase.WriteCsvFile(filePath, customers);
+        }
+
         public static void BookTrip(Customer customer, bool withPoints, int flightId1, int flightId2 = -1)
         {
             Flight flight1 = Flight.FindFlightById(flightId1);
@@ -321,9 +340,16 @@ namespace Airline_Software
                     }
 
                     UpdatePoints(customer, -pointsCost);
+                    UpdatePointsSpent(customer, pointsCost);
+                    Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, true, flightId2);
+                    Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
+                    Flight.UpdateFlight(flight2, seatsSold: flight2.SeatsSold + 1);
+                    return;
                 }
 
-                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, flightId2);
+                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, false, flightId2);
+                Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
+                Flight.UpdateFlight(flight2, seatsSold: flight2.SeatsSold + 1);
             }
             else
             {
@@ -335,9 +361,14 @@ namespace Airline_Software
                     }
 
                     UpdatePoints(customer, -pointsCost);
+                    UpdatePointsSpent(customer, pointsCost);
+                    Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false, true);
+                    Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
+                    return;
                 }
 
-                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false);
+                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false, false);
+                Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
             }
         }
     }
