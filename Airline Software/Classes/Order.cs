@@ -95,10 +95,8 @@
             return maxID + 1;
         }
 
-        public static void CancelOrder(Order order)
+        public static void CancelOrder(Order order, Customer customer)
         {
-            //TODO if not less than an hour before takeoff
-            Customer customer = Customer.FindCustomerById(order.CustomerId);
             Flight flight1 = Flight.FindFlightById(order.FlightId1);
             Customer.UpdatePoints(customer, 10 * flight1.PointsEarned);
 
@@ -109,7 +107,6 @@
             }
 
             UpdateOrder(order, orderStatus : "Canceled"); //want to update order to be cancelled
-            //TODO delete boarding pass(es)
         }
     }
 }

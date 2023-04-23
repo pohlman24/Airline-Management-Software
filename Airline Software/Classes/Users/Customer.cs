@@ -21,7 +21,7 @@ namespace Airline_Software
         public List<Order> CanceledOrders;
 
         // Costructor
-        public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber, int MileagePoints) 
+        public Customer(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType, string CreditCardNumber, int MileagePoints)
             : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
         {
             this.MileagePoints = MileagePoints;
@@ -36,12 +36,12 @@ namespace Airline_Software
         public static Customer CreateCustomer(string firstName, string lastName, string email, string phoneNumber, int age, string address, string city, string state, string zipCode, string password, string userType, string creditCardNumber)
         {
             int id = User.GenerateId();
-            Customer newCustomer = new Customer (id,firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber, 0);
+            Customer newCustomer = new Customer(id, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType, creditCardNumber, 0);
             string filePath = @"..\..\..\Tables\CustomerDb.csv";
             List<Customer> customers = CsvDatabase.ReadCsvFile<Customer>(filePath);
             customers.Add(newCustomer);
             CsvDatabase.WriteCsvFile(filePath, customers);
-            
+
             User.CreateUser(id, firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, userType);
             return newCustomer;
         }
@@ -133,7 +133,18 @@ namespace Airline_Software
 
                 if (order.OrderStatus == "Active")
                 {
-                    activeOrders.Add(order);
+                    Flight endFlight = Flight.FindFlightById(order.FlightId1); //used to decide when to disallow cancellation 1 hour before takeoff
+                    TimeSpan timeDiff = endFlight.DepartureTime - DateTime.Now;
+                    if (timeDiff.TotalMinutes >= 60) //if at least an hour before takeoff
+                    {
+                        activeOrders.Add(order);
+                    }
+                    else
+                    {
+                        order.OrderStatus = "Inactive";
+                        Order.UpdateOrder(order, orderStatus: "Inactive");
+                        oldOrders.Add(order);
+                    }
                 }
                 else if (order.OrderStatus == "Inactive")
                 {
@@ -161,33 +172,96 @@ namespace Airline_Software
         public static void ViewAccountHistory(Customer customer)
         {
             GetOrders(customer); //get all order history
+            Flight flight1 = null;
+            Flight flight2 = null; //return flight
+            Airport airport1 = null; //origin airport
+            Airport airport2 = null; //destination airport
 
             //display relevant information
             //TODO WE NEED POINTS USED TOO????????
-            Console.WriteLine("Points Available:      " + customer.MileagePoints + "\n");
-
-            Console.WriteLine("All Flights History:   ");
+            Console.WriteLine("\n\n**** ACCOUNT HISTORY ****");
+            Console.WriteLine("\nPoints Available: " + customer.MileagePoints);
+            Console.WriteLine("ID Number: " + customer.Id);
+            Console.WriteLine("\nAll Flights History:");
             for (int i = 0; i < customer.AllOrders.Count; i++)
             {
-                Console.WriteLine("                     Order ID: " + customer.AllOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.AllOrders[i].OrderDate + "\n");
+                flight1 = Flight.FindFlightById(customer.AllOrders[i].FlightId1);
+                flight2 = null;
+                airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
+                airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
+                Console.WriteLine("  Order ID: " + customer.AllOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.AllOrders[i].OrderDate);
+                Console.WriteLine("    Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
+                if (customer.AllOrders[i].FlightId2 != -1) //print flight return info if roundtrip
+                {
+                    flight2 = Flight.FindFlightById(customer.AllOrders[i].FlightId2);
+                    Console.WriteLine("    Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
+                }
             }
 
-            Console.WriteLine("Booked Flights:        ");
+            Console.WriteLine("\nBooked Flights:");
             for (int i = 0; i < customer.ActiveOrders.Count; i++)
             {
-                Console.WriteLine("                     Order ID: " + customer.ActiveOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.ActiveOrders[i].OrderDate + "\n");
+                flight1 = Flight.FindFlightById(customer.ActiveOrders[i].FlightId1);
+                flight2 = null;
+                airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
+                airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
+                Console.WriteLine("  Order ID: " + customer.ActiveOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.ActiveOrders[i].OrderDate);
+                Console.WriteLine("    Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
+                if (customer.ActiveOrders[i].FlightId2 != -1) //print flight return info if roundtrip
+                {
+                    flight2 = Flight.FindFlightById(customer.ActiveOrders[i].FlightId2);
+                    Console.WriteLine("    Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
+                }
             }
 
-            Console.WriteLine("Previous Flights:      ");
+            Console.WriteLine("\nPrevious Flights:");
             for (int i = 0; i < customer.OldOrders.Count; i++)
             {
-                Console.WriteLine("                     Order ID: " + customer.OldOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.OldOrders[i].OrderDate + "\n");
+                flight1 = Flight.FindFlightById(customer.OldOrders[i].FlightId1);
+                flight2 = null;
+                airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
+                airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
+                Console.WriteLine("  Order ID: " + customer.OldOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.OldOrders[i].OrderDate);
+                Console.WriteLine("    Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
+                if (customer.OldOrders[i].FlightId2 != -1) //print flight return info if roundtrip
+                {
+                    flight2 = Flight.FindFlightById(customer.OldOrders[i].FlightId2);
+                    Console.WriteLine("    Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
+                }
             }
 
-            Console.WriteLine("Canceled Flights:      ");
+            Console.WriteLine("\nCanceled Flights:");
             for (int i = 0; i < customer.CanceledOrders.Count; i++)
             {
-                Console.WriteLine("                     Order ID: " + customer.CanceledOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.CanceledOrders[i].OrderDate + "\n");
+                flight1 = Flight.FindFlightById(customer.CanceledOrders[i].FlightId1);
+                flight2 = null;
+                airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
+                airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
+                Console.WriteLine("  Order ID: " + customer.CanceledOrders[i].OrderId.ToString().PadLeft(7) + "   Order Date: " + customer.CanceledOrders[i].OrderDate);
+                Console.WriteLine("    Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
+                if (customer.CanceledOrders[i].FlightId2 != -1) //print flight return info if roundtrip
+                {
+                    flight2 = Flight.FindFlightById(customer.CanceledOrders[i].FlightId2);
+                    Console.WriteLine("    Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
+                }
+            }
+        }
+
+        public static void PrintFlightInfo(Customer customer, int orderNumber)
+        {
+            Flight flight1 = null;
+            Flight flight2 = null; //return flight
+            Airport airport1 = null; //origin airport
+            Airport airport2 = null; //destination airport
+            flight1 = Flight.FindFlightById(customer.ActiveOrders[orderNumber].FlightId1);
+            airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
+            airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
+            //print depart flight info
+            Console.WriteLine(" Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
+            if (customer.ActiveOrders[orderNumber].FlightId2 != -1) //print flight return info if roundtrip
+            {
+                flight2 = Flight.FindFlightById(customer.ActiveOrders[orderNumber].FlightId2);
+                Console.WriteLine("      Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
             }
         }
 
@@ -211,7 +285,7 @@ namespace Airline_Software
         /// <summary>
         /// User checks out with all items in cart and adds order 
         /// </summary>
-        
+
         public static void UpdatePoints(Customer customer, int points)
         {
             customer.MileagePoints += points;
@@ -228,37 +302,42 @@ namespace Airline_Software
             CsvDatabase.WriteCsvFile(filePath, customers);
         }
 
-        public void PrintBoardingPass(int OrderId)
-        {
-            // print to console all the flight details
-            // flight number, first and last name, depature location & time, arrival location & time,
-        }
-
         public static void BookTrip(Customer customer, bool withPoints, int flightId1, int flightId2 = -1)
         {
+            Flight flight1 = Flight.FindFlightById(flightId1);
+            int pointsCost = 10 * flight1.PointsEarned;
+
             if (flightId2 != -1)
             {
-                Flight flight1 = Flight.FindFlightById(flightId1);
                 Flight flight2 = Flight.FindFlightById(flightId2);
 
                 if (withPoints == true)
                 {
-                    int pointsCost = 10 * (flight1.PointsEarned + flight2.PointsEarned);
+                    pointsCost += 10 * flight2.PointsEarned;
 
                     if (customer.MileagePoints < pointsCost) //price of flight in points
                     {
-                        Console.WriteLine(customer.MileagePoints);
                         throw new Exception("Not Enough Points!");
                     }
 
                     UpdatePoints(customer, -pointsCost);
                 }
 
-                Order.CreateOrder(customer.Id, flightId1, "Active", new DateOnly(), new DateOnly(), true, flightId2); //TODO change these DateOnly things
+                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, flightId2);
             }
             else
             {
-                Order.CreateOrder(customer.Id, flightId1, "Active", new DateOnly(), new DateOnly(), false); //TODO change these DateOnly things
+                if (withPoints == true)
+                {
+                    if (customer.MileagePoints < pointsCost) //price of flight in points
+                    {
+                        throw new Exception("Not Enough Points!");
+                    }
+
+                    UpdatePoints(customer, -pointsCost);
+                }
+
+                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false);
             }
         }
     }
