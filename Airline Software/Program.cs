@@ -13,28 +13,30 @@ class Program
 
         while (true)
         {
+            if (currentUser == null && loggedIn == true)
+            {
+                HomePage();
+            }
             DefaultPage();
-            /*
-            if (loggedIn == false)
-            {
-                DefaultPage();
-            }
-            else
-            {
-                HomePage(); //TODO only if customer is logged in
-            }
-            */
             choice = int.Parse(Console.ReadLine());
 
             switch (choice)
             {
                 case 1:
                     CreateCustomerAccount();
+                    if (currentUser == null && loggedIn == true)
+                    {
+                        HomePage();
+                    }
                     //MarketingManagerFunctionality();
                     break;
 
                 case 2:
                     LogIn();
+                    if (currentUser == null && loggedIn == true)
+                    {
+                        HomePage();
+                    }
                     //AccountantFunctionality();
                     break;
 
@@ -51,7 +53,7 @@ class Program
                      break;
 
                  case 6:
-                     //ChangePassword();
+                     //ChangePassword(); DO WE NEED THIS IF THEY ARENT LOGGED IN??
                      break;
 
                 case 7:
@@ -67,82 +69,107 @@ class Program
 
     static void CreateCustomerAccount()
     {
-        Console.WriteLine("\n**** CREATE ACCOUNT ****");
-        Console.Write("Enter your first name: ");
-        string firstName = Console.ReadLine();
-        Console.Write("Enter your last name: ");
-        string lastName = Console.ReadLine();
-        Console.Write("Enter your email: ");
-        string email = Console.ReadLine();
-        Console.Write("Enter your phone number: ");
-        string phoneNumber = Console.ReadLine();
-        Console.Write("Enter your age: ");
-        int age = Convert.ToInt32(Console.ReadLine());
-        Console.Write("Enter your address: ");
-        string address = Console.ReadLine();
-        Console.Write("Enter your city: ");
-        string city = Console.ReadLine();
-        Console.Write("Enter your state: ");
-        string state = Console.ReadLine();
-        Console.Write("Enter your zip code: ");
-        string zipCode = Console.ReadLine();
-        Console.Write("Enter your credit card number: "); //TODO CVV??????
-        string creditCardNumber = Console.ReadLine();
-        Console.Write("Create a password: ");
-        string password = User.HashPassword(Console.ReadLine());
-        currentCustomer = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, "Customer", creditCardNumber);
-        Console.WriteLine("\nAccount created successfully! Your ID number is " + currentCustomer.Id);
-        loggedIn = true;
+        while (true)
+        {
+            try
+            {
+                Console.WriteLine("\n\n**** CREATE ACCOUNT ****");
+                Console.Write("Enter your first name: ");
+                string firstName = Console.ReadLine();
+                Console.Write("Enter your last name: ");
+                string lastName = Console.ReadLine();
+                Console.Write("Enter your email: ");
+                string email = Console.ReadLine();
+                Console.Write("Enter your phone number: ");
+                string phoneNumber = Console.ReadLine();
+                Console.Write("Enter your age: ");
+                int age = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter your address: ");
+                string address = Console.ReadLine();
+                Console.Write("Enter your city: ");
+                string city = Console.ReadLine();
+                Console.Write("Enter your state: ");
+                string state = Console.ReadLine();
+                Console.Write("Enter your zip code: ");
+                string zipCode = Console.ReadLine();
+                Console.Write("Enter your credit card number: "); //TODO CVV??????
+                string creditCardNumber = Console.ReadLine();
+                Console.Write("Create a password: ");
+                string password = User.HashPassword(Console.ReadLine());
+                currentCustomer = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, "Customer", creditCardNumber);
+                Console.WriteLine("\nAccount created successfully! Your ID number is " + currentCustomer.Id);
+                loggedIn = true;
+                break;
+            }
+            catch (Exception ex)
+            {
+                if (RetryCommand("information", "account creation") == false)
+                {
+                    return;
+                }
+            }
+        }
     }
 
     static void LogIn()
     {
-        Console.WriteLine("\n**** LOG IN ****");
-        Console.Write("Enter your ID number: ");
-        int userId = Convert.ToInt32(Console.ReadLine());
-        Console.Write("Enter your password: ");
-        string password = User.HashPassword(Console.ReadLine());
-        try
+        while (true)
         {
-            currentUser = User.FindUserById(userId);
-            if (currentUser.UserType == "Customer")
+            Console.WriteLine("\n\n**** LOG IN ****");
+            Console.Write("Enter your ID number: ");
+            int userId = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter your password: ");
+            string password = User.HashPassword(Console.ReadLine());
+            try
             {
-                currentCustomer = Customer.FindCustomerById(currentUser.Id);
-                currentUser = null;
+                currentUser = User.FindUserById(userId);
+                if (currentUser.UserType == "Customer")
+                {
+                    currentCustomer = Customer.FindCustomerById(currentUser.Id);
+                    currentUser = null;
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("\nInvalid ID!"); //TODO solve
-        }
-        if (currentUser == null)
-        {
-            if (password == currentCustomer.Password)
+            catch (Exception ex)
+            {
+                if (RetryCommand("ID", "login") == false)
+                {
+                    return;
+                }
+                continue;
+            }
+            if (currentCustomer != null && password == currentCustomer.Password)
             {
                 Console.WriteLine("\nWelcome, " + currentCustomer.FirstName + "!");
                 loggedIn = true;
+                return;
             }
-        }
-        else if (password == currentUser.Password && currentUser.UserType == "Load Engineer")
-        {
-            Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
-            loggedIn = true;
-            LoadEngineerFunctionality();
-        }
-        else if (password == currentUser.Password && currentUser.UserType == "Flight Manager")
-        {
-            Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
-            loggedIn = true;
-            FlightManagerFunctionality();
-        }
-        else
-        {
-            Console.WriteLine("\nInvalid email or password!");
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Load Engineer")
+            {
+                Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
+                loggedIn = true;
+                LoadEngineerFunctionality();
+                return;
+            }
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Flight Manager")
+            {
+                Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
+                loggedIn = true;
+                FlightManagerFunctionality();
+                return;
+            }
+            else
+            {
+                if (RetryCommand("password", "login") == false)
+                {
+                    return;
+                }
+            }
         }
     }
 
     static void BookFlight()
     {
+        Console.WriteLine("\n\n**** BOOK A FLIGHT ****");
         //display all airports
         List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(@"..\..\..\Tables\AirportDb.csv");
         Console.Write("\nSelect origin and destination airports from below:\n");
@@ -244,21 +271,9 @@ class Program
         {
             if (loggedIn == false)
             {
-                Console.WriteLine("\nPlease log in or create an account first!\n  1. Log in\n  2. Create Account");
-                Console.Write("Enter your choice: ");
-                int command = Convert.ToInt32(Console.ReadLine());
-
-                if (command == 1)
+                if (VerifyUser() == false)
                 {
-                    LogIn();
-                }
-                else if (command == 2)
-                {
-                    CreateCustomerAccount();
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Input!");
+                    return;
                 }
             }
 
@@ -316,24 +331,13 @@ class Program
     {
         if (loggedIn == false) //check if logged in or else there are no flights to cancel
         {
-            Console.WriteLine("\nPlease log in or create an account first!\n  1. Log in\n  2. Create Account");
-            Console.Write("Enter your choice: ");
-            int command = Convert.ToInt32(Console.ReadLine());
-
-            if (command == 1)
+            if (VerifyUser() == false)
             {
-                LogIn();
-            }
-            else if (command == 2)
-            {
-                CreateCustomerAccount();
-            }
-            else
-            {
-                Console.WriteLine("Invalid Input!"); //TODO what after
+                return;
             }
         }
 
+        Console.WriteLine("\n\n**** CANCEL A FLIGHT ****");
         //display all booked flights
         Customer.GetOrders(currentCustomer); //get all order history
         if (currentCustomer.ActiveOrders.Count > 0)
@@ -344,27 +348,69 @@ class Program
                 Console.Write("  " + (i + 1) + ". ");
                 Customer.PrintFlightInfo(currentCustomer, i);
             }
-            Console.Write("Enter your choice: ");
-            int cancelChoice = Convert.ToInt32(Console.ReadLine());
-            Console.Write("Are you sure you would like to cancel Flight " + cancelChoice + "? (Y/N): ");
-            string cancelString = Console.ReadLine(); //TODO toLower()
-            if (cancelString == "Y")
+            Console.WriteLine("  B.  Go back");
+            while (true)
             {
-                Order.CancelOrder(currentCustomer.ActiveOrders[cancelChoice - 1], currentCustomer);
-                Console.WriteLine("\nFlight Canceled!");
-            }
-            else if (cancelString == "N")
-            {
-                //TODO
-            }
-            else
-            {
-                Console.WriteLine("Invalid Input!"); //TODO what after
+                try
+                {
+                    Console.Write("Enter your choice: ");
+                    string cancelChoice = Console.ReadLine();
+                    int cancel = 0;
+                    if (cancelChoice == "B")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        cancel = Convert.ToInt32(cancelChoice);
+                        if (cancel > currentCustomer.ActiveOrders.Count)
+                        {
+                            throw new Exception("Invalid Input");
+                        }
+                    }
+                    while (true)
+                    {
+                        Console.Write("Are you sure you would like to cancel Flight " + cancelChoice + "? (Y/N): ");
+                        string cancelString = Console.ReadLine(); //TODO toLower()
+                        if (cancelString == "Y")
+                        {
+                            Order.CancelOrder(currentCustomer.ActiveOrders[cancel - 1], currentCustomer);
+                            Console.WriteLine("\nFlight Canceled!");
+                            return;
+                        }
+                        else if (cancelString == "N")
+                        {
+                            Console.WriteLine("\nChoose a flight from above, or enter B to go back");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nInvalid Input!");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\nInvalid Input! Choose a flight from above, or enter B to go back");
+                }
             }
         }
         else
         {
             Console.WriteLine("\nNo Current Bookings");
+            Console.Write("\nEnter B to go back: ");
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (input == "B")
+                {
+                    return;
+                }
+                else
+                {
+                    Console.Write("\nInvalid input! Enter B to go back: ");
+                }
+            }
         }
     }
 
@@ -372,49 +418,49 @@ class Program
     {
         if (loggedIn == false) //check if logged in or else there are no flights to cancel
         {
-            Console.WriteLine("\nPlease log in or create an account first!\n  1. Log in\n  2. Create Account");
-            Console.Write("Enter your choice: ");
-            int command = Convert.ToInt32(Console.ReadLine());
-
-            if (command == 1)
+            if (VerifyUser() == false)
             {
-                LogIn();
-            }
-            else if (command == 2)
-            {
-                CreateCustomerAccount();
-            }
-            else
-            {
-                Console.WriteLine("Invalid Input!"); //TODO what after
+                return;
             }
         }
 
         Customer.ViewAccountHistory(currentCustomer);
+        Console.Write("\nEnter B to go back: ");
+        while (true)
+        {
+            string input = Console.ReadLine();
+            if (input == "B")
+            {
+                break;
+            }
+            else
+            {
+                Console.Write("\nInvalid input! Enter B to go back");
+            }
+        }
     }
 
-    /* TODO this function
     static void ChangePassword()
-      {
-          if (user.email == null)
-          {
-              Console.WriteLine("\nPlease log in or create an account first!");
-              return;
-          }
-          Console.Write("\nEnter your current password: ");
-          string currentPassword = Console.ReadLine();
-          if (currentPassword == user.password)
-          {
-              Console.Write("Enter your new password: ");
-              user.password = Console.ReadLine();
-              Console.WriteLine("Password changed successfully!");
-          }
-          else
-          {
-              Console.WriteLine("Incorrect password!");
-          }
-      }
-    */
+    {
+        Console.WriteLine("\n\n**** CHANGE PASSWORD ****\n");
+        while (true)
+        {
+            Console.Write("Enter your current password: ");
+            string currentPassword = User.HashPassword(Console.ReadLine());
+            if (currentPassword == currentCustomer.Password)
+            {
+                Console.Write("Enter your new password: ");
+                currentCustomer.Password = User.HashPassword(Console.ReadLine());
+                Console.WriteLine("Password changed successfully!");
+                Customer.ChangeCustomerPassword(currentCustomer, currentCustomer.Password);
+                break;
+            }
+            else
+            {
+                Console.WriteLine("\nIncorrect password!");
+            }
+        }
+    }
 
     static void HomePage()
     {
@@ -422,7 +468,7 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("\n**** HOME PAGE ****");
+            Console.WriteLine("\n\n**** HOME PAGE ****");
             Console.WriteLine("1. Book a Flight");
             Console.WriteLine("2. Cancel a Flight");
             Console.WriteLine("3. View Account History");
@@ -443,7 +489,7 @@ class Program
                     ViewAccountHistory();
                     break;
                 case 4:
-                    //ChangePassword();
+                    ChangePassword();
                     break;
                 case 5:
                     Console.WriteLine("\nLogging out...");
@@ -871,7 +917,7 @@ class Program
         }
     }
 
-     static void MarketingManagerFunctionality()
+    static void MarketingManagerFunctionality()
     {
         while (true)
         {
@@ -950,5 +996,69 @@ class Program
                 Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
+    }
+
+    static bool RetryCommand(string error, string method) //method to loop another method in case of an exception
+    {
+        Console.WriteLine("\nInvalid " + error + "!\n  1. Retry " + method + "\n  B. Go back");
+        Console.Write("Enter your choice: ");
+        while (true)
+        {
+            string input = Console.ReadLine();
+            if (input == "1")
+            {
+                break;
+            }
+            else if (input == "B")
+            {
+                return false;
+            }
+            else
+            {
+                Console.Write("\nInvalid input!\n  1. Retry " + method + "\n  B. Go back");
+                Console.Write("Enter your choice: ");
+            }
+        }
+        return true;
+    }
+
+    static bool VerifyUser()
+    {
+        Console.WriteLine("\nPlease log in or create an account first!\n  1. Log in\n  2. Create Account\n  B. Go back");
+        Console.Write("Enter your choice: ");
+        while (true)
+        {
+            string command = Console.ReadLine();
+            if (command == "1")
+            {
+                LogIn();
+                if (loggedIn == true)
+                {
+                    break;
+                }
+                Console.WriteLine("\nPlease log in or create an account first!\n  1. Log in\n  2. Create Account\n  B. Go back");
+                Console.Write("Enter your choice: ");
+            }
+            else if (command == "2")
+            {
+                CreateCustomerAccount();
+                if (loggedIn == true)
+                {
+                    break;
+                }
+                Console.WriteLine("\nPlease log in or create an account first!\n  1. Log in\n  2. Create Account\n  B. Go back");
+                Console.Write("Enter your choice: ");
+            }
+            else if (command == "B")
+            {
+                return false;
+            }
+            else
+            {
+                Console.WriteLine("\nInvalid input!\n  1. Log in\n  2. Create Account\n  B. Go back");
+                Console.Write("Enter your choice: ");
+            }
+        }
+        return true;
     }
 }

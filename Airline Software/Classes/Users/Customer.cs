@@ -179,7 +179,7 @@ namespace Airline_Software
 
             //display relevant information
             //TODO WE NEED POINTS USED TOO????????
-            Console.WriteLine("\n**** ACCOUNT HISTORY ****");
+            Console.WriteLine("\n\n**** ACCOUNT HISTORY ****");
             Console.WriteLine("\nPoints Available: " + customer.MileagePoints);
             Console.WriteLine("ID Number: " + customer.Id);
             Console.WriteLine("\nAll Flights History:");

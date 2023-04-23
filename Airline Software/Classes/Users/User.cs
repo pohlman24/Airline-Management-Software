@@ -139,7 +139,7 @@ namespace Airline_Software
         public static string ChangeUserPassword(User user, string newPassword)
         {
             //set new password for user object
-            user.Password = HashPassword(newPassword);
+            user.Password = newPassword;
 
             string filePath = @"..\..\..\Tables\UserDb.csv";
             List<User> users = CsvDatabase.ReadCsvFile<User>(filePath);
