@@ -23,13 +23,11 @@ class Program
             switch (choice)
             {
                 case 1:
-                    CreateAccount();
-                    //MarketingManagerFunctionality();
+                    CreateCustomerAccount();
                     break;
 
                 case 2:
                     LogIn();
-                    //AccountantFunctionality();
                     break;
 
                 case 3:
@@ -84,7 +82,7 @@ class Program
                 string state = Console.ReadLine();
                 Console.Write("Enter your zip code: ");
                 string zipCode = Console.ReadLine();
-                Console.Write("Enter your credit card number: "); //TODO CVV??????
+                Console.Write("Enter your credit card number: ");
                 string creditCardNumber = Console.ReadLine();
                 Console.Write("Create a password: ");
                 string password = User.HashPassword(Console.ReadLine());
@@ -103,6 +101,7 @@ class Program
         }
     }
 
+    // Any user login 
     static void LogIn()
     {
         while (true)
@@ -158,7 +157,7 @@ class Program
                 MarketingManagerFunctionality();
                 return;
             }
-            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Accountannt")
+            else if (currentUser != null && password == currentUser.Password && currentUser.UserType == "Accountant")
             {
                 Console.WriteLine("\nWelcome, " + currentUser.FirstName + "!");
                 loggedIn = true;
@@ -175,6 +174,9 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Customer menu options
+    /// </summary>
     static void BookFlight()
     {
         Console.WriteLine("\n\n**** BOOK A FLIGHT ****");
@@ -524,6 +526,10 @@ class Program
         Console.Write("Enter your choice: ");
     }
 
+    /// <summary>
+    /// Load Engineer Menu section
+    /// UI, Create, View, Update, Delete Flight funtions
+    /// </summary>
     static void LoadEngineerFunctionality()
     {
         // Code to handle flight manager functionality goes here
@@ -534,7 +540,8 @@ class Program
             Console.WriteLine("2. Add a New Flight"); // this should only include depart time and arrival location
             Console.WriteLine("3. Delete a Flight");
             Console.WriteLine("4. Update a Flight");
-            Console.WriteLine("5. Log Out");
+            Console.WriteLine("5. View All Aiports");
+            Console.WriteLine("6. Log Out");
             Console.Write("Enter your choice: ");
             try
             {
@@ -557,6 +564,9 @@ class Program
                         UpdateFlight();
                         break;
                     case 5:
+                        Airport.DisplayAllAiports();
+                        break;
+                    case 6:
                         Console.WriteLine("\nLogging out...");
                         return;
                     default:
@@ -577,11 +587,11 @@ class Program
         // Get user input for flight details
         Console.WriteLine("**** Add Flight ****");
         Console.WriteLine("Enter your flight details or type 'back' to go back to previous page\n");
-        Console.WriteLine("Flight Departure City: ");
-        string departCity = Console.ReadLine();
+        Console.WriteLine("Departure Airport Code: ");
+        string departCity = Console.ReadLine().ToUpper();
         if (departCity == "back" || departCity == "BACK" || departCity == "Back" || departCity == "b") { return; }
-        Console.WriteLine("Flight Arrival City: ");
-        string arrCity = Console.ReadLine();
+        Console.WriteLine("Arrival Airport Code: ");
+        string arrCity = Console.ReadLine().ToUpper();
         Console.WriteLine("Flight Departure Time: yyyy-mm-dd hh:mm (24-hour)");
         string departTime = Console.ReadLine();
 
@@ -590,8 +600,8 @@ class Program
         {
             // Confirm input is correct
             Console.WriteLine("\nConfirm the following info is correct (Y/N)");
-            Console.WriteLine("Depature City: " + departCity);
-            Console.WriteLine("Arrival City: " + arrCity);
+            Console.WriteLine("Depature Aiport Code: " + departCity);
+            Console.WriteLine("Arrival Airport Code: " + arrCity);
             Console.WriteLine("Departure Time: " + departTime);
             string isCorrect = Console.ReadLine().ToUpper();
 
@@ -602,8 +612,8 @@ class Program
                 try
                 {
                     // get object references 
-                    Airport departAirport = Airport.FindAirportbyCity(departCity);
-                    Airport arrivalAiport = Airport.FindAirportbyCity(arrCity);
+                    Airport departAirport = Airport.FindAirportbyCode(departCity);
+                    Airport arrivalAiport = Airport.FindAirportbyCode(arrCity);
                     DateTime time = DateTime.Parse(departTime);
                     // create new flight 
                     Flight newFlight = Flight.CreateFlight(departAirport.AirportId, arrivalAiport.AirportId, time);
@@ -641,8 +651,8 @@ class Program
         // get user input
         Console.WriteLine("**** Cancel Flight ****");
         Console.WriteLine("Enter flight number you want to cancel or type 'back' to go back to the previous page");
-        string flightNumber = Console.ReadLine();
-        if (flightNumber == "back" || flightNumber == "BACK" || flightNumber == "Back" || flightNumber == "b") { return; }
+        string flightNumber = Console.ReadLine().ToUpper();
+        if (flightNumber == "BACK" || flightNumber == "B") { return; }
 
         // use try/catch block to check for invalid flight number 
         try
@@ -704,7 +714,6 @@ class Program
         }
     }
 
-    // Flight manager function to update flight 
     static void UpdateFlight()
     {
         // get flight number of flight to udpate
@@ -725,12 +734,12 @@ class Program
                 Console.WriteLine("Enter the number for the field you want to update\nOr type 'back' to enter new flight number\n");
                 Console.WriteLine(
                     "Flight Number: {0}\n" +
-                    "1. Departure City: {1}\n" +
-                    "2. Arrival City: {2}\n" +
+                    "1. Departure Airport Code: {1}\n" +
+                    "2. Arrival Airport Code: {2}\n" +
                     "3. Departure Time: {3}\n",
                     flight.FlightNumber,
-                    Airport.FindAirportbyId(flight.DepartureAirportID).City,
-                    Airport.FindAirportbyId(flight.ArrivalAirportID).City,
+                    Airport.FindAirportbyId(flight.DepartureAirportID).Code,
+                    Airport.FindAirportbyId(flight.ArrivalAirportID).Code,
                     flight.DepartureTime
                 );
 
@@ -743,8 +752,8 @@ class Program
                 // user wants to update departure city
                 if (choice == 1)
                 {
-                    Console.WriteLine("Enter new departure city");
-                    string newCity = Console.ReadLine();
+                    Console.WriteLine("Enter new departure code");
+                    string newCity = Console.ReadLine().ToUpper();
                     try
                     {
                         Airport airport = Airport.FindAirportByProperty(newCity);
@@ -761,8 +770,8 @@ class Program
                 // user wants to update arrival city
                 else if (choice == 2)
                 {
-                    Console.WriteLine("Enter new arrival city");
-                    string newCity = Console.ReadLine();
+                    Console.WriteLine("Enter new arrival code");
+                    string newCity = Console.ReadLine().ToUpper();
                     try
                     {
                         Airport airport = Airport.FindAirportbyCity(newCity);
@@ -802,8 +811,7 @@ class Program
             }
         }
         catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);   
+        { 
             Console.WriteLine("Flight not found");
             UpdateFlight();
         }
@@ -817,7 +825,9 @@ class Program
         {
             Console.WriteLine("\n\n**** FLIGHT MANAGER FUNCTIONALITY ****");
             Console.WriteLine("1. Generate Flight Manifest");
-            Console.WriteLine("2. Log Out");
+            Console.WriteLine("2. View All Flights");
+            Console.WriteLine("3. View All Airports");
+            Console.WriteLine("4. Log Out");
             Console.Write("Enter your choice: ");
             try
             {
@@ -829,6 +839,12 @@ class Program
                         GenerateFlightManifest();
                         break;
                     case 2:
+                        Flight.ShowAllFlights();
+                        break;
+                    case 3:
+                        Airport.DisplayAllAiports();
+                        break;
+                    case 4:
                         Console.WriteLine("\nLogging out...");
                         return;
                     default:
@@ -873,7 +889,10 @@ class Program
         }
     }
 
-
+    /// <summary>
+    /// Accountant Menu Section
+    /// UI, Generate reports on 
+    /// </summary>
     static void AccountantFunctionality()
     {
         // Code to handle accountant functionality goes here
@@ -896,61 +915,47 @@ class Program
                     case 1:
                         try
                         {
-                            
+                            Console.WriteLine("List of all flights:");
                             Flight.ShowAllFlights();
-                            Console.WriteLine("Enter flight number or type 'back'or 'b' to go back");
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back");
                             string userInput = Console.ReadLine().ToUpper();
+
                             if (userInput == "BACK" || userInput == "B") 
                             { 
                                 AccountantFunctionality(); 
                             }
 
-                            Console.WriteLine("Flight Number entered");
-
-
-
                             Flight flight = Flight.FindFlightByFlightNumber(userInput);
-
-
-
                             double percentCapacity = Accountant.CalcPercentCapacity(flight);
-                            Console.WriteLine("Percent Capacity: " + percentCapacity);
+                            Console.WriteLine("\nPercent Capacity: " + Math.Round(percentCapacity,2)*100 + "%");
                         }
                         catch (FormatException)
                         {
-                            Console.WriteLine("Invalid input format. Please enter a valid flight number.");
+                            Console.WriteLine("\nInvalid input format. Please enter a valid flight number.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred: " + ex.Message);
                         }
                         break;
 
                     case 2:
                         try
                         {
-
-                            
                             Flight.ShowAllFlights();
-                            Console.WriteLine("Enter flight number or type 'back'or 'b' to go back");
 
-                            
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back");
                             string userInput = Console.ReadLine().ToUpper();
+
                             if (userInput == "BACK" || userInput == "B")
                             {
                                 AccountantFunctionality();
                             }
 
-                            Console.WriteLine("Flight Number entered");
-
-
-
-                           
-
                             Flight flight2 = Flight.FindFlightByFlightNumber(userInput);
 
                             double income = Accountant.CalcIncomeFlight(flight2);
-                            Console.WriteLine("Income per Flight: " + income);
+                            Console.WriteLine("\nIncome for flight: $" + income);
                         }
                         catch (FormatException)
                         {
@@ -966,7 +971,7 @@ class Program
                         try
                         {
                             double totalIncome = Accountant.CalcIncomeWhole();
-                            Console.WriteLine("Income all Flights: " + totalIncome);
+                            Console.WriteLine("\nIncome of all Flights: " + totalIncome);
                         }
                         catch (Exception ex)
                         {
@@ -977,17 +982,15 @@ class Program
                     case 4:
                         try
                         {
-                            Console.WriteLine("Enter time range (day, month, or year)  or type 'back' or 'b' to go back");
+                            Console.WriteLine("\nEnter time range (day, month, or year) or type 'back' or 'b' to go back");
                             string userInput = Console.ReadLine().ToUpper();
                             if (userInput == "BACK" || (userInput =="B")) 
                             {
                                 AccountantFunctionality(); 
                             }
 
-                            Console.WriteLine("Range entered: " + userInput);
-
                             int numFlights = Accountant.CalcNumFlights(userInput);
-                            Console.WriteLine("Num of flights: " + numFlights);
+                            Console.WriteLine("Number of flights this {0}: {1}", userInput.ToLower(), numFlights);
                         }
                         catch (FormatException)
                         {
@@ -1000,7 +1003,6 @@ class Program
                         break;
 
                     case 5:
-
                         Console.WriteLine("\nLogging out...");
                         currentUser = null;
                         loggedIn = false;
@@ -1023,7 +1025,10 @@ class Program
         }
     }
 
-
+    /// <summary>
+    /// Marketing Manager menu section
+    /// 
+    /// </summary>
     static void MarketingManagerFunctionality()
     {
         while (true)
@@ -1044,20 +1049,18 @@ class Program
                     case 1:
                         try
                         {
-
+                            Console.WriteLine("List of flights without assigned planes:\n");
                             Flight.FlightWithNoPlane();
-                            Console.WriteLine("Enter flight number: ");
-                            string flightNumber = Console.ReadLine();
+                            Console.WriteLine("\nEnter flight number: ");
+                            string flightNumber = Console.ReadLine().ToUpper();
 
                             Flight flight = Flight.FindFlightByFlightNumber(flightNumber);
-                            // Retrieve flight by ID
-                            Console.WriteLine("Assigning Plane for Flight " + flightNumber);
 
                             // Assign plane for flight
                             MarketingManager.AssignPlaneForFlight(flight);
-
-                            Console.WriteLine("Planed Assigned for flight: " + flightNumber + "\n");
-
+                            Console.WriteLine("\n{0} assigned for flight: {1}",
+                                                Plane.FindPlaneById((int)flight.PlaneModelId).Model,
+                                                flightNumber);
                             break;
 
                         }
@@ -1069,10 +1072,8 @@ class Program
                     case 2:
                         try
                         {
-                            Console.WriteLine("Assinging Plane for all flights");
                             MarketingManager.AssignPlaneForAllFlights();
-
-                            Console.WriteLine("Planes assigned for all flights");
+                            Console.WriteLine("Planes successfully assigned for all flights.");
                         }
                         catch (Exception ex)
                         {
@@ -1100,13 +1101,14 @@ class Program
         }
     }
 
+    // Helper functions
     static bool RetryCommand(string error, string method) //method to loop another method in case of an exception
     {
         Console.WriteLine("\nInvalid " + error + "!\n  1. Retry " + method + "\n  B. Go back");
         Console.Write("Enter your choice: ");
         while (true)
         {
-            string input = Console.ReadLine();
+            string input = Console.ReadLine().ToUpper();
             if (input == "1")
             {
                 break;

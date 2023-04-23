@@ -62,17 +62,11 @@ namespace Airline_Software
             
             foreach (Flight flight in flights)
             {
-
-                
-
                 if(range == "DAY")
                 {
                     if (flight.DepartureTime.Day == DateTime.Today.Day)
                     {
-                        Console.WriteLine(flight.DepartureTime);
                         count++;
-
-
                     }
                     
                 }
@@ -81,18 +75,14 @@ namespace Airline_Software
                     if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today)
                         && flight.DepartureTime.Year == DateTime.Today.Year)
                     {
-                        Console.WriteLine(flight.DepartureTime);
                         count++;
                     }
-
                 }
                 else if ( range == "MONTH")
                 {
                     if (flight.DepartureTime.Month == DateTime.Today.Month)
                     {
-                        Console.WriteLine(flight.DepartureTime);
                         count++;
-
                     }
 
                 }

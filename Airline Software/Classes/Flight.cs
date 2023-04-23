@@ -43,7 +43,7 @@ namespace Airline_Software
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}", "Flight Number", "Departure City",
-                "Arrival City", "Departure Time", "Est Arrival Time\n");
+                "Arrival City", "Departure Time", "Est Arrival Time");
             foreach (Flight flight in flights)
             {
                 if (flight.PlaneModelId == -1)
@@ -167,7 +167,7 @@ namespace Airline_Software
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
 
-            Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -18} {6, -18} {7}", "Flight Number","Departure City",
+            Console.WriteLine("\n{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -18} {6, -18} {7}", "Flight Number","Departure City",
                 "Arrival City", "Departure Time", "Est Arrival Time", "Price", "Points Value", "Seats Sold/Capacity");
             foreach (Flight flight in flights)
             {
