@@ -57,10 +57,15 @@ namespace Airline_Software
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             int count = 0;
+
+            // fix output formatting!! DG
+            
             foreach (Flight flight in flights)
             {
 
-                if(range == "day")
+                
+
+                if(range == "DAY")
                 {
                     if (flight.DepartureTime.Day == DateTime.Today.Day)
                     {
@@ -71,7 +76,7 @@ namespace Airline_Software
                     }
                     
                 }
-                else if(range == "week")
+                else if(range == "WEEK")
                 {
                     if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today)
                         && flight.DepartureTime.Year == DateTime.Today.Year)
@@ -81,7 +86,7 @@ namespace Airline_Software
                     }
 
                 }
-                else if ( range == "month")
+                else if ( range == "MONTH")
                 {
                     if (flight.DepartureTime.Month == DateTime.Today.Month)
                     {
@@ -92,7 +97,7 @@ namespace Airline_Software
 
                 }
 
-                else if(range == "year")
+                else if(range == "YEAR")
                 {
                     if(flight.DepartureTime.Year == DateTime.Today.Year)
                     {
