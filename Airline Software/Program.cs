@@ -24,6 +24,7 @@ class Program
             {
                 case 1:
                     CreateCustomerAccount();
+                    
                     break;
 
                 case 2:
@@ -31,12 +32,12 @@ class Program
                     break;
 
                 case 3:
-                     BookFlight();
-                     break;
+                    BookFlight();
+                    break;
 
-                 case 4:
-                     CancelFlight();
-                     break;
+                case 4:
+                    CancelFlight();
+                    break;
 
                  case 5:
                      ViewAccountHistory();
@@ -578,7 +579,7 @@ class Program
             {
                 Console.WriteLine("\nInvalid choice! Please try again.");
             }
-            
+
         }
     }
 
@@ -779,12 +780,12 @@ class Program
                         Console.WriteLine("\nFlight Updated\nNotice: The flight number has been updated\nNew flight number: " + flight.FlightNumber);
                         break;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Console.WriteLine("Airport not found. Available airports shown below");
                         Airport.DisplayAllAiports();
                     }
-                    
+
                 }
                 // user wants to update departure time
                 else if (choice == 3)
@@ -797,7 +798,7 @@ class Program
                         Console.WriteLine("\nFlight Updated");
                         break;
                     }
-                    catch 
+                    catch
                     {
                         Console.WriteLine("Date not formatted correctly");
                     }
@@ -817,7 +818,7 @@ class Program
         }
 
     }
-  
+
     static void FlightManagerFunctionality()
     {
         // Code to handle flight manager functionality goes here
@@ -852,11 +853,11 @@ class Program
                         break;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("\nInvalid choice! Please try again.");
             }
-            
+
         }
     }
 
@@ -873,7 +874,7 @@ class Program
 
             Console.WriteLine("Save manifest? (Y/N)");
             string isSaving = Console.ReadLine().ToUpper();
-            if(isSaving == "Y" || isSaving == "YES")
+            if (isSaving == "Y" || isSaving == "YES")
             {
                 FlightManager.SaveFlightManifest(flight);
             }
@@ -984,9 +985,9 @@ class Program
                         {
                             Console.WriteLine("\nEnter time range (day, month, or year) or type 'back' or 'b' to go back");
                             string userInput = Console.ReadLine().ToUpper();
-                            if (userInput == "BACK" || (userInput =="B")) 
+                            if (userInput == "BACK" || (userInput == "B"))
                             {
-                                AccountantFunctionality(); 
+                                AccountantFunctionality();
                             }
 
                             int numFlights = Accountant.CalcNumFlights(userInput);
