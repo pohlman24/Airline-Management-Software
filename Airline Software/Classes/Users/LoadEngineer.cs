@@ -40,11 +40,17 @@ namespace Airline_Software
 
         public static void CancelFlight(Flight flight) //same as edit
         {
-            //TODO refund points
-
-            //remove flight from database, refund customers
-            Flight.DeleteFlight(flight);
-            Console.WriteLine("Flight '"+ flight.FlightNumber + "' canceled");
+            if(flight.SeatsSold == 0)
+            {
+                //remove flight from database
+                Flight.DeleteFlight(flight);
+                Console.WriteLine("Flight '" + flight.FlightNumber + "' canceled");
+            }
+            else
+            {
+                Console.WriteLine("This flight can't be cancelled because tickets have already been bought for it");
+            }
+            
         }
     }
 }

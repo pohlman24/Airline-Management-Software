@@ -57,7 +57,6 @@ namespace Airline_Software
                 if (distance < 500)
                 {
                     // boeing 737
-                    Console.WriteLine(distance);
                     id = 1;
                     cap = Plane.FindPlaneById(id).Capacity;
                 }
