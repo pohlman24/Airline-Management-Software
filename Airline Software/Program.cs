@@ -690,34 +690,11 @@ class Program
             Console.WriteLine("4. Update a Flight");
             Console.WriteLine("5. Change Password");
             Console.WriteLine("5. View All Aiports");
-            Console.WriteLine("6. Log Out");
+            Console.WriteLine("6. Change Password");
+            Console.WriteLine("7. Log Out");
             Console.Write("Enter your choice: ");
             try
             {
-                case 1:
-                    // output list of all scheduled flights 
-                    Flight.ShowAllFlights();
-                    break;
-                case 2:
-                    AddFlight();
-                    break;
-                case 3:
-                    CancelFlightAdmin();
-                    break;
-                case 4:
-                    UpdateFlight();
-                    break;
-                case 5:
-                    ChangePassword();
-                    break;
-                case 6:
-                    Console.WriteLine("\nLogging out...");
-                    currentUser = null;
-                    loggedIn = false;
-                    return;
-                default:
-                    Console.WriteLine("\nInvalid choice! Please try again.");
-                    break;
                 int choice = int.Parse(Console.ReadLine());
                 Console.WriteLine("\n");
 
@@ -740,6 +717,9 @@ class Program
                         Airport.DisplayAllAiports();
                         break;
                     case 6:
+                        ChangePassword();
+                        break;
+                    case 7:
                         Console.WriteLine("\nLogging out...");
                         return;
                     default:
@@ -1001,24 +981,11 @@ class Program
             Console.WriteLine("3. Log Out");
             Console.WriteLine("2. View All Flights");
             Console.WriteLine("3. View All Airports");
-            Console.WriteLine("4. Log Out");
+            Console.WriteLine("4. Change Password");
+            Console.WriteLine("5. Log Out");
             Console.Write("Enter your choice: ");
             try
             {
-                case 1:
-                    GenerateFlightManifest();
-                    break;
-                case 2:
-                    ChangePassword();
-                    break;
-                case 3:
-                    Console.WriteLine("\nLogging out...");
-                    currentUser = null;
-                    loggedIn = false;
-                    return;
-                default:
-                    Console.WriteLine("\nInvalid choice! Please try again.");
-                    break;
                 int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
@@ -1033,6 +1000,9 @@ class Program
                         Airport.DisplayAllAiports();
                         break;
                     case 4:
+                        ChangePassword();
+                        break;
+                    case 5:
                         Console.WriteLine("\nLogging out...");
                         return;
                     default:

@@ -27,4 +27,5 @@ OrderId,CustomerId,FlightId1,FlightId2,OrderStatus,OrderDate,CancellationDate,Is
 22,807130,21,-1,Canceled,2023-04-23,2023-05-15,False,False
 23,807130,21,-1,Canceled,2023-04-23,2023-05-15,False,True
 24,807130,23,22,Canceled,2023-04-23,2023-05-18,True,True
-25,807130,21,-1,Active,2023-04-23,2023-05-15,False,False
+25,807130,21,-1,Canceled,2023-04-23,2023-05-15,False,False
+26,807130,21,22,Canceled,2023-04-24,2023-05-18,True,True
