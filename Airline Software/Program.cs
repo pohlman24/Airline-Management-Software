@@ -5,8 +5,8 @@ using System.Globalization;
 class Program
 {
     static bool loggedIn = false; //global var to check if a customer is logged in
-    static User currentUser = null;
-    static Customer currentCustomer = null;
+    static User? currentUser = null;
+    static Customer? currentCustomer = null;
 
     static void Main(string[] args)
     {
@@ -67,28 +67,64 @@ class Program
             {
                 Console.WriteLine("\n\n**** CREATE ACCOUNT ****");
                 Console.Write("Enter your first name: ");
-                string firstName = Console.ReadLine();
+                string firstName = Console.ReadLine() ?? "N/A";
+                if (firstName == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your last name: ");
-                string lastName = Console.ReadLine();
+                string lastName = Console.ReadLine() ?? "N/A";
+                if (lastName == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your email: ");
-                string email = Console.ReadLine();
+                string email = Console.ReadLine() ?? "N/A";
+                if (email == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your phone number: ");
-                string phoneNumber = Console.ReadLine();
+                string phoneNumber = Console.ReadLine() ?? "N/A";
+                if (phoneNumber == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your age: ");
                 int age = Convert.ToInt32(Console.ReadLine());
                 Console.Write("Enter your address: ");
-                string address = Console.ReadLine();
+                string address = Console.ReadLine() ?? "N/A";
+                if (address == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your city: ");
-                string city = Console.ReadLine();
+                string city = Console.ReadLine() ?? "N/A";
+                if (city == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your state: ");
-                string state = Console.ReadLine();
+                string state = Console.ReadLine() ?? "N/A";
+                if (state == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your zip code: ");
-                string zipCode = Console.ReadLine();
+                string zipCode = Console.ReadLine() ?? "N/A";
+                if (zipCode == "")
+                {
+                    throw new Exception("empty input");
+                }
                 Console.Write("Enter your credit card number: ");
-                string creditCardNumber = Console.ReadLine();
+                string creditCardNumber = Console.ReadLine() ?? "N/A";
+                if (creditCardNumber == "")
+                {
+                    throw new Exception("empty input");
+                }
 
                 Console.Write("Is all of the entered information correct? (Y/N): ");
-                string proceed = Console.ReadLine();
+                string proceed = Console.ReadLine()?.ToUpper() ?? "Error";
                 if (proceed == "Y")
                 {
                     //continue
@@ -99,7 +135,7 @@ class Program
                     Console.Write("Enter your choice: ");
                     while (true)
                     {
-                        string input = Console.ReadLine();
+                        string input = Console.ReadLine()?.ToUpper() ?? "Error";
                         if (input == "1")
                         {
                             break;
@@ -126,13 +162,17 @@ class Program
                 }
 
                 Console.Write("Create a password: ");
-                string password = User.HashPassword(Console.ReadLine());
+                string password = User.HashPassword(Console.ReadLine() ?? "default");
+                if (password == User.HashPassword("default"))
+                {
+                    Console.WriteLine("Invalid password. Your password has been set to 'default'. Please change your password as soon as possible.");
+                }
                 currentCustomer = Customer.CreateCustomer(firstName, lastName, email, phoneNumber, age, address, city, state, zipCode, password, "Customer", creditCardNumber);
                 Console.WriteLine("\nAccount created successfully! Your ID number is " + currentCustomer.Id);
                 loggedIn = true;
                 break;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (RetryCommand("information", "account creation") == false)
                 {
@@ -145,13 +185,14 @@ class Program
     // Any user login 
     static void LogIn()
     {
+
         while (true)
         {
             Console.WriteLine("\n\n**** LOG IN ****");
             Console.Write("Enter your ID number: ");
             int userId = Convert.ToInt32(Console.ReadLine());
             Console.Write("Enter your password: ");
-            string password = User.HashPassword(Console.ReadLine());
+            string password = User.HashPassword(Console.ReadLine() ?? "");
             try
             {
                 // find user by ID and check if user type is customer
@@ -162,7 +203,7 @@ class Program
                     currentUser = null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (RetryCommand("ID", "login") == false)
                 {
@@ -229,8 +270,8 @@ class Program
             {
                 Console.WriteLine("  " + (i + 1) + ". " + airports[i].Code + " (" + airports[i].City + ", " + airports[i].State + ")");
             }
-            Airport airport = null;
-            Airport airport2 = null;
+            Airport? airport = null;
+            Airport? airport2 = null;
             while (true)
             {
                 try
@@ -242,7 +283,7 @@ class Program
                     airport2 = Airport.FindAirportbyId(Convert.ToInt32(Console.ReadLine()));
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     if (RetryCommand("input", "airport selection") == false)
                     {
@@ -258,7 +299,7 @@ class Program
             while (true)
             {
                 Console.Write("Will the flight be roundtrip? (Y/N): ");
-                roundtrip = Console.ReadLine();
+                roundtrip = Console.ReadLine()?.ToUpper() ?? "";
                 if (roundtrip != "N" && roundtrip != "Y")
                 {
                     if (RetryCommand("input", "roundtrip selection") == false)
@@ -268,7 +309,7 @@ class Program
                     continue;
                 }
                 Console.Write("Please select a departure date (YYYY-MM-DD): ");
-                departDate = Console.ReadLine();
+                departDate = Console.ReadLine() ?? "";
                 DateTime date;
                 if (!DateTime.TryParseExact(departDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                 {
@@ -281,7 +322,7 @@ class Program
                 if (roundtrip == "Y")
                 {
                     Console.Write("Please select a return date (YYYY-MM-DD): ");
-                    returnDate = Console.ReadLine();
+                    returnDate = Console.ReadLine() ?? "";
                     if (!DateTime.TryParseExact(returnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                     {
                         if (RetryCommand("input", "return date selection") == false)
@@ -310,7 +351,7 @@ class Program
                     }
                     j++;
                     curFlights.Add(j, allFlights[i]);
-                    Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")"); //TODO format spacing and add price, remove seconds
+                    Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")");
                 }
             }
             if (noFlights == true)
@@ -324,8 +365,8 @@ class Program
             }
             Console.Write("Enter your choice: ");
             //else user selects a flight by number, which is used to get id
-            Flight chosenDepartFlight = null;
-            Flight chosenReturnFlight = null;
+            Flight? chosenDepartFlight = null;
+            Flight? chosenReturnFlight = null;
             try
             {
                 chosenDepartFlight = curFlights[Convert.ToInt32(Console.ReadLine())];
@@ -337,7 +378,7 @@ class Program
                     j = 0;
                     for (int i = 0; i < allFlights.Count; i++)
                     {
-                        if (allFlights[i].ArrivalAirportID == airport.AirportId && allFlights[i].DepartureAirportID == airport2.AirportId && allFlights[i].DepartureTime > chosenDepartFlight.ArrivalTime && (allFlights[i].DepartureTime).ToString("yyyy-MM-dd") == returnDate && allFlights[i].SeatsSold < allFlights[i].Capacity) //TODO should only show flights with date after selected depart date?
+                        if (allFlights[i].ArrivalAirportID == airport.AirportId && allFlights[i].DepartureAirportID == airport2.AirportId && allFlights[i].DepartureTime > chosenDepartFlight.ArrivalTime && (allFlights[i].DepartureTime).ToString("yyyy-MM-dd") == returnDate && allFlights[i].SeatsSold < allFlights[i].Capacity)
                         {
                             if (noFlights == true)
                             {
@@ -346,7 +387,7 @@ class Program
                             }
                             j++;
                             curFlights.Add(j, allFlights[i]);
-                            Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")"); //TODO format spacing
+                            Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")");
                         }
                     }
                     if (noFlights == true)
@@ -363,7 +404,7 @@ class Program
                     chosenReturnFlight = curFlights[Convert.ToInt32(Console.ReadLine())];
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (RetryCommand("input", "flight selection") == false)
                 {
@@ -375,7 +416,7 @@ class Program
             //proceed to checkout or browse more flights
             if (roundtrip == "Y")
             {
-                double price = chosenDepartFlight.Price + chosenReturnFlight.Price;
+                double price = chosenDepartFlight.Price + chosenReturnFlight.Price; //it will never be null
                 int points = 10 * (chosenDepartFlight.PointsEarned + chosenReturnFlight.PointsEarned);
                 Console.Write("\n" + airport.Code + " to " + airport2.Code + " (roundtrip) costs $" + price.ToString("F2") + " (" + points + " points). Proceed to checkout? (Y/N): ");
             }
@@ -383,7 +424,7 @@ class Program
             {
                 Console.Write("\n" + airport.Code + " to " + airport2.Code + " costs $" + chosenDepartFlight.Price.ToString("F2") + " (" + 10 * chosenDepartFlight.PointsEarned + " points). Proceed to checkout? (Y/N): ");
             }
-            string proceed = Console.ReadLine();
+            string proceed = Console.ReadLine()?.ToUpper() ?? "";
             if (proceed == "Y")
             {
                 if (loggedIn == false)
@@ -392,21 +433,26 @@ class Program
                     {
                         return;
                     }
+                    else if (currentCustomer == null)
+                    {
+                        return;
+                    }
                 }
 
                 while (true)
                 {
                     //after login, pay and book trip, creating a boarding pass and orders
-                    Console.WriteLine("\nHow would you like to pay?\n  1. Card\n  2. Points (You currently have " + currentCustomer.MileagePoints + " points)");
+                    Console.WriteLine("\nHow would you like to pay?\n  1. Card\n  2. Points (You currently have " + currentCustomer.MileagePoints + " points)"); //currentCustomer will never be null after login
                     Console.Write("Enter your choice: ");
                     try
                     {
                         int choice = Convert.ToInt32(Console.ReadLine());
+                        Customer.ApplyPurchasePoints(currentCustomer);
                         if (choice == 1)
                         {
                             if (roundtrip == "Y")
                             {
-                                Customer.BookTrip(currentCustomer, false, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId);
+                                Customer.BookTrip(currentCustomer, false, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId); //will never be null
                             }
                             else
                             {
@@ -417,7 +463,7 @@ class Program
                         {
                             if (roundtrip == "Y")
                             {
-                                Customer.BookTrip(currentCustomer, true, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId);
+                                Customer.BookTrip(currentCustomer, true, chosenDepartFlight.FlightId, chosenReturnFlight.FlightId); //will never be null
                             }
                             else
                             {
@@ -435,7 +481,7 @@ class Program
                         Console.WriteLine("\nFlight Booked Successfully!");
                         return;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         if (RetryCommand("input", "payment") == false)
                         {
@@ -451,7 +497,7 @@ class Program
                 Console.Write("Enter your choice: ");
                 while (true)
                 {
-                    string input = Console.ReadLine();
+                    string input = Console.ReadLine()?.ToUpper() ?? "";
                     if (input == "1")
                     {
                         break;
@@ -486,10 +532,15 @@ class Program
             {
                 return;
             }
+            else if (currentCustomer == null)
+            {
+                return;
+            }
         }
 
         Console.WriteLine("\n\n**** CANCEL A FLIGHT ****");
         //display all booked flights
+        Customer.ApplyPurchasePoints(currentCustomer); //will never be null
         Customer.GetOrders(currentCustomer); //get all order history
         if (currentCustomer.ActiveOrders.Count > 0)
         {
@@ -505,7 +556,7 @@ class Program
                 try
                 {
                     Console.Write("Enter your choice: ");
-                    string cancelChoice = Console.ReadLine();
+                    string cancelChoice = Console.ReadLine()?.ToUpper() ?? "";
                     int cancel = 0;
                     if (cancelChoice == "B")
                     {
@@ -522,7 +573,7 @@ class Program
                     while (true)
                     {
                         Console.Write("Are you sure you would like to cancel Flight " + cancelChoice + "? (Y/N): ");
-                        string cancelString = Console.ReadLine(); //TODO toLower()
+                        string cancelString = Console.ReadLine()?.ToUpper() ?? "";
                         if (cancelString == "Y")
                         {
                             Order.CancelOrder(currentCustomer.ActiveOrders[cancel - 1], currentCustomer);
@@ -540,7 +591,7 @@ class Program
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine("\nInvalid Input! Choose a flight from above, or enter B to go back");
                 }
@@ -552,7 +603,7 @@ class Program
             Console.Write("\nEnter B to go back: ");
             while (true)
             {
-                string input = Console.ReadLine();
+                string input = Console.ReadLine()?.ToUpper() ?? "";
                 if (input == "B")
                 {
                     return;
@@ -573,13 +624,18 @@ class Program
             {
                 return;
             }
+            else if (currentCustomer == null)
+            {
+                return;
+            }
         }
 
+        Customer.ApplyPurchasePoints(currentCustomer); //will never be null
         Customer.ViewAccountHistory(currentCustomer);
         Console.Write("\nEnter B to go back: ");
         while (true)
         {
-            string input = Console.ReadLine();
+            string input = Console.ReadLine()?.ToUpper() ?? "";
             if (input == "B")
             {
                 break;
@@ -597,19 +653,19 @@ class Program
         while (true)
         {
             Console.Write("Enter your current password: ");
-            string currentPassword = User.HashPassword(Console.ReadLine());
-            if (currentUser == null && currentPassword == currentCustomer.Password)
+            string currentPassword = User.HashPassword(Console.ReadLine() ?? "");
+            if (currentUser == null && currentPassword == currentCustomer.Password) //will never be null
             {
                 Console.Write("Enter your new password: ");
-                currentCustomer.Password = User.HashPassword(Console.ReadLine());
+                currentCustomer.Password = User.HashPassword(Console.ReadLine() ?? "");
                 Console.WriteLine("Password changed successfully!");
                 Customer.ChangeCustomerPassword(currentCustomer, currentCustomer.Password);
                 break;
             }
-            else if (currentCustomer == null && currentPassword == currentUser.Password)
+            else if (currentCustomer == null && currentPassword == currentUser.Password) //will never be null
             {
                 Console.Write("Enter your new password: ");
-                currentUser.Password = User.HashPassword(Console.ReadLine());
+                currentUser.Password = User.HashPassword(Console.ReadLine() ?? "");
                 Console.WriteLine("Password changed successfully!");
                 User.ChangeUserPassword(currentUser, currentUser.Password);
                 break;
@@ -727,7 +783,7 @@ class Program
                         break;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("\nInvalid choice! Please try again.");
             }
@@ -774,7 +830,7 @@ class Program
                     newFlight.FlightSummary();
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine("\nAirport(s) not an available option. List of available aiports below.");
                     Airport.DisplayAllAiports();
@@ -858,7 +914,7 @@ class Program
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // flight not in DB, prompt them for flight number again
             Console.WriteLine("\nFlight not found\n");
@@ -962,7 +1018,7 @@ class Program
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         { 
             Console.WriteLine("Flight not found");
             UpdateFlight();
@@ -1010,7 +1066,7 @@ class Program
                         break;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("\nInvalid choice! Please try again.");
             }
@@ -1040,7 +1096,7 @@ class Program
                 return;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             Console.WriteLine("\nFlight number not found");
             GenerateFlightManifest();
@@ -1066,8 +1122,7 @@ class Program
                 Console.WriteLine("5. Change Password");
                 Console.WriteLine("6. Log Out");
                 Console.Write("Enter your choice: ");
-                string choiceString = Console.ReadLine();
-                int choice = int.Parse(choiceString);
+                int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
                 {
@@ -1276,7 +1331,7 @@ class Program
         Console.Write("Enter your choice: ");
         while (true)
         {
-            string input = Console.ReadLine().ToUpper();
+            string input = Console.ReadLine()?.ToUpper() ?? "";
             if (input == "1")
             {
                 break;
@@ -1300,7 +1355,7 @@ class Program
         Console.Write("Enter your choice: ");
         while (true)
         {
-            string command = Console.ReadLine();
+            string command = Console.ReadLine()?.ToUpper() ?? "";
             if (command == "1")
             {
                 LogIn();

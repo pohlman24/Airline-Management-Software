@@ -12,9 +12,10 @@
         public DateOnly CancellationDate { get; set; } 
         public Boolean IsRoundTrip { get; set; }
         public Boolean UsedPoints { get; set; } //if customer paid with points, points spent will be decreased on cancellation
+        public Boolean EarnedPoints { get; set; } //if customer has earned points for their booked flight
 
 
-        public Order(int OrderId, int CustomerId, int FlightId1, int FlightId2, string OrderStatus, DateOnly OrderDate, DateOnly CancellationDate, bool IsRoundTrip, bool UsedPoints)
+        public Order(int OrderId, int CustomerId, int FlightId1, int FlightId2, string OrderStatus, DateOnly OrderDate, DateOnly CancellationDate, bool IsRoundTrip, bool UsedPoints, bool EarnedPoints)
         {
             this.OrderId = OrderId;
             this.CustomerId = CustomerId;
@@ -25,13 +26,14 @@
             this.CancellationDate = CancellationDate;
             this.IsRoundTrip = IsRoundTrip;
             this.UsedPoints = UsedPoints;
+            this.EarnedPoints = EarnedPoints;
         }
 
-        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, bool UsedPoints, int flightId2 = -1)
+        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, bool usedPoints, bool earnedPoints, int flightId2 = -1)
         {
             string filePath = @"..\..\..\Tables\OrderDb.csv";
             int orderId = GenerateOrderID();
-            Order newOrder = new Order(orderId, customerId, flightId1, flightId2, orderStatus, orderDate, cancellationDate, isRoundTrip, UsedPoints);
+            Order newOrder = new Order(orderId, customerId, flightId1, flightId2, orderStatus, orderDate, cancellationDate, isRoundTrip, usedPoints, earnedPoints);
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
             orders.Add(newOrder);
             CsvDatabase.WriteCsvFile<Order>(filePath, orders);
@@ -39,7 +41,7 @@
         }
 
         public static void UpdateOrder(Order order, int customerId = -1, int flightId1 = -1, int flightId2 = -1, string orderStatus = "",
-                               DateOnly? orderDate = null, DateOnly? cancellationDate = null, bool? isRoundTrip = null, bool? usedPoints = null)
+                               DateOnly? orderDate = null, DateOnly? cancellationDate = null, bool? isRoundTrip = null, bool? usedPoints = null, bool? earnedPoints = null)
         {
             order.CustomerId = customerId == -1 ? order.CustomerId : customerId;
             order.FlightId1 = flightId1 == -1 ? order.FlightId1 : flightId1;
@@ -49,6 +51,7 @@
             order.CancellationDate = cancellationDate == null ? order.CancellationDate : cancellationDate.Value;
             order.IsRoundTrip = isRoundTrip == null ? order.IsRoundTrip : isRoundTrip.Value;
             order.UsedPoints = usedPoints == null ? order.UsedPoints : usedPoints.Value;
+            order.EarnedPoints = earnedPoints == null ? order.EarnedPoints : earnedPoints.Value;
 
             string filePath = @"..\..\..\Tables\OrderDb.csv";
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
@@ -63,6 +66,7 @@
                 current.CancellationDate = updated.CancellationDate;
                 current.IsRoundTrip = updated.IsRoundTrip;
                 current.UsedPoints = updated.UsedPoints;
+                current.EarnedPoints = updated.EarnedPoints;
             }, order);
 
             CsvDatabase.WriteCsvFile(filePath, orders);

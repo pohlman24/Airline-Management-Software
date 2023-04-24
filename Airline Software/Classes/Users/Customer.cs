@@ -48,7 +48,6 @@ namespace Airline_Software
             return newCustomer;
         }
 
-        //TODO should u be able to change age, also should we have birthday or just age or do we have birthday i didnt look
         public static void UpdateCustomer(Customer customer, string firstName = "", string lastName = "", string email = "", string phoneNumber = "", int age = -1, string address = "", string city = "", string state = "", string zipCode = "", string userType = "", string creditCardNumber = "")
         {
             //update customer info if changed
@@ -171,6 +170,35 @@ namespace Airline_Software
             customer.CanceledOrders = canceledOrders;
         }
 
+        public static void ApplyPurchasePoints(Customer customer)
+        {
+            int id = customer.Id;
+            string filePath = @"..\..\..\Tables\OrderDb.csv";
+            List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
+
+            while (true)
+            {
+                if (CsvDatabase.FindRecord(orders, c => c.CustomerId, id) == null)
+                {
+                    break;
+                }
+                Order order = CsvDatabase.FindRecord(orders, p => p.CustomerId, id);
+                Flight flight = Flight.FindFlightById(order.FlightId1); //credit points if not canceled
+                TimeSpan timeDiff = flight.DepartureTime - DateTime.Now;
+                if (order.OrderStatus != "Canceled" && timeDiff.TotalMinutes < 60 && order.EarnedPoints == false)
+                {
+                    Order.UpdateOrder(order, earnedPoints: true);
+                    UpdatePoints(customer, flight.PointsEarned);
+                    if (order.FlightId2 != -1)
+                    {
+                        Flight flight2 = Flight.FindFlightById(order.FlightId2);
+                        UpdatePoints(customer, flight2.PointsEarned);
+                    }
+                }
+                orders.Remove(order);
+            }
+        }
+
         public static void ViewAccountHistory(Customer customer)
         {
             GetOrders(customer); //get all order history
@@ -180,7 +208,6 @@ namespace Airline_Software
             Airport airport2 = null; //destination airport
 
             //display relevant information
-            //TODO WE NEED POINTS USED TOO????????
             Console.WriteLine("\n\n**** ACCOUNT HISTORY ****");
             Console.WriteLine("\nPoints Available: " + customer.MileagePoints);
             Console.WriteLine("Points Spent: " + customer.PointsSpent);
@@ -341,13 +368,13 @@ namespace Airline_Software
 
                     UpdatePoints(customer, -pointsCost);
                     UpdatePointsSpent(customer, pointsCost);
-                    Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, true, flightId2);
+                    Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, true, false, flightId2);
                     Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
                     Flight.UpdateFlight(flight2, seatsSold: flight2.SeatsSold + 1);
                     return;
                 }
 
-                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, false, flightId2);
+                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight2.ArrivalTime), true, false, false, flightId2);
                 Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
                 Flight.UpdateFlight(flight2, seatsSold: flight2.SeatsSold + 1);
             }
@@ -362,12 +389,12 @@ namespace Airline_Software
 
                     UpdatePoints(customer, -pointsCost);
                     UpdatePointsSpent(customer, pointsCost);
-                    Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false, true);
+                    Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false, false, true);
                     Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
                     return;
                 }
 
-                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false, false);
+                Order.CreateOrder(customer.Id, flightId1, "Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(flight1.ArrivalTime), false, false, false);
                 Flight.UpdateFlight(flight1, seatsSold: flight1.SeatsSold + 1);
             }
         }

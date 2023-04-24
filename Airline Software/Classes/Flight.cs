@@ -58,7 +58,6 @@ namespace Airline_Software
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
                                          DateTime departureTime)
         {
-            // TODO PointsEarned, Price and ArrivalTime should all be auto calculated based on distance
             int flightID = GenerateFlightID();
             string flightNumber = GenerateFlightNumber(flightID, departureAirportID, arrivalAirportID);
             DateTime arrivalTime = CalculateArrivalTime(departureTime, departureAirportID, arrivalAirportID);
@@ -260,7 +259,6 @@ namespace Airline_Software
             TimeSpan dayStart = TimeSpan.Zero;
             double price = 50.0; //fixed costs plus takeoff
             price += 0.12 * CalcFlightDistance(departureAirportID, arrivalAirportID); //12 cents per mile
-            //TODO 8 dollars per leg
 
             if ((departureTime.TimeOfDay >= dayStart && departureTime.TimeOfDay <= end20Discount) || (arrivalTime.TimeOfDay >= dayStart && arrivalTime.TimeOfDay <= end20Discount))
             {
