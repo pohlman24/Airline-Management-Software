@@ -32,7 +32,7 @@ namespace Airline_Software
             int seats = flight.SeatsSold;
             double cost = flight.Price;
             double income = (double) seats * cost;
-            return income;
+            return Math.Round(income,2);
         }
 
         public static double CalcIncomeWhole()
@@ -47,7 +47,7 @@ namespace Airline_Software
                 double income = (double) seats * cost;
                 totalIncome += income;
             }
-             return totalIncome;
+            return Math.Round(totalIncome, 2);
         }
 
         public static int CalcNumFlights(string range)
@@ -66,6 +66,7 @@ namespace Airline_Software
                 {
                     if (flight.DepartureTime.Day == DateTime.Today.Day)
                     {
+                        
                         count++;
                     }
                     
@@ -75,6 +76,7 @@ namespace Airline_Software
                     if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today)
                         && flight.DepartureTime.Year == DateTime.Today.Year)
                     {
+                        
                         count++;
                     }
                 }
@@ -91,9 +93,7 @@ namespace Airline_Software
                 {
                     if(flight.DepartureTime.Year == DateTime.Today.Year)
                     {
-                        Console.WriteLine(flight.DepartureTime);
                         count++;
-
                     }
                 }
           
