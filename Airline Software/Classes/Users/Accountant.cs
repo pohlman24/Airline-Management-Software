@@ -66,7 +66,7 @@ namespace Airline_Software
                 {
                     if (flight.DepartureTime.Day == DateTime.Today.Day)
                     {
-                        Console.WriteLine(flight.DepartureTime.ToString().PadLeft(50));
+                        
                         count++;
                     }
                     
@@ -76,6 +76,7 @@ namespace Airline_Software
                     if (GetWeekOfYear(flight.DepartureTime) == GetWeekOfYear(DateTime.Today)
                         && flight.DepartureTime.Year == DateTime.Today.Year)
                     {
+                        
                         count++;
                     }
                 }
@@ -83,7 +84,6 @@ namespace Airline_Software
                 {
                     if (flight.DepartureTime.Month == DateTime.Today.Month)
                     {
-                        Console.WriteLine(flight.DepartureTime.ToString().PadLeft(50));
                         count++;
                     }
 
@@ -93,9 +93,7 @@ namespace Airline_Software
                 {
                     if(flight.DepartureTime.Year == DateTime.Today.Year)
                     {
-                        Console.WriteLine(flight.DepartureTime.ToString().PadRight(50));
                         count++;
-
                     }
                 }
           
