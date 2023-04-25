@@ -24,18 +24,18 @@ class Program
             switch (choice)
             {
                 case 1:
-                    /*CreateCustomerAccount();
-                    HomePage();*/
-                    MarketingManagerFunctionality(); //call the MarketingManagerFunctionality method
+                    CreateCustomerAccount();
+                    HomePage();
+
                     break;
 
                 case 2:
-                    /*LogIn();
+                    LogIn();
                     if (currentUser == null && loggedIn == true)
                     {
                         HomePage();
-                    }*/
-                    AccountantFunctionality(); //call the AccountantFunctionality method
+                    }
+
                     break;
 
                 case 3:
