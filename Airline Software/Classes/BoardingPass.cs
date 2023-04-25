@@ -159,7 +159,7 @@ namespace Airline_Software
                 Airport departCity = Airport.FindAirportbyId(pass.DepartureAirportId);
                 Airport arrivalCity = Airport.FindAirportbyId(pass.ArrivalAirportId);
 
-                Console.WriteLine("***BOARDING PASS***");
+                Console.WriteLine("\n\n***BOARDING PASS***");
                 Console.WriteLine("Passenger Name: ".PadRight(17) + customer.FirstName + " " + customer.LastName);
                 Console.WriteLine("Flight Number: ".PadRight(17) + flight.FlightNumber);
                 Console.WriteLine("From: ".PadRight(17) + departCity.City);
