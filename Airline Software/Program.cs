@@ -5,8 +5,8 @@ using System.Globalization;
 class Program
 {
     static bool loggedIn = false; //global var to check if a customer is logged in
-    static User? currentUser = null;
-    static Customer? currentCustomer = null;
+    static User? currentUser = null; //represents the current logged in user, can be null
+    static Customer? currentCustomer = null; //represents the current logged in customer, can be null
 
     static void Main(string[] args)
     {
@@ -14,46 +14,48 @@ class Program
 
         while (true)
         {
-            if (currentUser == null && loggedIn == true)
+            if (currentUser == null && loggedIn == true) //if no user is logged in but logged in flag is set to true, display homepage
             {
                 HomePage();
             }
-            DefaultPage();
-            choice = int.Parse(Console.ReadLine());
+            DefaultPage(); //display the default menu page
+            choice = int.Parse(Console.ReadLine()); //get user input for menu choice
 
             switch (choice)
             {
                 case 1:
-                    CreateCustomerAccount();
-                    HomePage();
+                    /*CreateCustomerAccount();
+                    HomePage();*/
+                    MarketingManagerFunctionality(); //call the MarketingManagerFunctionality method
                     break;
 
                 case 2:
-                    LogIn();
+                    /*LogIn();
                     if (currentUser == null && loggedIn == true)
                     {
                         HomePage();
-                    }
+                    }*/
+                    AccountantFunctionality(); //call the AccountantFunctionality method
                     break;
 
                 case 3:
-                    BookFlight();
+                    BookFlight(); //call the BookFlight method
                     break;
 
                 case 4:
-                    CancelFlight();
+                    CancelFlight(); //call the CancelFlight method
                     break;
 
-                 case 5:
-                     ViewAccountHistory();
-                     break;
+                case 5:
+                    ViewAccountHistory(); //call the ViewAccountHistory method
+                    break;
 
                 case 6:
                     Console.WriteLine("\nThank you for using our service!");
                     return;
 
                 default:
-                    Console.WriteLine("\nInvalid choice! Please try again.");
+                    Console.WriteLine("\nInvalid choice! Please try again."); //if user input is invalid, display error message
                     break;
             }
         }
@@ -67,36 +69,36 @@ class Program
             {
                 Console.WriteLine("\n\n**** CREATE ACCOUNT ****");
                 Console.Write("Enter your first name: ");
-                string firstName = Console.ReadLine() ?? "N/A";
+                string firstName = Console.ReadLine() ?? "N/A"; //get user input for first name or default to "N/A"
                 if (firstName == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your last name: ");
-                string lastName = Console.ReadLine() ?? "N/A";
+                string lastName = Console.ReadLine() ?? "N/A"; //get user input for last name or default to "N/A"
                 if (lastName == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your email: ");
-                string email = Console.ReadLine() ?? "N/A";
+                string email = Console.ReadLine() ?? "N/A"; //get user input for email or default to "N/A"
                 if (email == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your phone number: ");
-                string phoneNumber = Console.ReadLine() ?? "N/A";
+                string phoneNumber = Console.ReadLine() ?? "N/A"; //get user input for phone number or default to "N/A"
                 if (phoneNumber == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your age: ");
-                int age = Convert.ToInt32(Console.ReadLine());
+                int age = Convert.ToInt32(Console.ReadLine()); //get user input for age
                 Console.Write("Enter your address: ");
-                string address = Console.ReadLine() ?? "N/A";
+                string address = Console.ReadLine() ?? "N/A"; //get user input for address or default to "N/A"
                 if (address == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your city: ");
                 string city = Console.ReadLine() ?? "N/A";
@@ -1121,7 +1123,7 @@ class Program
                 Console.WriteLine("4. Calculate the number of flights scheduled within a time range ");
                 Console.WriteLine("5. Change Password");
                 Console.WriteLine("6. Log Out");
-                Console.Write("Enter your choice: ");
+                Console.Write("\nEnter your choice: ");
                 int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
@@ -1131,7 +1133,8 @@ class Program
                         {
                             Console.WriteLine("List of all flights:");
                             Flight.ShowAllFlights();
-                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back");
+                            Console.Write("\nEnter flight number or type 'back' or 'b' to go back: \n");
+
                             string userInput = Console.ReadLine().ToUpper();
 
                             if (userInput == "BACK" || userInput == "B") 
@@ -1158,7 +1161,7 @@ class Program
                         {
                             Flight.ShowAllFlights();
 
-                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back");
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back:");
                             string userInput = Console.ReadLine().ToUpper();
 
                             if (userInput == "BACK" || userInput == "B")
@@ -1167,6 +1170,7 @@ class Program
                             }
 
                             Flight flight2 = Flight.FindFlightByFlightNumber(userInput);
+
 
                             double income = Accountant.CalcIncomeFlight(flight2);
                             Console.WriteLine("\nIncome for flight: $" + income);
@@ -1184,8 +1188,10 @@ class Program
                     case 3:
                         try
                         {
+                            
                             double totalIncome = Accountant.CalcIncomeWhole();
-                            Console.WriteLine("\nIncome of all Flights: " + totalIncome);
+                            string formattedIncome = totalIncome.ToString("0.00");
+                            Console.WriteLine("\nIncome of all Flights: $" + formattedIncome);
                         }
                         catch (Exception ex)
                         {
@@ -1196,7 +1202,7 @@ class Program
                     case 4:
                         try
                         {
-                            Console.WriteLine("\nEnter time range (day, month, or year) or type 'back' or 'b' to go back");
+                            Console.WriteLine("\nEnter time range (day, month, or year) or type 'back' or 'b' to go back:");
                             string userInput = Console.ReadLine().ToUpper();
                             if (userInput == "BACK" || (userInput == "B"))
                             {
@@ -1204,7 +1210,7 @@ class Program
                             }
 
                             int numFlights = Accountant.CalcNumFlights(userInput);
-                            Console.WriteLine("Number of flights this {0}: {1}", userInput.ToLower(), numFlights);
+                            Console.WriteLine("\nNumber of flights this {0}: {1}", userInput.ToLower(), numFlights);
                         }
                         catch (FormatException)
                         {
@@ -1269,38 +1275,64 @@ class Program
                     case 1:
                         try
                         {
-                            Console.WriteLine("List of flights without assigned planes:\n");
-                            Flight.FlightWithNoPlane();
-                            Console.WriteLine("\nEnter flight number: ");
-                            string flightNumber = Console.ReadLine().ToUpper();
 
-                            Flight flight = Flight.FindFlightByFlightNumber(flightNumber);
+                            Console.WriteLine("\nDo you want to view flights with no planes assinged to view their flight number? (yes/no)");
+                            string answer = Console.ReadLine().ToUpper();
+                            Console.WriteLine("List of flights without assigned planes:\n");
+
+                            if (answer == "YES")
+                            {
+                                Flight.FlightWithNoPlane();
+
+                            }
+
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back: ");
+                            string userInput1 = Console.ReadLine().ToUpper();
+
+                            if (userInput1 == "BACK" || userInput1 == "B")
+                            {
+                                MarketingManagerFunctionality();
+                            }
+
+
+                            Flight flight = Flight.FindFlightByFlightNumber(userInput1);
 
                             // Assign plane for flight
                             MarketingManager.AssignPlaneForFlight(flight);
                             Console.WriteLine("\n{0} assigned for flight: {1}",
-                                                Plane.FindPlaneById((int)flight.PlaneModelId).Model,
-                                                flightNumber);
+                            Plane.FindPlaneById((int)flight.PlaneModelId).Model,
+                                                userInput1);
                             break;
 
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred while assigning plane for flight: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred while assigning plane for flight: " + ex.Message);
                         }
                         break;
                     case 2:
                         try
                         {
+                           
                             MarketingManager.AssignPlaneForAllFlights();
-                            Console.WriteLine("Planes successfully assigned for all flights.");
+
+                            // should we list all flights with planes here?
+                           
+                            Console.WriteLine("\nPlanes successfully assigned for all flights.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred while assigning planes for all flights: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred while assigning planes for all flights: " + ex.Message);
                         }
                         break;
                     case 3:
+                        Console.WriteLine("\nEnter 'back' or 'b' to go back");
+                        string userInput = Console.ReadLine().ToUpper();
+
+                        if (userInput == "BACK" || userInput == "B")
+                        {
+                            MarketingManagerFunctionality();
+                        }
                         ChangePassword();
                         break;
                     case 4:
