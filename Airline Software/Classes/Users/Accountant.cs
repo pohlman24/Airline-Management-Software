@@ -99,7 +99,8 @@ namespace Airline_Software
           
                 else
                 {
-                    Console.WriteLine("Invalid Range");
+                    Console.WriteLine("\nInvalid Range");
+                    return -1;
                 }
             }
             return count;
