@@ -24,17 +24,12 @@ class Program
             switch (choice)
             {
                 case 1:
-
-
                     CreateCustomerAccount();
                     HomePage();
 
                     break;
 
                 case 2:
-
-                  
-
                     LogIn();
                     if (currentUser == null && loggedIn == true)
                     {
@@ -53,7 +48,6 @@ class Program
 
                 case 5:
                     PrintCustomerBoardingPass();
-                    ViewAccountHistory(); //call the ViewAccountHistory method
                     break;
 
                 case 6:
