@@ -24,12 +24,17 @@ class Program
             switch (choice)
             {
                 case 1:
+
+
                     CreateCustomerAccount();
                     HomePage();
 
                     break;
 
                 case 2:
+
+                  
+
                     LogIn();
                     if (currentUser == null && loggedIn == true)
                     {
@@ -1177,11 +1182,11 @@ class Program
                         }
                         catch (FormatException)
                         {
-                            Console.WriteLine("Invalid input format. Please enter a valid flight number.");
+                            Console.WriteLine("\nInvalid input format. Please enter a valid flight number.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred: " + ex.Message);
                         }
                         break;
 
@@ -1202,7 +1207,7 @@ class Program
                     case 4:
                         try
                         {
-                            Console.WriteLine("\nEnter time range (day, month, or year) or type 'back' or 'b' to go back:");
+                            Console.WriteLine("\nEnter time range (day, month, week or year) or type 'back' or 'b' to go back:");
                             string userInput = Console.ReadLine().ToUpper();
                             if (userInput == "BACK" || (userInput == "B"))
                             {
@@ -1214,11 +1219,11 @@ class Program
                         }
                         catch (FormatException)
                         {
-                            Console.WriteLine("Invalid input format. Please enter a valid time range.");
+                            Console.WriteLine("\nInvalid input format. Please enter a valid time range.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred: " + ex.Message);
                         }
                         break;
 
@@ -1241,11 +1246,11 @@ class Program
             }
             catch (FormatException)
             {
-                Console.WriteLine("Invalid input format. Please enter a valid integer choice.");
+                Console.WriteLine("/nInvalid input format. Please enter a valid integer choice.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                Console.WriteLine("/nAn error occurred: " + ex.Message);
             }
         }
     }
@@ -1276,9 +1281,9 @@ class Program
                         try
                         {
 
-                            Console.WriteLine("\nDo you want to view flights with no planes assinged to view their flight number? (yes/no)");
+                            Console.WriteLine("\nDo you want to view flights with no planes assigned to view their flight number? (yes/no)\n");
                             string answer = Console.ReadLine().ToUpper();
-                            Console.WriteLine("List of flights without assigned planes:\n");
+                            Console.WriteLine("\nList of flights without assigned planes:\n");
 
                             if (answer == "YES")
                             {
@@ -1286,7 +1291,7 @@ class Program
 
                             }
 
-                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back: ");
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back: \n");
                             string userInput1 = Console.ReadLine().ToUpper();
 
                             if (userInput1 == "BACK" || userInput1 == "B")
