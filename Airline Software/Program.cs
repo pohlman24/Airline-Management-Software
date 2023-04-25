@@ -1283,10 +1283,11 @@ class Program
 
                             Console.WriteLine("\nDo you want to view flights with no planes assigned to view their flight number? (yes/no)\n");
                             string answer = Console.ReadLine().ToUpper();
-                            Console.WriteLine("\nList of flights without assigned planes:\n");
+                            
 
                             if (answer == "YES")
                             {
+                                Console.WriteLine("\nList of flights without assigned planes:\n");
                                 Flight.FlightWithNoPlane();
 
                             }
