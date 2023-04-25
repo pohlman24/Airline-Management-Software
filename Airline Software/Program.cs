@@ -1285,13 +1285,11 @@ class Program
                             string answer = Console.ReadLine().ToUpper();
                             
 
-                            if (answer == "YES")
-                            {
-                                Console.WriteLine("\nList of flights without assigned planes:\n");
-                                Flight.FlightWithNoPlane();
+                            
+                            Console.WriteLine("\nList of flights without assigned planes:\n");
+                            Flight.FlightWithNoPlane();
 
-                            }
-
+                           
                             Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back: \n");
                             string userInput1 = Console.ReadLine().ToUpper();
 
