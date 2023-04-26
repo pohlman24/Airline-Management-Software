@@ -162,15 +162,6 @@ namespace Airline_Software
         {
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
-            if(flight.FlightInfo == "connection")
-            {
-                Console.WriteLine("You cannot remove connection flights");
-            }
-            else
-            {
-                CsvDatabase.RemoveRecord(flights, f => f.FlightId, flight.FlightId);
-                CsvDatabase.WriteCsvFile(filePath, flights);
-            }
             CsvDatabase.RemoveRecord(flights, f => f.FlightId, flight.FlightId);
             CsvDatabase.WriteCsvFile(filePath, flights);
         }

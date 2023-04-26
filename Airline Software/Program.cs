@@ -432,7 +432,7 @@ class Program
                         Console.WriteLine("\nDeparting flights:");
                     }
                     j++;
-                    curFlights.Add(j, allFlights[i]);
+                    //curFlights.Add(j, allFlights[i]);
                     curFlights.Add(j, allFlights[i]);
                     if(allFlights[i].FlightInfo == "direct" || allFlights[i].FlightInfo == "connection")
                     {

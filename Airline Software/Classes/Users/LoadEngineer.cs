@@ -40,7 +40,23 @@ namespace Airline_Software
 
         public static void CancelFlight(Flight flight) //same as edit
         {
-            if(flight.SeatsSold == 0)
+            flight.PopulateLayovers();
+            if(flight.FlightInfo == "parent" && flight.LayoverFlights[0].SeatsSold == 0 && flight.LayoverFlights[1].SeatsSold == 0)
+            {
+                //remove flight from database
+                Flight.DeleteFlight(flight);
+                Console.WriteLine("Flight '" + flight.FlightNumber + "' canceled");
+                flight.PopulateLayovers();
+                foreach (Flight layover in flight.LayoverFlights)
+                {
+                    Flight.DeleteFlight(layover);
+                }
+            }
+            else if(flight.FlightInfo == "connection")
+            {
+                Console.WriteLine("Cannot cancel connection flights");
+            }
+            else if(flight.FlightInfo == "direct" && flight.SeatsSold == 0)
             {
                 //remove flight from database
                 Flight.DeleteFlight(flight);

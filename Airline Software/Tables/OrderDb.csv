@@ -4,3 +4,6 @@ OrderId,CustomerId,FlightId1,FlightId2,OrderStatus,OrderDate,CancellationDate,Is
 3,807130,31,-1,Printed,2023-04-25,2023-04-25,False,False,False,32,33,-1,-1
 4,807130,34,37,Printed,2023-04-25,2023-04-30,True,False,False,35,36,38,39
 5,908868,45,-1,Printed,2023-04-26,2023-04-27,False,False,False,-1,-1,-1,-1
+6,908868,45,-1,Printed,2023-04-26,2023-04-27,False,False,False,-1,-1,-1,-1
+7,908868,44,-1,Printed,2023-04-26,2023-04-27,False,False,False,45,46,-1,-1
+8,908868,44,-1,Active,2023-04-26,2023-04-27,False,False,False,45,46,-1,-1
