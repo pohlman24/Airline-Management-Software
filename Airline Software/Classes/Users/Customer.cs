@@ -247,7 +247,7 @@ namespace Airline_Software
             airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
             airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
             //print depart flight info
-            if(flight1.FlightInfo == "direct")
+            if(flight1.FlightInfo == "direct" || flight1.FlightInfo == "connection")
             {
                 if(orders[orderNumber].IsRoundTrip == true)
                 {
@@ -270,20 +270,6 @@ namespace Airline_Software
                     Console.WriteLine(" Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ") (Connection Flights)");
                 }
             }
-            /*if (orders[orderNumber].FlightId2 != -1) //print flight return info if roundtrip
-            {
-
-                flight2 = Flight.FindFlightById(orders[orderNumber].FlightId2);
-
-                if (flight2.FlightInfo == "direct")
-                {
-                    Console.WriteLine(" Departing: " + flight2.FlightNumber + " flying from " + airport2.City + ", " + airport2.State + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
-                }
-                else if (flight2.FlightInfo == "parent")
-                {
-                    Console.WriteLine(" Departing: " + flight2.FlightNumber + " flying from " + airport2.City + ", " + airport2.State + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ") (Will print all connection flight passes)");
-                }
-            }*/
         }
 
         public static void ViewAccountHistory(Customer customer)

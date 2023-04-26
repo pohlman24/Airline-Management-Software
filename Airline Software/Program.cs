@@ -433,7 +433,8 @@ class Program
                     }
                     j++;
                     curFlights.Add(j, allFlights[i]);
-                    if(allFlights[i].FlightInfo == "direct")
+                    curFlights.Add(j, allFlights[i]);
+                    if(allFlights[i].FlightInfo == "direct" || allFlights[i].FlightInfo == "connection")
                     {
                         Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying from " + airport.City + ", " + airport.State + " to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime);
                     }
@@ -1167,6 +1168,11 @@ class Program
             {
                 // create flight reference and display info
                 Flight flight = Flight.FindFlightByFlightNumber(flightNumber);
+                if(flight.FlightInfo == "connection")
+                {
+                    Console.WriteLine("Cannnot remove connection flights\n");
+                    return;
+                }
                 // confirm correct flight 
                 Console.WriteLine("\nIs this the correct flight? (Y/N)");
                 flight.FlightSummary();
