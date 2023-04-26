@@ -289,12 +289,24 @@ namespace Airline_Software
         // generate summary for a selected flight
         public void FlightSummary()
         {
-            Console.WriteLine("\n{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -12} {6}", 
+            if(this.FlightInfo == "connection")
+            {
+                Console.WriteLine("\n{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}",
+                                "Flight Number", "Departure City", "Arrival City", "Departure Time", "Est Arrival Time");
+
+                Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}",
+                        this.FlightNumber, Airport.FindAirportbyId(this.DepartureAirportID).City, Airport.FindAirportbyId(this.ArrivalAirportID).City,
+                        this.DepartureTime, this.ArrivalTime);
+            }
+            else
+            {
+                Console.WriteLine("\n{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -12} {6}",
                 "Flight Number", "Departure City", "Arrival City", "Departure Time", "Est Arrival Time", "Price", "Points Value");
 
-            Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} ${5, -11} {6}",
-                    this.FlightNumber, Airport.FindAirportbyId(this.DepartureAirportID).City, Airport.FindAirportbyId(this.ArrivalAirportID).City,
-                    this.DepartureTime, this.ArrivalTime, this.Price, this.PointsEarned);
+                Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} ${5, -11} {6}",
+                        this.FlightNumber, Airport.FindAirportbyId(this.DepartureAirportID).City, Airport.FindAirportbyId(this.ArrivalAirportID).City,
+                        this.DepartureTime, this.ArrivalTime, this.Price, this.PointsEarned);
+            }
         }
 
         public static double CalcFlightDistance(int departureAirportID, int arrivalAirportID)

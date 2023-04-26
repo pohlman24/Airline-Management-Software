@@ -276,24 +276,23 @@ class Program
             int userId = Convert.ToInt32(Console.ReadLine());
             Console.Write("Enter your password: ");
             string password = User.HashPassword(Console.ReadLine() ?? "");
-            try
-            {
-                // find user by ID and check if user type is customer
-                currentUser = User.FindUserById(userId);
+
+            // find user by ID and check if user type is customer
+            currentUser = User.FindUserById(userId);
                 if (currentUser.UserType == "Customer")
                 {
                     currentCustomer = Customer.FindCustomerById(currentUser.Id);
                     currentUser = null;
                 }
-            }
-            catch (Exception)
+            
+     /*       catch (Exception)
             {
                 if (RetryCommand("ID", "login") == false)
                 {
                     return;
                 }
                 continue;
-            }
+            }*/
             if (currentCustomer != null && password == currentCustomer.Password)
             {
                 Console.WriteLine("\nWelcome, " + currentCustomer.FirstName + "!");
@@ -1120,7 +1119,12 @@ class Program
                     Flight newFlight = Flight.CreateFlight(departAirport.AirportId, arrivalAiport.AirportId, time);
                     //output summary of created flight
                     Console.WriteLine("\nNew Flight Created");
+                    newFlight.PopulateLayovers();
                     newFlight.FlightSummary();
+                    foreach(Flight flight in newFlight.LayoverFlights)
+                    {
+                        flight.FlightSummary();
+                    }
                     break;
                 }
                 catch (Exception)
