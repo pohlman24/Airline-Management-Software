@@ -1039,8 +1039,7 @@ class Program
             Console.WriteLine("4. Update a Flight");
             Console.WriteLine("5. View All Airports");
             Console.WriteLine("6. Change Password");
-            Console.WriteLine("7. Change Password");
-            Console.WriteLine("8. Log Out");
+            Console.WriteLine("7. Log Out");
             Console.Write("Enter your choice: ");
             try
             {
