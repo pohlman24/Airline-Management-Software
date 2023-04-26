@@ -5,8 +5,8 @@ using System.Globalization;
 class Program
 {
     static bool loggedIn = false; //global var to check if a customer is logged in
-    static User? currentUser = null;
-    static Customer? currentCustomer = null;
+    static User? currentUser = null; //represents the current logged in user, can be null
+    static Customer? currentCustomer = null; //represents the current logged in customer, can be null
 
     static void Main(string[] args)
     {
@@ -14,12 +14,12 @@ class Program
 
         while (true)
         {
-            if (currentUser == null && loggedIn == true)
+            if (currentUser == null && loggedIn == true) //if no user is logged in but logged in flag is set to true, display homepage
             {
                 HomePage();
             }
-            DefaultPage();
-            choice = int.Parse(Console.ReadLine());
+            DefaultPage(); //display the default menu page
+            choice = int.Parse(Console.ReadLine()); //get user input for menu choice
 
             switch (choice)
             {
@@ -34,14 +34,15 @@ class Program
                     {
                         HomePage();
                     }
+
                     break;
 
                 case 3:
-                    BookFlight();
+                    BookFlight(); //call the BookFlight method
                     break;
 
                 case 4:
-                    CancelFlight();
+                    CancelFlight(); //call the CancelFlight method
                     break;
 
                 case 5:
@@ -57,7 +58,7 @@ class Program
                     return;
 
                 default:
-                    Console.WriteLine("\nInvalid choice! Please try again.");
+                    Console.WriteLine("\nInvalid choice! Please try again."); //if user input is invalid, display error message
                     break;
             }
         }
@@ -149,36 +150,36 @@ class Program
             {
                 Console.WriteLine("\n\n**** CREATE ACCOUNT ****");
                 Console.Write("Enter your first name: ");
-                string firstName = Console.ReadLine() ?? "N/A";
+                string firstName = Console.ReadLine() ?? "N/A"; //get user input for first name or default to "N/A"
                 if (firstName == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your last name: ");
-                string lastName = Console.ReadLine() ?? "N/A";
+                string lastName = Console.ReadLine() ?? "N/A"; //get user input for last name or default to "N/A"
                 if (lastName == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your email: ");
-                string email = Console.ReadLine() ?? "N/A";
+                string email = Console.ReadLine() ?? "N/A"; //get user input for email or default to "N/A"
                 if (email == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your phone number: ");
-                string phoneNumber = Console.ReadLine() ?? "N/A";
+                string phoneNumber = Console.ReadLine() ?? "N/A"; //get user input for phone number or default to "N/A"
                 if (phoneNumber == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your age: ");
-                int age = Convert.ToInt32(Console.ReadLine());
+                int age = Convert.ToInt32(Console.ReadLine()); //get user input for age
                 Console.Write("Enter your address: ");
-                string address = Console.ReadLine() ?? "N/A";
+                string address = Console.ReadLine() ?? "N/A"; //get user input for address or default to "N/A"
                 if (address == "")
                 {
-                    throw new Exception("empty input");
+                    throw new Exception("empty input"); //throw an exception if input is empty
                 }
                 Console.Write("Enter your city: ");
                 string city = Console.ReadLine() ?? "N/A";
@@ -560,12 +561,12 @@ class Program
                 while (true)
                 {
                     //after login, pay and book trip, creating a boarding pass and orders
+                    Customer.ApplyPurchasePoints(currentCustomer);
                     Console.WriteLine("\nHow would you like to pay?\n  1. Card\n  2. Points (You currently have " + currentCustomer.MileagePoints + " points)"); //currentCustomer will never be null after login
                     Console.Write("Enter your choice: ");
                     try
                     {
                         int choice = Convert.ToInt32(Console.ReadLine());
-                        Customer.ApplyPurchasePoints(currentCustomer);
                         if (choice == 1)
                         {
                             if (roundtrip == "Y")
@@ -765,6 +766,171 @@ class Program
         }
     }
 
+    static void UpdateAccountInformation()
+    {
+        while (true)
+        {
+            try
+            {
+                Console.WriteLine("\n\n**** UPDATE INFORMATION ****");
+                Console.WriteLine("1. First name:   " + currentCustomer.FirstName +
+                                  "\n2. Last name:    " + currentCustomer.LastName +
+                                  "\n3. Email:        " + currentCustomer.Email +
+                                  "\n4. Phone number: " + currentCustomer.PhoneNumber +
+                                  "\n5. Age:          " + currentCustomer.Age +
+                                  "\n6. City:         " + currentCustomer.City +
+                                  "\n7. State:        " + currentCustomer.State +
+                                  "\n8. Zip code:     " + currentCustomer.ZipCode +
+                                  "\n9. Credit card:  " + currentCustomer.CreditCardNumber);
+                Console.Write("Enter your choice to update or B to go back: ");
+                string input = Console.ReadLine()?.ToUpper() ?? "";
+                if (input == "B")
+                {
+                    return;
+                }
+                else if (input == "1")
+                {
+                    Console.Write("Enter your first name: ");
+                    string FirstName = Console.ReadLine() ?? "N/A";
+                    if (FirstName == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, firstName: FirstName);
+                        Console.WriteLine("First name updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "2")
+                {
+                    Console.Write("Enter your last name: ");
+                    string LastName = Console.ReadLine() ?? "N/A";
+                    if (LastName == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, lastName: LastName);
+                        Console.WriteLine("Last name updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "3")
+                {
+                    Console.Write("Enter your email: ");
+                    string Email = Console.ReadLine() ?? "N/A";
+                    if (Email == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, email: Email);
+                        Console.WriteLine("Email updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "4")
+                {
+                    Console.Write("Enter your phone number: ");
+                    string PhoneNumber = Console.ReadLine() ?? "N/A";
+                    if (PhoneNumber == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, phoneNumber: PhoneNumber);
+                        Console.WriteLine("Phone number updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "5")
+                {
+
+                }
+                else if (input == "6")
+                {
+                    Console.Write("Enter your city: ");
+                    string City = Console.ReadLine() ?? "N/A";
+                    if (City == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, city: City);
+                        Console.WriteLine("City updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "7")
+                {
+                    Console.Write("Enter your state: ");
+                    string State = Console.ReadLine() ?? "N/A";
+                    if (State == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, state: State);
+                        Console.WriteLine("State updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "8")
+                {
+                    Console.Write("Enter your zip code: ");
+                    string ZipCode = Console.ReadLine() ?? "N/A";
+                    if (ZipCode == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, zipCode: ZipCode);
+                        Console.WriteLine("Zip code updated successfully!");
+                        continue;
+                    }
+                }
+                else if (input == "9")
+                {
+                    Console.Write("Enter your credit card number: ");
+                    string CreditCard = Console.ReadLine() ?? "N/A";
+                    if (CreditCard == "")
+                    {
+                        throw new Exception("empty input");
+                    }
+                    else
+                    {
+                        Customer.UpdateCustomer(currentCustomer, creditCardNumber: CreditCard);
+                        Console.WriteLine("Credit card number updated successfully!");
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (RetryCommand("input", "account creation") == false)
+                    {
+                        return;
+                    }
+                    continue;
+                }
+            }
+            catch (Exception)
+            {
+                if (RetryCommand("information", "account creation") == false)
+                {
+                    return;
+                }
+            }
+        }
+    }
+
     static void ChangePassword()
     {
         Console.WriteLine("\n\n**** CHANGE PASSWORD ****\n");
@@ -804,10 +970,11 @@ class Program
             Console.WriteLine("\n\n**** HOME PAGE ****");
             Console.WriteLine("1. Book a Flight");
             Console.WriteLine("2. Cancel a Flight");
-            Console.WriteLine("3. View Account History");
-            Console.WriteLine("4. Change Password");
-            Console.WriteLine("5. Print Boarding Pass");
-            Console.WriteLine("6. Log Out");
+            Console.WriteLine("3. Print Boarding Pass");
+            Console.WriteLine("4. View Account History");
+            Console.WriteLine("5. Update Account Information");
+            Console.WriteLine("6. Change Password");
+            Console.WriteLine("7. Log Out");
             Console.Write("Enter your choice: ");
             choice = int.Parse(Console.ReadLine());
 
@@ -820,15 +987,18 @@ class Program
                     CancelFlight();
                     break;
                 case 3:
-                    ViewAccountHistory();
-                    break;
-                case 4:
-                    ChangePassword();
-                    break;
-                case 5:
                     PrintCustomerBoardingPass();
                     break;
+                case 4:
+                    ViewAccountHistory();
+                    break;
+                case 5:
+                    UpdateAccountInformation();
+                    break;
                 case 6:
+                    ChangePassword();
+                    break;
+                case 7:
                     Console.WriteLine("\nLogging out...");
                     currentCustomer = null;
                     loggedIn = false;
@@ -847,8 +1017,9 @@ class Program
         Console.WriteLine("2. Log In");
         Console.WriteLine("3. Book a Flight");
         Console.WriteLine("4. Cancel a Flight");
-        Console.WriteLine("5. View Account History");
-        Console.WriteLine("6. Exit");
+        Console.WriteLine("5. Print Boarding Pass");
+        Console.WriteLine("6. View Account History");
+        Console.WriteLine("7. Exit");
         Console.Write("Enter your choice: ");
     }
 
@@ -1244,7 +1415,7 @@ class Program
                 Console.WriteLine("4. Calculate the number of flights scheduled within a time range ");
                 Console.WriteLine("5. Change Password");
                 Console.WriteLine("6. Log Out");
-                Console.Write("Enter your choice: ");
+                Console.Write("\nEnter your choice: ");
                 int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
@@ -1281,7 +1452,7 @@ class Program
                         {
                             Flight.ShowAllFlights();
 
-                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back");
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back:");
                             string userInput = Console.ReadLine().ToUpper();
 
                             if (userInput == "BACK" || userInput == "B")
@@ -1296,11 +1467,11 @@ class Program
                         }
                         catch (FormatException)
                         {
-                            Console.WriteLine("Invalid input format. Please enter a valid flight number.");
+                            Console.WriteLine("\nInvalid input format. Please enter a valid flight number.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred: " + ex.Message);
                         }
                         break;
 
@@ -1308,7 +1479,8 @@ class Program
                         try
                         {
                             double totalIncome = Accountant.CalcIncomeWhole();
-                            Console.WriteLine("\nIncome of all Flights: " + totalIncome);
+                            string formattedIncome = totalIncome.ToString("0.00");
+                            Console.WriteLine("\nIncome of all Flights: $" + formattedIncome);
                         }
                         catch (Exception ex)
                         {
@@ -1319,7 +1491,7 @@ class Program
                     case 4:
                         try
                         {
-                            Console.WriteLine("\nEnter time range (day, month, or year) or type 'back' or 'b' to go back");
+                            Console.WriteLine("\nEnter time range (day, month, week or year) or type 'back' or 'b' to go back:");
                             string userInput = Console.ReadLine().ToUpper();
                             if (userInput == "BACK" || (userInput == "B"))
                             {
@@ -1327,15 +1499,19 @@ class Program
                             }
 
                             int numFlights = Accountant.CalcNumFlights(userInput);
-                            Console.WriteLine("Number of flights this {0}: {1}", userInput.ToLower(), numFlights);
+                            if (numFlights >= 0)
+                            {
+                                Console.WriteLine("\nNumber of flights this {0}: {1}", userInput.ToLower(), numFlights);
+                            }
+                            
                         }
                         catch (FormatException)
                         {
-                            Console.WriteLine("Invalid input format. Please enter a valid time range.");
+                            Console.WriteLine("\nInvalid input format. Please enter a valid time range.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred: " + ex.Message);
                         }
                         break;
 
@@ -1358,11 +1534,11 @@ class Program
             }
             catch (FormatException)
             {
-                Console.WriteLine("Invalid input format. Please enter a valid integer choice.");
+                Console.WriteLine("/nInvalid input format. Please enter a valid integer choice.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                Console.WriteLine("/nAn error occurred: " + ex.Message);
             }
         }
     }
@@ -1392,24 +1568,34 @@ class Program
                     case 1:
                         try
                         {
-                            Console.WriteLine("List of flights without assigned planes:\n");
-                            Flight.FlightWithNoPlane();
-                            Console.WriteLine("\nEnter flight number: ");
-                            string flightNumber = Console.ReadLine().ToUpper();
 
-                            Flight flight = Flight.FindFlightByFlightNumber(flightNumber);
+                            Console.WriteLine("\nList of flights without assigned planes:\n");
+                            Flight.FlightWithNoPlane();
+
+
+                            Console.WriteLine("\nEnter flight number or type 'back' or 'b' to go back: \n");
+                            string userInput1 = Console.ReadLine().ToUpper();
+
+                            if (userInput1 == "BACK" || userInput1 == "B")
+                            {
+                                MarketingManagerFunctionality();
+                                break;
+                            }
+
+
+                            Flight flight = Flight.FindFlightByFlightNumber(userInput1);
 
                             // Assign plane for flight
                             MarketingManager.AssignPlaneForFlight(flight);
                             Console.WriteLine("\n{0} assigned for flight: {1}",
                                                 Plane.FindPlaneById((int)flight.PlaneModelId).Model,
-                                                flightNumber);
+                                                userInput1);
                             break;
 
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred while assigning plane for flight: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred while assigning plane for flight: " + ex.Message);
                         }
                         break;
                     case 2:
@@ -1420,7 +1606,7 @@ class Program
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("An error occurred while assigning planes for all flights: " + ex.Message);
+                            Console.WriteLine("\nAn error occurred while assigning planes for all flights: " + ex.Message);
                         }
                         break;
                     case 3:

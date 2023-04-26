@@ -136,7 +136,7 @@ namespace Airline_Software
                 {
                     Flight endFlight = Flight.FindFlightById(order.FlightId1); //used to decide when to disallow cancellation 1 hour before takeoff
                     TimeSpan timeDiff = endFlight.DepartureTime - DateTime.Now;
-                    if (timeDiff.TotalMinutes >= 60) //if at least an hour before takeoff
+                    if (timeDiff.TotalMinutes >= 60) //if flight has at lest one hour until departure
                     {
                         activeOrders.Add(order);
                     }
@@ -172,6 +172,40 @@ namespace Airline_Software
             customer.ActiveOrders = activeOrders;
             customer.OldOrders = oldOrders;
             customer.CanceledOrders = canceledOrders;
+        }
+
+        public static List<Order> GetOrdersForBoardingPass(Customer customer)
+        {
+            int id = customer.Id;
+            string filePath = @"..\..\..\Tables\OrderDb.csv";
+            List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
+            // create lists to store various order types
+            List<Order> currentOrders = new();
+
+            while (true) //while order csv file has orders for a specific customer id, create separate order lists
+            {
+                if (CsvDatabase.FindRecord(orders, c => c.CustomerId, id) == null)
+                {
+                    break;
+                }
+                Order order = CsvDatabase.FindRecord(orders, p => p.CustomerId, id);
+
+                if (order.OrderStatus != "Canceled")
+                {
+                    Flight endFlight = Flight.FindFlightById(order.FlightId1); //used to decide when to disallow cancellation 1 hour before takeoff
+                    if (order.FlightId2 != -1)
+                    {
+                        endFlight = Flight.FindFlightById(order.FlightId2);
+                    }
+                    TimeSpan timeDiff = endFlight.DepartureTime - DateTime.Now;
+                    if (timeDiff.TotalMinutes > 0) //if flight not departed
+                    {
+                        currentOrders.Add(order);
+                    }
+                }
+                orders.Remove(order);
+            }
+            return currentOrders;
         }
 
         public static void ApplyPurchasePoints(Customer customer)
@@ -512,6 +546,24 @@ namespace Airline_Software
             if (customer.ActiveOrders[orderNumber].FlightId2 != -1) //print flight return info if roundtrip
             {
                 flight2 = Flight.FindFlightById(customer.ActiveOrders[orderNumber].FlightId2);
+                Console.WriteLine("      Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
+            }
+        }
+
+        public static void PrintFlightInfoForBoardingPass(int orderNumber, List<Order> orders)
+        {
+            Flight flight1 = null;
+            Flight flight2 = null; //return flight
+            Airport airport1 = null; //origin airport
+            Airport airport2 = null; //destination airport
+            flight1 = Flight.FindFlightById(orders[orderNumber].FlightId1);
+            airport1 = Airport.FindAirportbyId(flight1.DepartureAirportID);
+            airport2 = Airport.FindAirportbyId(flight1.ArrivalAirportID);
+            //print depart flight info
+            Console.WriteLine(" Departing: " + flight1.FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + flight1.DepartureTime + " - Arrival: " + flight1.ArrivalTime + ")");
+            if (orders[orderNumber].FlightId2 != -1) //print flight return info if roundtrip
+            {
+                flight2 = Flight.FindFlightById(orders[orderNumber].FlightId2);
                 Console.WriteLine("      Returning: " + flight2.FlightNumber + " flying to " + airport1.City + ", " + airport1.State + " (Departure: " + flight2.DepartureTime + " - Arrival: " + flight2.ArrivalTime + ")");
             }
         }

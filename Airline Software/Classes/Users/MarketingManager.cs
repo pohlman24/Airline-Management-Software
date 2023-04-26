@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Airline_Software
 {
-    internal class MarketingManager : User
+    internal class MarketingManager : User 
     {
         public MarketingManager(int Id, string FirstName, string LastName, string Email, string PhoneNumber, int Age, string Address, string City, string State, string ZipCode, string Password, string UserType) 
             : base(Id, FirstName, LastName, Email, PhoneNumber, Age, Address, City, State, ZipCode, Password, UserType)
@@ -17,7 +17,7 @@ namespace Airline_Software
         // should this be an automatic thing or a one by one
         public static void AssignPlaneForFlight(Flight flight)
         {
-            double distance = Flight.CalcFlightDistance(flight.DepartureAirportID, flight.ArrivalAirportID);
+            double distance = Flight.CalcFlightDistance(flight.DepartureAirportID, flight.ArrivalAirportID); // Calculates the flight distance
             int id;
             int cap;
 

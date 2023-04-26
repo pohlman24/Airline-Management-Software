@@ -58,7 +58,7 @@ namespace Airline_Software
                 {
                     Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}",
                     flight.FlightNumber, Airport.FindAirportbyId(flight.DepartureAirportID).City,
-                    Airport.FindAirportbyId(flight.ArrivalAirportID).City, flight.DepartureTime, flight.ArrivalTime);
+                    Airport.FindAirportbyId(flight.ArrivalAirportID).City, flight.DepartureTime.ToString("MM/dd/yyyy HH:mm:ss"), flight.ArrivalTime.ToString("MM/dd/yyyy HH:mm:ss"));
                 }
             }
         }
@@ -282,7 +282,7 @@ namespace Airline_Software
                 int capacity = flight.Capacity;
                 int seatsSold = flight.SeatsSold;
                 Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} ${5, -17} {6, -18} {7}/{8}",
-                    flightNumber, departAirport, arrivalAirport, departTime, arrivalTime, price, points, seatsSold, capacity);
+                    flightNumber, departAirport, arrivalAirport, departTime.ToString("MM/dd/yyyy HH:mm:ss"), arrivalTime.ToString("MM/dd/yyyy HH:mm:ss"), price, points, seatsSold, capacity);
             }
         }
 
