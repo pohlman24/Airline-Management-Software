@@ -19,10 +19,15 @@ namespace Airline_Software
         public int PointsEarned { get; set; }
         public int Capacity { get; set; }
         public int SeatsSold { get; set; }
+        public List<Flight> LayoverFlights { get; set; }
+        public int ParentConnectionFlight { get; set; }
+        public string FlightInfo { get; set; } 
+
+        private const double MaxDirectFlightDistance = 1250; // in miles
 
 
         public Flight(int FlightId, string FlightNumber, int DepartureAirportID, int ArrivalAirportID,
-                      DateTime DepartureTime, DateTime ArrivalTime, double Price, int PlaneModelId, int PointsEarned, int Capacity, int SeatsSold)
+                      DateTime DepartureTime, DateTime ArrivalTime, double Price, int PlaneModelId, int PointsEarned, int Capacity, int SeatsSold, int ParentConnectionFlight = -1, string FlightInfo = "Direct")
         {
             this.FlightId = FlightId;
             this.FlightNumber = FlightNumber;
@@ -35,6 +40,9 @@ namespace Airline_Software
             this.PointsEarned = PointsEarned;
             this.Capacity = Capacity;
             this.SeatsSold = SeatsSold;
+            this.LayoverFlights = new List<Flight>();
+            this.ParentConnectionFlight = ParentConnectionFlight;
+            this.FlightInfo = FlightInfo;
         }
 
         // outputs list of flights without assigned plane
@@ -56,23 +64,64 @@ namespace Airline_Software
         }
 
         public static Flight CreateFlight(int departureAirportID, int arrivalAirportID,
-                                         DateTime departureTime)
+                                         DateTime departureTime, int parentConnectionFlight = -1, string flightInfo = "direct")
         {
+            double distance = CalcFlightDistance(departureAirportID, arrivalAirportID);
+
             int flightID = GenerateFlightID();
             string flightNumber = GenerateFlightNumber(flightID, departureAirportID, arrivalAirportID);
             DateTime arrivalTime = CalculateArrivalTime(departureTime, departureAirportID, arrivalAirportID);
             double price = CalculateFlightPrice(departureTime, arrivalTime, departureAirportID, arrivalAirportID);
             int pointsEarned = CalculateFlightPoints(price);
+
             string filePath = @"..\..\..\Tables\FlightDb.csv";
-            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, price,-1, pointsEarned, 0, 0);
+            Flight newFlight = new Flight(flightID, flightNumber, departureAirportID, arrivalAirportID, departureTime, arrivalTime, price,-1, pointsEarned, 0, 0, ParentConnectionFlight: parentConnectionFlight, FlightInfo:flightInfo);
+
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
             flights.Add(newFlight);
             CsvDatabase.WriteCsvFile<Flight>(filePath, flights);
+
+            Flight currentFlight = FindFlightByFlightNumber(flightNumber);
+            if (distance > MaxDirectFlightDistance)
+            {
+                // layover stuff 
+                GenerateLayovers(currentFlight, departureAirportID, arrivalAirportID, departureTime);
+                //DeleteFlight(newFlight);
+                UpdateFlight(newFlight, flightInfo: "parent");
+            }
+
+            
             return newFlight;
         }
 
+        public static List<Flight> getLayoverFlights(Flight Parentflight)
+        {
+            string filePath = @"..\..\..\Tables\FlightDb.csv";
+            List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
+            List<Flight> layovers = new List<Flight>();
+            foreach (Flight flight in flights)
+            {
+                if (flight.ParentConnectionFlight == Parentflight.FlightId)
+                {
+                    layovers.Add(flight);
+                }
+            }
+            return layovers;
+        }
+
+        public void PopulateLayovers()
+        {
+            List<Flight> layoverFlights = getLayoverFlights(this);
+            // populate layovers
+            foreach (Flight flight in layoverFlights)
+            {
+                this.LayoverFlights.Add(flight);
+            }
+        }
+
+
         public static void UpdateFlight(Flight flight, string flightNumber = "", int departureAirportID = -1, int arrivalAirportID = -1,
-                                DateTime? departureTime = null, int planeModelId = -1, int capacity = -1, int seatsSold = -1)
+                                DateTime? departureTime = null, int planeModelId = -1, int capacity = -1, int seatsSold = -1, string flightInfo ="")
         {
             
             flight.DepartureAirportID = departureAirportID == -1 ? flight.DepartureAirportID : departureAirportID;
@@ -84,6 +133,7 @@ namespace Airline_Software
             flight.PointsEarned = (departureTime == null && departureAirportID == -1 && arrivalAirportID == -1) ? flight.PointsEarned : CalculateFlightPoints(flight.Price);
             flight.Capacity = capacity == -1 ? flight.Capacity : capacity;
             flight.SeatsSold = seatsSold == -1 ? flight.SeatsSold : seatsSold;
+            flight.FlightInfo = string.IsNullOrEmpty(flightInfo) ? flight.FlightInfo : flightInfo;
             // flight number is going to by default re-generate the flight number so that if the user changes the depart/arr city it will be the correct ID
             flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? GenerateFlightNumber(flight.FlightId, flight.DepartureAirportID, flight.ArrivalAirportID) : flightNumber;
 
@@ -102,6 +152,7 @@ namespace Airline_Software
                 current.PointsEarned = updated.PointsEarned;
                 current.Capacity = updated.Capacity;
                 current.SeatsSold = updated.SeatsSold;
+                current.FlightInfo = updated.FlightInfo;
             }, flight);
 
             CsvDatabase.WriteCsvFile(filePath, flights);
@@ -114,6 +165,57 @@ namespace Airline_Software
             CsvDatabase.RemoveRecord(flights, f => f.FlightId, flight.FlightId);
             CsvDatabase.WriteCsvFile(filePath, flights);
         }
+
+        private static List<Flight> GenerateLayovers(Flight flight, int departureAirportID, int arrivalAirportID, DateTime departureTime)
+        {
+            // This is just an example. You should implement a more sophisticated algorithm to determine layover airports.
+            Airport layoverAirport = FindLayoverAirport(departureAirportID, arrivalAirportID);
+            DateTime layoverDepartureTime = departureTime.Add(CalculateFlightTime(departureAirportID, layoverAirport.AirportId));
+            
+            Flight firstLeg = CreateFlight(departureAirportID, layoverAirport.AirportId, departureTime, parentConnectionFlight:flight.FlightId, flightInfo:"connection");
+            flight.LayoverFlights.Add(firstLeg);
+            Flight secondLeg = CreateFlight(layoverAirport.AirportId, arrivalAirportID, layoverDepartureTime, parentConnectionFlight: flight.FlightId, flightInfo:"connection");
+            flight.LayoverFlights.Add(secondLeg);
+            return new List<Flight> { firstLeg, secondLeg };
+        }
+
+
+        public static Airport FindLayoverAirport(int departureAirportID, int arrivalAirportID)
+        {
+            string filePath = @"..\..\..\Tables\AirportDb.csv";
+            List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(filePath);
+
+            Airport departureAirport = Airport.FindAirportbyId(departureAirportID);
+            Airport arrivalAirport = Airport.FindAirportbyId(arrivalAirportID);
+
+            double midLatitude = (departureAirport.Latitude + arrivalAirport.Latitude) / 2;
+            double midLongitude = (departureAirport.Longitude + arrivalAirport.Longitude) / 2;
+
+            Airport bestLayoverAirport = null;
+            double minDistance = double.MaxValue;
+
+            foreach (Airport airport in airports)
+            {
+                if (airport.AirportId == departureAirportID || airport.AirportId == arrivalAirportID)
+                {
+                    continue; // Skip departure and arrival airports
+                }
+
+                double distance = Math.Sqrt(Math.Pow(airport.Latitude - midLatitude, 2) + Math.Pow(airport.Longitude - midLongitude, 2));
+
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    bestLayoverAirport = airport;
+                }
+            }
+
+            return bestLayoverAirport;
+        }
+
+
+
+
 
         public static Flight FindFlightById(int id)
         {

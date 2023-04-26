@@ -44,11 +44,15 @@ class Program
                     CancelFlight();
                     break;
 
-                 case 5:
+                case 5:
+                    PrintCustomerBoardingPass();
+                    break;
+
+                 case 6:
                      ViewAccountHistory();
                      break;
 
-                case 6:
+                case 7:
                     Console.WriteLine("\nThank you for using our service!");
                     return;
 
@@ -58,6 +62,84 @@ class Program
             }
         }
     }
+    static void PrintCustomerBoardingPass()
+    {
+        if (loggedIn == false) //check if logged in or else cant print out a pass
+        {
+            if (VerifyUser() == false)
+            {
+                return;
+            }
+            else if (currentCustomer == null)
+            {
+                return;
+            }
+        }
+
+        Console.WriteLine("\n\n**** PRINT BOARDING PASS ****");
+        //display all booked flights
+        Customer.ApplyPurchasePoints(currentCustomer); //will never be null
+        List<Order> orders = Customer.GetOrdersForBoardingPass(currentCustomer); //get all order history
+        if (orders.Count > 0)
+        {
+            Console.WriteLine("\nCurrent Bookings:");
+            for (int i = 0; i < orders.Count; i++)
+            {
+                if(orders[i].OrderStatus == "Printed")
+                {
+                    continue;
+                }
+                Console.Write("  " + (i + 1) + ". ");
+                Customer.PrintFlightInfoForBoardingPass(i, orders);
+            }
+            Console.WriteLine("  B.  Go back");
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter your choice: ");
+                    string cancelChoice = Console.ReadLine()?.ToUpper() ?? "";
+                    int cancel = 0;
+                    if (cancelChoice == "B")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        cancel = Convert.ToInt32(cancelChoice);
+                        if (cancel > orders.Count)
+                        {
+                            throw new Exception("Invalid Input");
+                        }
+                        BoardingPass.PrintBoardingPass(currentCustomer, orders[cancel - 1]);
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("\nInvalid Input! Choose a booking from above, or enter B to go back");
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("\nNo Current Bookings");
+            Console.Write("\nEnter B to go back: ");
+            while (true)
+            {
+                string input = Console.ReadLine()?.ToUpper() ?? "";
+                if (input == "B")
+                {
+                    return;
+                }
+                else
+                {
+                    Console.Write("\nInvalid input! Enter B to go back: ");
+                }
+            }
+        }
+    }
+
 
     static void CreateCustomerAccount()
     {
@@ -351,7 +433,27 @@ class Program
                     }
                     j++;
                     curFlights.Add(j, allFlights[i]);
-                    Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")");
+                    if(allFlights[i].FlightInfo == "direct")
+                    {
+                        Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying from " + airport.City + ", " + airport.State + " to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime);
+                    }
+                    else if(allFlights[i].FlightInfo == "parent")
+                    {
+                        Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying from " + airport.City + ", " + airport.State + " to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + " (has connection flights)");
+                        List<Flight> layoverFlights1 = Flight.getLayoverFlights(allFlights[i]);
+                        foreach (Flight flight in layoverFlights1)
+                        {
+                            allFlights[i].LayoverFlights.Add(flight);
+                        }
+                        foreach(Flight layoverFlight in allFlights[i].LayoverFlights)
+                        {
+                            Airport layoverDepart = Airport.FindAirportbyId(layoverFlight.DepartureAirportID);
+                            Airport layoverArr = Airport.FindAirportbyId(layoverFlight.ArrivalAirportID);
+                            Console.WriteLine("\t - " + layoverFlight.FlightNumber + " flying from " + layoverDepart.City + ", " + layoverDepart.State + " to " + layoverArr.City + ", " + layoverArr.State + " (Departure: " + layoverFlight.DepartureTime + " - Arrival: " + layoverFlight.ArrivalTime);
+                            
+                        }
+                    }
+                    
                 }
             }
             if (noFlights == true)
@@ -388,6 +490,14 @@ class Program
                             j++;
                             curFlights.Add(j, allFlights[i]);
                             Console.WriteLine("  " + j + ". " + allFlights[i].FlightNumber + " flying to " + airport2.City + ", " + airport2.State + " (Departure: " + allFlights[i].DepartureTime + " - Arrival: " + allFlights[i].ArrivalTime + ")");
+                            allFlights[i].PopulateLayovers();
+                            foreach (Flight layoverFlight in allFlights[i].LayoverFlights)
+                            {
+                                Airport layoverDepart = Airport.FindAirportbyId(layoverFlight.DepartureAirportID);
+                                Airport layoverArr = Airport.FindAirportbyId(layoverFlight.ArrivalAirportID);
+                                Console.WriteLine("\t - " + layoverFlight.FlightNumber + " flying from " + layoverDepart.City + ", " + layoverDepart.State + " to " + layoverArr.City + ", " + layoverArr.State + " (Departure: " + layoverFlight.DepartureTime + " - Arrival: " + layoverFlight.ArrivalTime);
+
+                            }
                         }
                     }
                     if (noFlights == true)
@@ -422,7 +532,15 @@ class Program
             }
             else
             {
-                Console.Write("\n" + airport.Code + " to " + airport2.Code + " costs $" + chosenDepartFlight.Price.ToString("F2") + " (" + 10 * chosenDepartFlight.PointsEarned + " points). Proceed to checkout? (Y/N): ");
+                if(chosenDepartFlight.FlightInfo == "parent")
+                {
+                    Console.Write("\n" + airport.Code + " to " + airport2.Code + " costs $" + chosenDepartFlight.Price.ToString("F2") + " (" + 10 * chosenDepartFlight.PointsEarned + " points).(Includes layovers) Proceed to checkout? (Y/N): ");
+                }
+                else
+                {
+                    Console.Write("\n" + airport.Code + " to " + airport2.Code + " costs $" + chosenDepartFlight.Price.ToString("F2") + " (" + 10 * chosenDepartFlight.PointsEarned + " points). Proceed to checkout? (Y/N): ");
+                }
+                
             }
             string proceed = Console.ReadLine()?.ToUpper() ?? "";
             if (proceed == "Y")
@@ -688,7 +806,8 @@ class Program
             Console.WriteLine("2. Cancel a Flight");
             Console.WriteLine("3. View Account History");
             Console.WriteLine("4. Change Password");
-            Console.WriteLine("5. Log Out");
+            Console.WriteLine("5. Print Boarding Pass");
+            Console.WriteLine("6. Log Out");
             Console.Write("Enter your choice: ");
             choice = int.Parse(Console.ReadLine());
 
@@ -707,6 +826,9 @@ class Program
                     ChangePassword();
                     break;
                 case 5:
+                    PrintCustomerBoardingPass();
+                    break;
+                case 6:
                     Console.WriteLine("\nLogging out...");
                     currentCustomer = null;
                     loggedIn = false;
@@ -744,10 +866,10 @@ class Program
             Console.WriteLine("2. Add a New Flight"); // this should only include depart time and arrival location
             Console.WriteLine("3. Delete a Flight");
             Console.WriteLine("4. Update a Flight");
-            Console.WriteLine("5. Change Password");
-            Console.WriteLine("5. View All Aiports");
+            Console.WriteLine("5. View All Airports");
             Console.WriteLine("6. Change Password");
-            Console.WriteLine("7. Log Out");
+            Console.WriteLine("7. Change Password");
+            Console.WriteLine("8. Log Out");
             Console.Write("Enter your choice: ");
             try
             {
@@ -832,8 +954,9 @@ class Program
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("\nAirport(s) not an available option. List of available aiports below.");
+                    Console.WriteLine("\nAirport(s) not an available option. List of available aiports below.\n");
                     Airport.DisplayAllAiports();
+                    Console.WriteLine("");
                     AddFlight();
                     break;
                 }

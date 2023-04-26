@@ -13,9 +13,13 @@
         public Boolean IsRoundTrip { get; set; }
         public Boolean UsedPoints { get; set; } //if customer paid with points, points spent will be decreased on cancellation
         public Boolean EarnedPoints { get; set; } //if customer has earned points for their booked flight
+        public int Layover1 { get; set; }
+        public int Layover2 { get; set; }
+        public int Layover3 { get; set; }
+        public int Layover4 { get; set; }
 
 
-        public Order(int OrderId, int CustomerId, int FlightId1, int FlightId2, string OrderStatus, DateOnly OrderDate, DateOnly CancellationDate, bool IsRoundTrip, bool UsedPoints, bool EarnedPoints)
+        public Order(int OrderId, int CustomerId, int FlightId1, int FlightId2, string OrderStatus, DateOnly OrderDate, DateOnly CancellationDate, bool IsRoundTrip, bool UsedPoints, bool EarnedPoints, int Layover1, int Layover2, int Layover3, int Layover4)
         {
             this.OrderId = OrderId;
             this.CustomerId = CustomerId;
@@ -27,13 +31,18 @@
             this.IsRoundTrip = IsRoundTrip;
             this.UsedPoints = UsedPoints;
             this.EarnedPoints = EarnedPoints;
+            this.Layover1 = Layover1;
+            this.Layover2 = Layover2;
+            // these two are for return trips
+            this.Layover3 = Layover3;
+            this.Layover4 = Layover4;
         }
 
-        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, bool usedPoints, bool earnedPoints, int flightId2 = -1)
+        public static Order CreateOrder(int customerId, int flightId1,string orderStatus, DateOnly orderDate, DateOnly cancellationDate, bool isRoundTrip, bool usedPoints, bool earnedPoints, int flightId2 = -1, int layover1 = -1, int layover2 = -1,int layover3 = -1, int layover4 = -1)
         {
             string filePath = @"..\..\..\Tables\OrderDb.csv";
             int orderId = GenerateOrderID();
-            Order newOrder = new Order(orderId, customerId, flightId1, flightId2, orderStatus, orderDate, cancellationDate, isRoundTrip, usedPoints, earnedPoints);
+            Order newOrder = new Order(orderId, customerId, flightId1, flightId2, orderStatus, orderDate, cancellationDate, isRoundTrip, usedPoints, earnedPoints, layover1, layover2, layover3, layover4);
             List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
             orders.Add(newOrder);
             CsvDatabase.WriteCsvFile<Order>(filePath, orders);

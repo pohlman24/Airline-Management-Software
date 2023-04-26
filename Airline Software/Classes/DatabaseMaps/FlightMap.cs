@@ -16,5 +16,7 @@ public class FlightMap : ClassMap<Flight>
         Map(m => m.PointsEarned).Index(8).Name("PointsEarned");
         Map(m => m.Capacity).Index(9).Name("Capacity");
         Map(m => m.SeatsSold).Index(10).Name("SeatsSold");
+        Map(m => m.ParentConnectionFlight).Index(11).Name("ParentConnectionFlight");
+        Map(m => m.FlightInfo).Index(12).Name("FlightInfo");
     }
 }

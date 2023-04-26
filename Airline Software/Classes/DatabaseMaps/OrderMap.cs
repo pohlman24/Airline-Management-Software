@@ -15,5 +15,9 @@ public class OrderMap : ClassMap<Order>
         Map(m => m.IsRoundTrip).Name("IsRoundTrip").Index(7);
         Map(m => m.UsedPoints).Name("UsedPoints").Index(8);
         Map(m => m.EarnedPoints).Name("EarnedPoints").Index(9);
+        Map(m => m.Layover1).Name("Layover1").Index(10);
+        Map(m => m.Layover2).Name("Layover2").Index(11);
+        Map(m => m.Layover3).Name("Layover3").Index(12);
+        Map(m => m.Layover4).Name("Layover4").Index(13);
     }
 }
