@@ -19,48 +19,56 @@ class Program
                 HomePage();
             }
             DefaultPage(); //display the default menu page
-            choice = int.Parse(Console.ReadLine()); //get user input for menu choice
-
-            switch (choice)
+            try
             {
-                case 1:
-                    CreateCustomerAccount();
-                    HomePage();
-                    break;
+                choice = int.Parse(Console.ReadLine()); //get user input for menu choice
 
-                case 2:
-                    LogIn();
-                    if (currentUser == null && loggedIn == true)
-                    {
+                switch (choice)
+                {
+                    case 1:
+                        CreateCustomerAccount();
                         HomePage();
-                    }
+                        break;
 
-                    break;
+                    case 2:
+                        LogIn();
+                        if (currentUser == null && loggedIn == true)
+                        {
+                            HomePage();
+                        }
 
-                case 3:
-                    BookFlight(); //call the BookFlight method
-                    break;
+                        break;
 
-                case 4:
-                    CancelFlight(); //call the CancelFlight method
-                    break;
+                    case 3:
+                        BookFlight(); //call the BookFlight method
+                        break;
 
-                case 5:
-                    PrintCustomerBoardingPass();
-                    break;
+                    case 4:
+                        CancelFlight(); //call the CancelFlight method
+                        break;
 
-                 case 6:
-                     ViewAccountHistory();
-                     break;
+                    case 5:
+                        PrintCustomerBoardingPass();
+                        break;
 
-                case 7:
-                    Console.WriteLine("\nThank you for using our service!");
-                    return;
+                    case 6:
+                        ViewAccountHistory();
+                        break;
 
-                default:
-                    Console.WriteLine("\nInvalid choice! Please try again."); //if user input is invalid, display error message
-                    break;
+                    case 7:
+                        Console.WriteLine("\nThank you for using our service!");
+                        return;
+
+                    default:
+                        Console.WriteLine("\nInvalid choice! Please try again."); //if user input is invalid, display error message
+                        break;
+                }
             }
+            catch
+            {
+                
+            }
+            
         }
     }
     static void PrintCustomerBoardingPass()
