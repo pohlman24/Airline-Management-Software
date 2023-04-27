@@ -1127,7 +1127,7 @@ class Program
                     Flight newFlight = Flight.CreateFlight(departAirport.AirportId, arrivalAiport.AirportId, time);
                     //output summary of created flight
                     Console.WriteLine("\nNew Flight Created");
-                    newFlight.PopulateLayovers();
+                    //newFlight.PopulateLayovers();
                     newFlight.FlightSummary();
                     foreach(Flight flight in newFlight.LayoverFlights)
                     {
