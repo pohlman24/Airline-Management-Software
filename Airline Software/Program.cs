@@ -284,23 +284,24 @@ class Program
             int userId = Convert.ToInt32(Console.ReadLine());
             Console.Write("Enter your password: ");
             string password = User.HashPassword(Console.ReadLine() ?? "");
-
-            // find user by ID and check if user type is customer
-            currentUser = User.FindUserById(userId);
+            try
+            {
+                // find user by ID and check if user type is customer
+                currentUser = User.FindUserById(userId);
                 if (currentUser.UserType == "Customer")
                 {
                     currentCustomer = Customer.FindCustomerById(currentUser.Id);
                     currentUser = null;
                 }
-            
-     /*       catch (Exception)
+            }
+            catch (Exception)
             {
                 if (RetryCommand("ID", "login") == false)
                 {
                     return;
                 }
                 continue;
-            }*/
+            }
             if (currentCustomer != null && password == currentCustomer.Password)
             {
                 Console.WriteLine("\nWelcome, " + currentCustomer.FirstName + "!");
@@ -858,7 +859,11 @@ class Program
                 }
                 else if (input == "5")
                 {
-
+                    Console.Write("Enter your age: ");
+                    int Age = Convert.ToInt32(Console.ReadLine());
+                    Customer.UpdateCustomer(currentCustomer, age: Age);
+                    Console.WriteLine("Age updated successfully!");
+                    continue;
                 }
                 else if (input == "6")
                 {
@@ -922,7 +927,7 @@ class Program
                 }
                 else
                 {
-                    if (RetryCommand("input", "account creation") == false)
+                    if (RetryCommand("input", "update information") == false)
                     {
                         return;
                     }
@@ -931,7 +936,7 @@ class Program
             }
             catch (Exception)
             {
-                if (RetryCommand("information", "account creation") == false)
+                if (RetryCommand("information", "update information") == false)
                 {
                     return;
                 }
@@ -965,6 +970,10 @@ class Program
             else
             {
                 Console.WriteLine("\nIncorrect password!");
+                if (RetryCommand("password", "change password") == false)
+                {
+                    return;
+                }
             }
         }
     }
