@@ -82,7 +82,7 @@ namespace Airline_Software
             CsvDatabase.WriteCsvFile<Flight>(filePath, flights);
 
             Flight currentFlight = FindFlightByFlightNumber(flightNumber);
-            if (distance > MaxDirectFlightDistance)
+            if (distance > MaxDirectFlightDistance && flightInfo != "connection")
             {
                 // layover stuff 
                 GenerateLayovers(currentFlight, departureAirportID, arrivalAirportID, departureTime);
@@ -111,6 +111,12 @@ namespace Airline_Software
 
         public void PopulateLayovers()
         {
+            // if the flight has already had its flight populated
+            if (this.LayoverFlights.Count >= 2)
+            {
+                return;
+            }
+
             List<Flight> layoverFlights = getLayoverFlights(this);
             // populate layovers
             foreach (Flight flight in layoverFlights)
@@ -136,6 +142,14 @@ namespace Airline_Software
             flight.FlightInfo = string.IsNullOrEmpty(flightInfo) ? flight.FlightInfo : flightInfo;
             // flight number is going to by default re-generate the flight number so that if the user changes the depart/arr city it will be the correct ID
             flight.FlightNumber = string.IsNullOrEmpty(flightNumber) ? GenerateFlightNumber(flight.FlightId, flight.DepartureAirportID, flight.ArrivalAirportID) : flightNumber;
+            if (flightInfo != null)
+            {
+                flight.PopulateLayovers();
+                foreach (Flight layover in flight.LayoverFlights)
+                {
+                    flight.Price += 8;
+                }
+            }
 
             string filePath = @"..\..\..\Tables\FlightDb.csv";
             List<Flight> flights = CsvDatabase.ReadCsvFile<Flight>(filePath);
@@ -168,9 +182,8 @@ namespace Airline_Software
 
         private static List<Flight> GenerateLayovers(Flight flight, int departureAirportID, int arrivalAirportID, DateTime departureTime)
         {
-            // This is just an example. You should implement a more sophisticated algorithm to determine layover airports.
             Airport layoverAirport = FindLayoverAirport(departureAirportID, arrivalAirportID);
-            DateTime layoverDepartureTime = departureTime.Add(CalculateFlightTime(departureAirportID, layoverAirport.AirportId));
+            DateTime layoverDepartureTime = departureTime.Add(CalculateFlightTime(departureAirportID, layoverAirport.AirportId)).AddMinutes(25);
             
             Flight firstLeg = CreateFlight(departureAirportID, layoverAirport.AirportId, departureTime, parentConnectionFlight:flight.FlightId, flightInfo:"connection");
             flight.LayoverFlights.Add(firstLeg);
@@ -297,6 +310,16 @@ namespace Airline_Software
                 Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25}",
                         this.FlightNumber, Airport.FindAirportbyId(this.DepartureAirportID).City, Airport.FindAirportbyId(this.ArrivalAirportID).City,
                         this.DepartureTime, this.ArrivalTime);
+            }
+            else if(this.FlightInfo == "parent")
+            {
+                this.PopulateLayovers();
+                Console.WriteLine("\n{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} {5, -12} {6}",
+                "Flight Number", "Departure City", "Arrival City", "Departure Time", "Est Arrival Time", "Price", "Points Value");
+
+                Console.WriteLine("{0, -18} {1, -18} {2, -18} {3, -25} {4, -25} ${5, -11} {6}",
+                        this.FlightNumber, Airport.FindAirportbyId(this.DepartureAirportID).City, Airport.FindAirportbyId(this.ArrivalAirportID).City,
+                        this.DepartureTime, this.LayoverFlights[1].ArrivalTime, this.Price, this.PointsEarned);
             }
             else
             {
