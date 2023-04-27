@@ -55,15 +55,14 @@ namespace Airline_Software
                 // read over every Order and check if flightId is same as given flight
                 string filePath = @"..\..\..\Tables\OrderDb.csv";
                 List<Order> orders = CsvDatabase.ReadCsvFile<Order>(filePath);
-                Console.WriteLine("\nFirst Name Last Name");
+                Console.WriteLine("\nFirst Name\t Last Name");
                 // find everyone on a given flight by searching the orders table and matching flight ID
                 foreach (Order order in orders)
                 {
                     if (order.FlightId1 == flight.FlightId || order.FlightId2 == flight.FlightId)
                     {
                         Customer customer = Customer.FindCustomerById(order.CustomerId);
-                        string customerName = string.Join(",", customer.FirstName, customer.LastName);
-                        Console.WriteLine(customerName);
+                        Console.WriteLine("{0,-10}\t {1,-10}", customer.FirstName, customer.LastName);
                     }
                 }
             }
@@ -76,17 +75,16 @@ namespace Airline_Software
                     return;
                 }
                 // read over every boardingpass and check if flightId is same as given flight
-                string filePath = @"..\..\..\Tables\BoardingPass.csv";
+                string filePath = @"..\..\..\Tables\BoardingPassDb.csv";
                 List<BoardingPass> boardingPasses = CsvDatabase.ReadCsvFile<BoardingPass>(filePath);
-                Console.WriteLine("\nFirst Name Last Name");
+                Console.WriteLine("\nFirst Name\t Last Name");
                 // find everyone on a given flight by searching the orders table and matching flight ID
                 foreach(BoardingPass bp in boardingPasses)
                 {
                     if (bp.FlightId == flight.FlightId)
                     {
                         Customer customer = Customer.FindCustomerById(bp.CustomerId);
-                        string customerName = string.Join(",", customer.FirstName, customer.LastName);
-                        Console.WriteLine(customerName);
+                        Console.WriteLine("{0,-10}\t {1,-10}", customer.FirstName, customer.LastName);
                     }
                 }
             }

@@ -1336,8 +1336,6 @@ class Program
         {
             Console.WriteLine("\n\n**** FLIGHT MANAGER FUNCTIONALITY ****");
             Console.WriteLine("1. Generate Flight Manifest");
-            Console.WriteLine("2. Change Password");
-            Console.WriteLine("3. Log Out");
             Console.WriteLine("2. View All Flights");
             Console.WriteLine("3. View All Airports");
             Console.WriteLine("4. Change Password");
@@ -1388,7 +1386,7 @@ class Program
             Flight flight = Flight.FindFlightByFlightNumber(userInput);
             FlightManager.PrintFlightManifest(flight);
 
-            Console.WriteLine("Save manifest? (Y/N)");
+            Console.WriteLine("\nSave manifest? (Y/N)");
             string isSaving = Console.ReadLine().ToUpper();
             if (isSaving == "Y" || isSaving == "YES")
             {

@@ -34,13 +34,22 @@ namespace Airline_Software
 
         public static void editFlight(Flight flight) //maybe use int flightID here instead, depends on how it's stored
         {
-            Flight.UpdateFlight(flight);
-            Console.WriteLine("Flight '" + flight.FlightNumber + "' updated");
+            if(flight.FlightInfo == "parent" || flight.FlightInfo == "connection")
+            {
+                Console.WriteLine("Error: You can only edit direct flights");
+            }
+            else
+            {
+                Flight.UpdateFlight(flight);
+                Console.WriteLine("Flight '" + flight.FlightNumber + "' updated");
+            }
+            
         }
 
         public static void CancelFlight(Flight flight) //same as edit
         {
             flight.PopulateLayovers();
+            // if parent flight, remove parent and all connections
             if(flight.FlightInfo == "parent" && flight.LayoverFlights[0].SeatsSold == 0 && flight.LayoverFlights[1].SeatsSold == 0)
             {
                 //remove flight from database
@@ -52,6 +61,7 @@ namespace Airline_Software
                     Flight.DeleteFlight(layover);
                 }
             }
+            // cant remove connections without removing parent
             else if(flight.FlightInfo == "connection")
             {
                 Console.WriteLine("Cannot cancel connection flights");
