@@ -7,7 +7,9 @@ class Program
     static bool loggedIn = false; //global var to check if a customer is logged in
     static User? currentUser = null; //represents the current logged in user, can be null
     static Customer? currentCustomer = null; //represents the current logged in customer, can be null
-
+    
+    // bool to turn on devmode and allow access to functions 
+    static bool devMode = false;
     static void Main(string[] args)
     {
         int choice;
@@ -59,6 +61,18 @@ class Program
                         Console.WriteLine("\nThank you for using our service!");
                         return;
 
+                    case 419:
+                        if(devMode == true)
+                        {
+                            MarketingManager.AssignPlaneForAllFlights();
+                            //Console.WriteLine(User.HashPassword("admin"));
+                            //Console.WriteLine("How many flights do you want to make?");
+                            //int numflights = int.Parse(Console.ReadLine());
+                            //Console.WriteLine("This may take a few seconds");
+                            //GenerateRandomFlights(numflights);
+                        }
+                        
+                        break;
                     default:
                         Console.WriteLine("\nInvalid choice! Please try again."); //if user input is invalid, display error message
                         break;
@@ -71,6 +85,48 @@ class Program
             
         }
     }
+
+    // dev function to make mass amounts of flights
+    // right now i have it so that it will loop over every airport and create 'numberOflFights' fligths for each airport 
+    public static void GenerateRandomFlights(int numberOfFlights)
+    {
+        string airportFilePath = @"..\..\..\Tables\AirportDb.csv";
+        List<Airport> airports = CsvDatabase.ReadCsvFile<Airport>(airportFilePath);
+        int airportCount = airports.Count;
+        var rnd = new Random();
+
+        foreach (Airport airport in airports)
+        {
+            for (int i = 0; i < numberOfFlights; i++)
+            {
+                // can hard code departue ID here 
+                int departureAirportID = airport.AirportId;//airports[rnd.Next(0, airportCount)].AirportId;
+                int arrivalAirportID;
+
+                do
+                {
+                    // can hard code Arrival ID here
+                    arrivalAirportID = airports[rnd.Next(0, airportCount)].AirportId;
+                } while (departureAirportID == arrivalAirportID); // Ensure departure and arrival airports are different
+
+                // can hard code the days here
+                int randomHours = rnd.Next(0, 168);
+                int randomMinutes = rnd.Next(0, 60);
+                DateTime departureTime = DateTime.Now.AddHours(randomHours).AddMinutes(randomMinutes);
+
+                // Round departure time to the nearest 15-minute interval
+                int minutes = departureTime.Minute;
+                int roundedMinutes = (minutes / 15) * 15;
+                int diff = minutes - roundedMinutes;
+                if (diff >= 8) roundedMinutes += 15;
+                departureTime = departureTime.AddMinutes(-diff).AddSeconds(-departureTime.Second).AddMilliseconds(-departureTime.Millisecond);
+
+                Flight.CreateFlight(departureAirportID, arrivalAirportID, departureTime);
+            }
+        }
+    }
+
+
     static void PrintCustomerBoardingPass()
     {
         if (loggedIn == false) //check if logged in or else cant print out a pass
